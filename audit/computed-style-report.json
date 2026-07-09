@@ -1,0 +1,192 @@
+[
+  {
+    "page": "/",
+    "element": "body",
+    "differences": []
+  },
+  {
+    "page": "/",
+    "element": "header",
+    "differences": []
+  },
+  {
+    "page": "/",
+    "element": "nav",
+    "differences": []
+  },
+  {
+    "page": "/",
+    "element": "logo",
+    "differences": []
+  },
+  {
+    "page": "/",
+    "element": "tag filter",
+    "differences": []
+  },
+  {
+    "page": "/",
+    "element": "grid container",
+    "differences": []
+  },
+  {
+    "page": "/",
+    "element": "grid card",
+    "differences": []
+  },
+  {
+    "page": "/",
+    "element": "grid text",
+    "differences": []
+  },
+  {
+    "page": "/",
+    "element": "grid title",
+    "differences": []
+  },
+  {
+    "page": "/",
+    "element": "social icon",
+    "differences": []
+  },
+  {
+    "page": "/",
+    "element": "first paragraph",
+    "differences": []
+  },
+  {
+    "page": "/",
+    "element": "footer",
+    "differences": []
+  },
+  {
+    "page": "/om-oss/",
+    "element": "body",
+    "differences": []
+  },
+  {
+    "page": "/om-oss/",
+    "element": "header",
+    "differences": []
+  },
+  {
+    "page": "/om-oss/",
+    "element": "nav",
+    "differences": []
+  },
+  {
+    "page": "/om-oss/",
+    "element": "logo",
+    "differences": []
+  },
+  {
+    "page": "/om-oss/",
+    "element": "social icon",
+    "differences": []
+  },
+  {
+    "page": "/om-oss/",
+    "element": "first paragraph",
+    "differences": []
+  },
+  {
+    "page": "/om-oss/",
+    "element": "footer",
+    "differences": []
+  },
+  {
+    "page": "/projects/",
+    "element": "body",
+    "differences": []
+  },
+  {
+    "page": "/projects/",
+    "element": "header",
+    "differences": []
+  },
+  {
+    "page": "/projects/",
+    "element": "nav",
+    "differences": []
+  },
+  {
+    "page": "/projects/",
+    "element": "logo",
+    "differences": []
+  },
+  {
+    "page": "/projects/",
+    "element": "tag filter",
+    "differences": []
+  },
+  {
+    "page": "/projects/",
+    "element": "grid container",
+    "differences": []
+  },
+  {
+    "page": "/projects/",
+    "element": "grid card",
+    "differences": []
+  },
+  {
+    "page": "/projects/",
+    "element": "grid text",
+    "differences": []
+  },
+  {
+    "page": "/projects/",
+    "element": "grid title",
+    "differences": []
+  },
+  {
+    "page": "/projects/",
+    "element": "social icon",
+    "differences": []
+  },
+  {
+    "page": "/projects/",
+    "element": "first paragraph",
+    "differences": []
+  },
+  {
+    "page": "/projects/",
+    "element": "footer",
+    "differences": []
+  },
+  {
+    "page": "/about/",
+    "element": "body",
+    "differences": []
+  },
+  {
+    "page": "/about/",
+    "element": "header",
+    "differences": []
+  },
+  {
+    "page": "/about/",
+    "element": "nav",
+    "differences": []
+  },
+  {
+    "page": "/about/",
+    "element": "logo",
+    "differences": []
+  },
+  {
+    "page": "/about/",
+    "element": "social icon",
+    "differences": []
+  },
+  {
+    "page": "/about/",
+    "element": "first paragraph",
+    "differences": []
+  },
+  {
+    "page": "/about/",
+    "element": "footer",
+    "differences": []
+  }
+]

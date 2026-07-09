@@ -1,0 +1,23 @@
+{
+  "name": "esencial-static-recovery",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Static recovery copy of the public esencial.se frontend.",
+  "scripts": {
+    "crawl": "node scripts/crawl-site.js",
+    "download-assets": "node scripts/download-assets.js",
+    "rewrite-paths": "node scripts/rewrite-paths.js",
+    "serve": "node scripts/static-server.js",
+    "verify-visual": "node scripts/verify-visual.js",
+    "compare-screenshots": "node scripts/compare-screenshots.js",
+    "inspect-computed-styles": "node scripts/inspect-computed-styles.js",
+    "inspect-bounding-boxes": "node scripts/inspect-bounding-boxes.js",
+    "check-functionality": "node scripts/check-functionality.js",
+    "recover": "node scripts/crawl-site.js && node scripts/download-assets.js && node scripts/rewrite-paths.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.45.0",
+    "pixelmatch": "^7.1.0",
+    "pngjs": "^7.0.0"
+  }
+}

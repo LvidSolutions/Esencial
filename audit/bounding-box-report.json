@@ -1,0 +1,788 @@
+[
+  {
+    "page": "/",
+    "element": "header",
+    "live": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 88
+    },
+    "local": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 88
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/",
+    "element": "nav",
+    "live": {
+      "x": 0,
+      "y": 77,
+      "width": 1440,
+      "height": 36.22
+    },
+    "local": {
+      "x": 0,
+      "y": 77,
+      "width": 1440,
+      "height": 36.22
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/",
+    "element": "logo",
+    "live": {
+      "x": 654,
+      "y": 55,
+      "width": 132,
+      "height": 32.73
+    },
+    "local": {
+      "x": 654,
+      "y": 55,
+      "width": 132,
+      "height": 32.73
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/",
+    "element": "tag filter",
+    "live": {
+      "x": 22,
+      "y": 5.5,
+      "width": 279.19,
+      "height": 25.22
+    },
+    "local": {
+      "x": 22,
+      "y": 5.5,
+      "width": 279.19,
+      "height": 25.22
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/",
+    "element": "grid container",
+    "live": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 5255.25
+    },
+    "local": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 5255.25
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/",
+    "element": "grid card",
+    "live": {
+      "x": 44,
+      "y": 110,
+      "width": 676,
+      "height": 364.38
+    },
+    "local": {
+      "x": 44,
+      "y": 110,
+      "width": 676,
+      "height": 364.38
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/",
+    "element": "grid photo",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/",
+    "element": "grid text",
+    "live": {
+      "x": 88,
+      "y": 145.19,
+      "width": 588,
+      "height": 294
+    },
+    "local": {
+      "x": 88,
+      "y": 145.19,
+      "width": 588,
+      "height": 294
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/",
+    "element": "grid title",
+    "live": {
+      "x": 88,
+      "y": 167.19,
+      "width": 588,
+      "height": 14.22
+    },
+    "local": {
+      "x": 88,
+      "y": 167.19,
+      "width": 588,
+      "height": 14.22
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/",
+    "element": "about text",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/",
+    "element": "first paragraph",
+    "live": {
+      "x": 216.59,
+      "y": 382.47,
+      "width": 330.8,
+      "height": 32.66
+    },
+    "local": {
+      "x": 216.59,
+      "y": 382.47,
+      "width": 330.8,
+      "height": 32.66
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/",
+    "element": "footer",
+    "live": {
+      "x": 0,
+      "y": 1076.89,
+      "width": 1440,
+      "height": 57.11
+    },
+    "local": {
+      "x": 0,
+      "y": 1076.89,
+      "width": 1440,
+      "height": 57.11
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/om-oss/",
+    "element": "header",
+    "live": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 88
+    },
+    "local": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 88
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/om-oss/",
+    "element": "nav",
+    "live": {
+      "x": 0,
+      "y": 77,
+      "width": 1440,
+      "height": 36.22
+    },
+    "local": {
+      "x": 0,
+      "y": 77,
+      "width": 1440,
+      "height": 36.22
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/om-oss/",
+    "element": "logo",
+    "live": {
+      "x": 654,
+      "y": 55,
+      "width": 132,
+      "height": 32.73
+    },
+    "local": {
+      "x": 654,
+      "y": 55,
+      "width": 132,
+      "height": 32.73
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/om-oss/",
+    "element": "tag filter",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/om-oss/",
+    "element": "grid container",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/om-oss/",
+    "element": "grid card",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/om-oss/",
+    "element": "grid photo",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/om-oss/",
+    "element": "grid text",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/om-oss/",
+    "element": "grid title",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/om-oss/",
+    "element": "about text",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/om-oss/",
+    "element": "first paragraph",
+    "live": {
+      "x": 787.59,
+      "y": 559.64,
+      "width": 496.8,
+      "height": 99
+    },
+    "local": {
+      "x": 787.59,
+      "y": 559.64,
+      "width": 496.8,
+      "height": 99
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/om-oss/",
+    "element": "footer",
+    "live": {
+      "x": 0,
+      "y": 1076.89,
+      "width": 1440,
+      "height": 57.11
+    },
+    "local": {
+      "x": 0,
+      "y": 1076.89,
+      "width": 1440,
+      "height": 57.11
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/projects/",
+    "element": "header",
+    "live": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 88
+    },
+    "local": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 88
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/projects/",
+    "element": "nav",
+    "live": {
+      "x": 0,
+      "y": 77,
+      "width": 1440,
+      "height": 36.22
+    },
+    "local": {
+      "x": 0,
+      "y": 77,
+      "width": 1440,
+      "height": 36.22
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/projects/",
+    "element": "logo",
+    "live": {
+      "x": 654,
+      "y": 55,
+      "width": 132,
+      "height": 32.73
+    },
+    "local": {
+      "x": 654,
+      "y": 55,
+      "width": 132,
+      "height": 32.73
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/projects/",
+    "element": "tag filter",
+    "live": {
+      "x": 22,
+      "y": 5.5,
+      "width": 279.19,
+      "height": 25.22
+    },
+    "local": {
+      "x": 22,
+      "y": 5.5,
+      "width": 279.19,
+      "height": 25.22
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/projects/",
+    "element": "grid container",
+    "live": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 5255.25
+    },
+    "local": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 5255.25
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/projects/",
+    "element": "grid card",
+    "live": {
+      "x": 44,
+      "y": 110,
+      "width": 676,
+      "height": 364.38
+    },
+    "local": {
+      "x": 44,
+      "y": 110,
+      "width": 676,
+      "height": 364.38
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/projects/",
+    "element": "grid photo",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/projects/",
+    "element": "grid text",
+    "live": {
+      "x": 88,
+      "y": 145.19,
+      "width": 588,
+      "height": 294
+    },
+    "local": {
+      "x": 88,
+      "y": 145.19,
+      "width": 588,
+      "height": 294
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/projects/",
+    "element": "grid title",
+    "live": {
+      "x": 88,
+      "y": 167.19,
+      "width": 588,
+      "height": 14.22
+    },
+    "local": {
+      "x": 88,
+      "y": 167.19,
+      "width": 588,
+      "height": 14.22
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/projects/",
+    "element": "about text",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/projects/",
+    "element": "first paragraph",
+    "live": {
+      "x": 216.59,
+      "y": 382.47,
+      "width": 330.8,
+      "height": 32.66
+    },
+    "local": {
+      "x": 216.59,
+      "y": 382.47,
+      "width": 330.8,
+      "height": 32.66
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/projects/",
+    "element": "footer",
+    "live": {
+      "x": 0,
+      "y": 1076.89,
+      "width": 1440,
+      "height": 57.11
+    },
+    "local": {
+      "x": 0,
+      "y": 1076.89,
+      "width": 1440,
+      "height": 57.11
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/about/",
+    "element": "header",
+    "live": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 88
+    },
+    "local": {
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 88
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/about/",
+    "element": "nav",
+    "live": {
+      "x": 0,
+      "y": 77,
+      "width": 1440,
+      "height": 36.22
+    },
+    "local": {
+      "x": 0,
+      "y": 77,
+      "width": 1440,
+      "height": 36.22
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/about/",
+    "element": "logo",
+    "live": {
+      "x": 654,
+      "y": 55,
+      "width": 132,
+      "height": 32.73
+    },
+    "local": {
+      "x": 654,
+      "y": 55,
+      "width": 132,
+      "height": 32.73
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/about/",
+    "element": "tag filter",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/about/",
+    "element": "grid container",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/about/",
+    "element": "grid card",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/about/",
+    "element": "grid photo",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/about/",
+    "element": "grid text",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/about/",
+    "element": "grid title",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/about/",
+    "element": "about text",
+    "live": null,
+    "local": null,
+    "delta": null
+  },
+  {
+    "page": "/about/",
+    "element": "first paragraph",
+    "live": {
+      "x": 787.59,
+      "y": 559.64,
+      "width": 496.8,
+      "height": 99
+    },
+    "local": {
+      "x": 787.59,
+      "y": 559.64,
+      "width": 496.8,
+      "height": 99
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  {
+    "page": "/about/",
+    "element": "footer",
+    "live": {
+      "x": 0,
+      "y": 1076.89,
+      "width": 1440,
+      "height": 57.11
+    },
+    "local": {
+      "x": 0,
+      "y": 1076.89,
+      "width": 1440,
+      "height": 57.11
+    },
+    "delta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  }
+]
