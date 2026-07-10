@@ -1,6 +1,6 @@
-# Esencial Static Recovery
+# Esencial Static Site and SEO Build
 
-This repository contains a static recovery copy of the live `https://www.esencial.se` frontend.
+This repository contains the replacement static site for `https://www.esencial.se`. The currently live domain is not the deployment target during development; the domain moves only after the new build is approved.
 
 The recovery preserves the current public frontend only. No CMS, SEO, metadata cleanup, image optimization, backend work, or redesign has been started.
 
@@ -14,6 +14,18 @@ The recovery preserves the current public frontend only. No CMS, SEO, metadata c
 - Public upload assets under `/wp-content/uploads/`
 - Public WordPress include/plugin assets needed for rendering
 - External Roboto font CSS/font files needed for visual fidelity
+
+## Build and validate
+
+The content source is under `content/projects/`. The generated project pages under `public/projekt/` and `public/projects/{slug}/` must not be edited by hand.
+
+```bash
+npm run build
+```
+
+This generates project pages and `sitemap.xml`, then validates every sitemap URL for title, description, canonical URL, H1, crawl rules, language links, JSON-LD, and image alt attributes.
+
+See [the editor guide](docs/CMS_USER_GUIDE.md), [crawler policy](docs/AI_CRAWLER_POLICY.md), and [domain cutover checklist](docs/DOMAIN_CUTOVER.md).
 
 ## Install
 

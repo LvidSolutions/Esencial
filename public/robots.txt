@@ -1,3 +1,5 @@
+# Public pages and portfolio imagery may be crawled by search and answer engines.
+# Private previews and CMS administration must be protected by authentication, not listed here.
 User-agent: *
 Allow: /
 

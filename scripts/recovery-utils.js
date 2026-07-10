@@ -8,7 +8,7 @@ const PUBLIC_DIR = path.join(ROOT, "public");
 const AUDIT_DIR = path.join(ROOT, "audit");
 const SCREENSHOT_DIR = path.join(ROOT, "screenshots");
 const BASE_URL = "https://www.esencial.se";
-const LOCAL_ORIGIN = "http://127.0.0.1:3000";
+const LOCAL_ORIGIN = process.env.LOCAL_ORIGIN || "http://127.0.0.1:3000";
 const REQUIRED_PATHS = ["/", "/om-oss/", "/projects/", "/about/"];
 const VIEWPORTS = [
   { name: "desktop-1440x1200", width: 1440, height: 1200 },

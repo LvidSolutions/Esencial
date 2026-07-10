@@ -1,0 +1,444 @@
+[
+  {
+    "id": "domkyrkoforum",
+    "slug": "domkyrkoforum",
+    "title": "Domkyrkoforum",
+    "location": "Lund",
+    "description": "Platsen för det nya domkyrkoforum är centrala Lund, i direkt anslutning till domkyrkan.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2018/12/1_domkyrkoforum_photo_01.jpg",
+        "alt": "Domkyrkoforum arkitekturprojekt i Lund"
+      },
+      {
+        "src": "/wp-content/uploads/2018/12/1_domkyrkoforum_draw_01.png",
+        "alt": "Domkyrkoforum ritning i Lund"
+      }
+    ]
+  },
+  {
+    "id": "hamnbadet",
+    "slug": "hamnbadet",
+    "title": "Hamnbadet",
+    "location": "Göteborg",
+    "description": "Hamnbadet i Göteborg är kulmen på en lång period av urban transformation i ett centralt område, som gått från övergiven hamn till en blågrön stadspark.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2023/11/Blaparken_photo_01-1.jpg",
+        "alt": "Hamnbadet arkitekturprojekt i Göteborg"
+      },
+      {
+        "src": "/wp-content/uploads/2023/11/BLAPARKEN_DWG_01-1.png",
+        "alt": "Hamnbadet ritning i Göteborg"
+      }
+    ]
+  },
+  {
+    "id": "ekhagen",
+    "slug": "ekhagen",
+    "title": "Träbyn",
+    "location": "Ekhagen, Jönköping",
+    "description": "Träbyn är ett arkitekturprojekt av Esencial i Ekhagen, Jönköping.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2018/12/Ekhagen_photo_01-1.jpg",
+        "alt": "Träbyn arkitekturprojekt i Ekhagen, Jönköping"
+      },
+      {
+        "src": "/wp-content/uploads/2018/12/jonkoping_dwg_02.png",
+        "alt": "Träbyn ritning i Ekhagen, Jönköping"
+      }
+    ]
+  },
+  {
+    "id": "glasfabriken",
+    "slug": "glasfabriken",
+    "title": "Glasfabriken",
+    "location": "Virkesvägen, Stockholm",
+    "description": "Den befintliga industribyggnaden är byggd på 50-talet för att inrymma en glasfabrik.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2018/12/Pasen_PHOTO_01-1.jpg",
+        "alt": "Glasfabriken arkitekturprojekt i Virkesvägen, Stockholm"
+      },
+      {
+        "src": "/wp-content/uploads/2018/12/Pasen_DWG_01_b.png",
+        "alt": "Glasfabriken ritning i Virkesvägen, Stockholm"
+      }
+    ]
+  },
+  {
+    "id": "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+    "slug": "visioner-i-norr-rum-for-egenmakt-ett-mikrosystem-for-manga-mojliga-framtider",
+    "title": "Visioner i Norr – Rum för egenmakt",
+    "location": "Boden",
+    "description": "Rum för egenmakt. Ett mikrosystem för många möjliga framtider",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2023/11/Visionerinorr_PHOTO_03.jpg",
+        "alt": "Visioner i Norr – Rum för egenmakt arkitekturprojekt i Boden"
+      },
+      {
+        "src": "/wp-content/uploads/2023/11/Visionerinorr_DWG_01.png",
+        "alt": "Visioner i Norr – Rum för egenmakt ritning i Boden"
+      }
+    ]
+  },
+  {
+    "id": "kusttradgarden",
+    "slug": "kusttradgarden",
+    "title": "Kustträdgården",
+    "location": "Karantänen, Helsingborg",
+    "description": "På denna plats har medborgarnas önskemål styrt utformningen",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2023/11/KARANTANEN_PHOTO_03.jpg",
+        "alt": "Kustträdgården arkitekturprojekt i Karantänen, Helsingborg"
+      },
+      {
+        "src": "/wp-content/uploads/2023/11/KARANTANEN_DWG_01.png",
+        "alt": "Kustträdgården ritning i Karantänen, Helsingborg"
+      }
+    ]
+  },
+  {
+    "id": "norra_kanalomradets_utomhusscen",
+    "slug": "norra-kanalomradets-utomhusscen",
+    "title": "Norra Kanalområdets utomhusscen",
+    "location": "Karlsborg",
+    "description": "Den nya scenbyggnaden placeras centralt i Norra Kanalområdet och hjälper att organisera flöden i den framtida parken",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2023/11/Karlsborg_photo_01.jpg",
+        "alt": "Norra Kanalområdets utomhusscen arkitekturprojekt i Karlsborg"
+      },
+      {
+        "src": "/wp-content/uploads/2023/11/Karlsborg_DWG_01.png",
+        "alt": "Norra Kanalområdets utomhusscen ritning i Karlsborg"
+      }
+    ]
+  },
+  {
+    "id": "lss_bostader_och_kontorsbyggnad_kiruna",
+    "slug": "lss-bostader-och-kontorsbyggnad-kiruna",
+    "title": "LSS-bostäder och kontorsbyggnad Kiruna",
+    "location": "Kiruna",
+    "description": "Bostäder för gemenskap samt arbetsplatser vid nya Kiruna centrum",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2023/11/LSS_PHOTO_01.jpg",
+        "alt": "LSS-bostäder och kontorsbyggnad Kiruna arkitekturprojekt i Kiruna"
+      },
+      {
+        "src": "/wp-content/uploads/2023/11/LSS_DWG_01.png",
+        "alt": "LSS-bostäder och kontorsbyggnad Kiruna ritning i Kiruna"
+      }
+    ]
+  },
+  {
+    "id": "sara_hilden_museumtillbyggnad",
+    "slug": "sara-hilden-museumtillbyggnad",
+    "title": "Sara Hildén Museum",
+    "location": "Tammerfors, Finland",
+    "description": "While moving around the building a playful experience of spaces at eye level is orchestrated by the facetted building volume",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2023/11/Hilden_photo_02.jpg",
+        "alt": "Sara Hildén Museum arkitekturprojekt i Tammerfors, Finland"
+      },
+      {
+        "src": "/wp-content/uploads/2023/11/Hilden_DWG_01.png",
+        "alt": "Sara Hildén Museum ritning i Tammerfors, Finland"
+      }
+    ]
+  },
+  {
+    "id": "ny_verkstadsbyggnad_museene_i_akterhus",
+    "slug": "ny-verkstadsbyggnad-museene-i-akterhus",
+    "title": "Ny verkstadsbyggnad Museene i Akterhus",
+    "location": "Drøbak, Norge",
+    "description": "Verksamheten äger rum kring en samlande Verkstadsgata.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2023/11/Mia_photo_01.jpg",
+        "alt": "Ny verkstadsbyggnad Museene i Akterhus arkitekturprojekt i Drøbak, Norge"
+      },
+      {
+        "src": "/wp-content/uploads/2023/11/Mia_DWG_01.png",
+        "alt": "Ny verkstadsbyggnad Museene i Akterhus ritning i Drøbak, Norge"
+      }
+    ]
+  },
+  {
+    "id": "5_hus",
+    "slug": "5-hus",
+    "title": "5 Hus",
+    "location": "Duved",
+    "description": "5 Hus är ett arkitekturprojekt av Esencial i Duved.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2020/07/Duved_PHOTO_01.jpg",
+        "alt": "5 Hus arkitekturprojekt i Duved"
+      },
+      {
+        "src": "/wp-content/uploads/2020/07/Duved_DWG_01.png",
+        "alt": "5 Hus ritning i Duved"
+      }
+    ]
+  },
+  {
+    "id": "strandangen_kallbadhus",
+    "slug": "strandangen-kallbadhus",
+    "title": "Strandängen kallbadhus",
+    "location": "Jönköping",
+    "description": "Vätterns strand är bitvis brant och dramatisk och bjuder omväxlande på hisnande vyer och tät och frodig vegetation.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2020/07/Kallbadhus_PHOTO_01.jpg",
+        "alt": "Strandängen kallbadhus arkitekturprojekt i Jönköping"
+      },
+      {
+        "src": "/wp-content/uploads/2020/07/Kallbadhus_DWG_03.png",
+        "alt": "Strandängen kallbadhus ritning i Jönköping"
+      }
+    ]
+  },
+  {
+    "id": "arstafaltet",
+    "slug": "arstafaltet",
+    "title": "Årstafältet",
+    "location": "Stockholm",
+    "description": "Årstafältet är ett arkitekturprojekt av Esencial i Stockholm.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2018/12/Arstafaltet_PHOTO_01.jpg",
+        "alt": "Årstafältet arkitekturprojekt i Stockholm"
+      },
+      {
+        "src": "/wp-content/uploads/2018/12/arstafaltet_dwg_00.png",
+        "alt": "Årstafältet ritning i Stockholm"
+      }
+    ]
+  },
+  {
+    "id": "edificio_de_ciencias_biomedicas",
+    "slug": "edificio-de-ciencias-biomedicas",
+    "title": "Edificio de Ciencias Biomédicas",
+    "location": "Madrid",
+    "description": "Edificio de Ciencias Biomédicas är ett arkitekturprojekt av Esencial i Madrid.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2020/07/Getafe_PHOTO_01.jpg",
+        "alt": "Edificio de Ciencias Biomédicas arkitekturprojekt i Madrid"
+      },
+      {
+        "src": "/wp-content/uploads/2020/07/Getafe_DWG_02.png",
+        "alt": "Edificio de Ciencias Biomédicas ritning i Madrid"
+      }
+    ]
+  },
+  {
+    "id": "strangnas_domkyrka_med_domkyrkoberget",
+    "slug": "strangnas-domkyrka-med-domkyrkoberget",
+    "title": "Strängnäs domkyrka med domkyrkoberget",
+    "location": "Strängnäs",
+    "description": "Domkyrkoberget är idag en relativt väl integrerad del av staden med en genomströmning av människor i största del norr om kyrkobyggnaden, samtidigt som det upplevs som ett område med särpräglad karaktär.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2020/07/Domkyrkoberget_PHOTO_01.jpg",
+        "alt": "Strängnäs domkyrka med domkyrkoberget arkitekturprojekt i Strängnäs"
+      },
+      {
+        "src": "/wp-content/uploads/2020/07/Domkyrkoberget_DWG_01.jpg",
+        "alt": "Strängnäs domkyrka med domkyrkoberget ritning i Strängnäs"
+      }
+    ]
+  },
+  {
+    "id": "sodertalje",
+    "slug": "sodertalje",
+    "title": "Södertälje",
+    "location": "Södertälje",
+    "description": "Södertälje Centrums stationstorg har idag en speciell rumslighet som är resultatet av hundrasextio års utveckling kopplad till järnvägen.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2018/12/sodertalje_photo_01.jpg",
+        "alt": "Södertälje arkitekturprojekt i Södertälje"
+      },
+      {
+        "src": "/wp-content/uploads/2018/12/sodertalje_dwg_06.png",
+        "alt": "Södertälje ritning i Södertälje"
+      }
+    ]
+  },
+  {
+    "id": "hubba",
+    "slug": "hubba",
+    "title": "Hubba",
+    "location": "Kvillepiren, Göteborg",
+    "description": "Hubba är ett arkitekturprojekt av Esencial i Kvillepiren, Göteborg.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2018/12/hubba_photo_01.jpg",
+        "alt": "Hubba arkitekturprojekt i Kvillepiren, Göteborg"
+      },
+      {
+        "src": "/wp-content/uploads/2018/12/hubba_dwg_01.png",
+        "alt": "Hubba ritning i Kvillepiren, Göteborg"
+      }
+    ]
+  },
+  {
+    "id": "kemeri_national_park_observation_tower",
+    "slug": "kemeri-national-park-observation-tower",
+    "title": "Kemeri National Park Observation tower",
+    "location": "Kemeri",
+    "description": "There are two possible ways of exploring the Kemeri National park by foot today.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2020/07/Kemeri_PHOTO_01.jpg",
+        "alt": "Kemeri National Park Observation tower arkitekturprojekt i Kemeri"
+      },
+      {
+        "src": "/wp-content/uploads/2020/07/Kemeri_DWG_01.png",
+        "alt": "Kemeri National Park Observation tower ritning i Kemeri"
+      }
+    ]
+  },
+  {
+    "id": "plaza_del_almacen",
+    "slug": "plaza-del-almacen",
+    "title": "Plaza del Almacén",
+    "location": "Lanzarote",
+    "description": "La plaza del almacén – Plaza",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2020/07/Lanzarote_PHOTO_01.jpg",
+        "alt": "Plaza del Almacén arkitekturprojekt i Lanzarote"
+      },
+      {
+        "src": "/wp-content/uploads/2020/07/Lanzarote_DWG_01.png",
+        "alt": "Plaza del Almacén ritning i Lanzarote"
+      }
+    ]
+  },
+  {
+    "id": "essinge_dwellings",
+    "slug": "essinge-dwellings",
+    "title": "Essinge Dwellings",
+    "location": "Lilla Essingen, Stockholm",
+    "description": "Byggnaden är vackert belägen vid vattnet på Lilla Essingen.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2018/12/5_essingedwellings_photo_01a.jpg",
+        "alt": "Essinge Dwellings arkitekturprojekt i Lilla Essingen, Stockholm"
+      },
+      {
+        "src": "/wp-content/uploads/2018/12/5_essingedwellings_draw_01.png",
+        "alt": "Essinge Dwellings ritning i Lilla Essingen, Stockholm"
+      }
+    ]
+  },
+  {
+    "id": "spa_in_hoor",
+    "slug": "spa-in-hoor",
+    "title": "Spa in Höör",
+    "location": "Höör",
+    "description": "Den nya relaxavdelningen ligger i en slänt mellan ett befintligt gårdsrum och ett naturområde med hundraåriga ekar.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2018/12/3_spahoor_photo_03.jpg",
+        "alt": "Spa in Höör arkitekturprojekt i Höör"
+      },
+      {
+        "src": "/wp-content/uploads/2018/12/3_spahoor_draw_01.png",
+        "alt": "Spa in Höör ritning i Höör"
+      }
+    ]
+  },
+  {
+    "id": "highrise_in_wood",
+    "slug": "highrise-in-wood",
+    "title": "Highrise in Wood",
+    "location": "",
+    "description": "Förslaget är en bostadsbyggnad för 100 lägenheter, i huvudsak byggt med massivt trä, med en stark karaktär och som utstrålar hållbarhet och innovation.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2018/12/4_highriseinwood_photo_01.jpg",
+        "alt": "Highrise in Wood arkitekturprojekt"
+      },
+      {
+        "src": "/wp-content/uploads/2018/12/4_highriseinwood_draw_01.png",
+        "alt": "Highrise in Wood ritning"
+      }
+    ]
+  },
+  {
+    "id": "the_forest_of_venice",
+    "slug": "the-forest-of-venice",
+    "title": "The Forest of Venice",
+    "location": "",
+    "description": "The Forest of Venice är ett arkitekturprojekt av Esencial.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2018/12/1_theforestofvenice_photo_01.jpg",
+        "alt": "The Forest of Venice arkitekturprojekt"
+      },
+      {
+        "src": "/wp-content/uploads/2018/12/2_theforestofvenice_draw_01.png",
+        "alt": "The Forest of Venice ritning"
+      }
+    ]
+  },
+  {
+    "id": "kulturhuset_i_skelleftea",
+    "slug": "kulturhuset-i-skelleftea",
+    "title": "Kulturhuset i Skellefteå",
+    "location": "",
+    "description": "Vi föreslår ett hus med generositet i de gemensamma ytorna, ett hus som bjuder in till spontana möten och som lämnar plats för medborgarnas initiativ att ta form.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2018/12/7_kulturhuset_photo_01.jpg",
+        "alt": "Kulturhuset i Skellefteå arkitekturprojekt"
+      },
+      {
+        "src": "/wp-content/uploads/2018/12/7_kulturhuset_draw_01.png",
+        "alt": "Kulturhuset i Skellefteå ritning"
+      }
+    ]
+  },
+  {
+    "id": "maritim_museum",
+    "slug": "maritim-museum",
+    "title": "Maritim Museum",
+    "location": "",
+    "description": "Det nya Maritim museum är en byggnad som utgår från en byggnadstyp: Varvsbyggnaden, en byggnadstyp som är funktionellt och historiskt förknippad med museets innehål.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2018/12/6_maritimmuseum_photo_01.jpg",
+        "alt": "Maritim Museum arkitekturprojekt"
+      },
+      {
+        "src": "/wp-content/uploads/2018/12/6_maritimmuseum_draw_01.png",
+        "alt": "Maritim Museum ritning"
+      }
+    ]
+  },
+  {
+    "id": "massive_wood_house",
+    "slug": "massive-wood-house",
+    "title": "Massive Wood House",
+    "location": "",
+    "description": "Målsättningen är att skapa ett typhus i massivträ som såväl ensamt som i grupp kan bli en integrerad del av natur- och kulturlandskapet.",
+    "images": [
+      {
+        "src": "/wp-content/uploads/2018/12/8_massivewoodhouse_photo_01.jpg",
+        "alt": "Massive Wood House arkitekturprojekt"
+      },
+      {
+        "src": "/wp-content/uploads/2018/12/8_massivewoodhouse_draw_01.png",
+        "alt": "Massive Wood House ritning"
+      }
+    ]
+  }
+]

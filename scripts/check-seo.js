@@ -94,13 +94,16 @@ function checkRobotsAndSitemap() {
       fail(errors, `sitemap is missing ${expectedUrl(route)}`);
     }
   }
-  return errors;
+  const routes = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/gi)].map(match => new URL(match[1]).pathname);
+  if (!routes.length) fail(errors, "sitemap does not contain any URLs");
+  return { errors, routes };
 }
 
 function main() {
-  const results = REQUIRED_PATHS.map(checkPage);
-  const sharedErrors = checkRobotsAndSitemap();
-  const errors = [...sharedErrors, ...results.flatMap(result => result.errors.map(error => `${result.route}: ${error}`))];
+  const sitemap = checkRobotsAndSitemap();
+  const routes = [...new Set([...REQUIRED_PATHS, ...sitemap.routes])];
+  const results = routes.map(checkPage);
+  const errors = [...sitemap.errors, ...results.flatMap(result => result.errors.map(error => `${result.route}: ${error}`))];
   const warnings = results.flatMap(result => result.warnings.map(warning => `${result.route}: ${warning}`));
 
   for (const result of results) {

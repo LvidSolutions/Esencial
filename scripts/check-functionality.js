@@ -15,7 +15,7 @@ const {
 async function main() {
   const state = readJson(path.join(AUDIT_DIR, "crawl-state.json"), { pages: [] });
   const paths = [...new Set([...REQUIRED_PATHS, ...state.pages.map(page => page.path)])];
-  const server = await startStaticServer(3000);
+  const server = await startStaticServer(Number(process.env.PORT || 3000));
   const browser = await chromium.launch(browserLaunchOptions());
   const results = [];
 
