@@ -55,6 +55,10 @@ function projectUrl(language, project) {
   return `/${LANGUAGE_CONFIG[language].directory}/${project.slug}/`;
 }
 
+function absoluteUrl(value) {
+  return /^https?:\/\//i.test(value) ? value : `${BASE_URL}${value}`;
+}
+
 function languageLinks(project, language, translations) {
   const current = projectUrl(language, project);
   const otherLanguage = language === "sv" ? "en" : "sv";
@@ -78,7 +82,7 @@ function projectSchema(project, language, translations) {
     name: project.title,
     description: project.description,
     url: currentUrl,
-    image: project.images.map(image => `${BASE_URL}${image.src}`),
+    image: project.images.map(image => absoluteUrl(image.src)),
     inLanguage: language,
     creator: { "@type": "Organization", name: SITE_NAME, url: BASE_URL },
     ...(project.location ? { locationCreated: { "@type": "Place", name: project.location } } : {}),
@@ -89,11 +93,11 @@ function projectSchema(project, language, translations) {
 
 function pageHtml(project, language, translations) {
   const config = LANGUAGE_CONFIG[language];
-  const title = `${project.title} | ${SITE_NAME}`;
-  const description = project.description;
+  const title = project.seoTitle || `${project.title} | ${SITE_NAME}`;
+  const description = project.seoDescription || project.description;
   const imageMarkup = project.images.map((image, index) => `
         <figure class="project-gallery__item${index === 0 ? " project-gallery__item--primary" : ""}">
-          <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt)}" width="${index === 0 ? "1600" : "1200"}" height="${index === 0 ? "1000" : "800"}" loading="${index === 0 ? "eager" : "lazy"}"${index === 0 ? " fetchpriority=\"high\"" : ""} decoding="async">
+          <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt)}" width="${escapeHtml(String(image.width || (index === 0 ? 1600 : 1200)))}" height="${escapeHtml(String(image.height || (index === 0 ? 1000 : 800)))}" loading="${index === 0 ? "eager" : "lazy"}"${index === 0 ? " fetchpriority=\"high\"" : ""} decoding="async">
         </figure>`).join("");
   const facts = project.location ? `<dl class="project-facts"><div><dt>${language === "sv" ? "Plats" : "Location"}</dt><dd>${escapeHtml(project.location)}</dd></div></dl>` : "";
   return `<!doctype html>
@@ -107,7 +111,7 @@ function pageHtml(project, language, translations) {
   <meta property="og:title" content="${escapeHtml(title)}">
   <meta property="og:description" content="${escapeHtml(description)}">
   <meta property="og:url" content="${BASE_URL}${projectUrl(language, project)}">
-  <meta property="og:image" content="${BASE_URL}${escapeHtml(project.images[0].src)}">
+  <meta property="og:image" content="${escapeHtml(absoluteUrl(project.images[0].src))}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${escapeHtml(title)}">
   <meta name="twitter:description" content="${escapeHtml(description)}">
@@ -162,12 +166,14 @@ function write(file, content) {
 }
 
 function contentFile(language) {
+  if (process.env.CONTENT_SOURCE === "sanity") return path.join(ROOT, "content", "generated", "sanity", `${language}.json`);
   return path.join(ROOT, "content", "projects", `${language}.json`);
 }
 
 function loadProjects(language, config) {
   const target = contentFile(language);
   if (fs.existsSync(target)) return JSON.parse(readFile(target));
+  if (process.env.CONTENT_SOURCE === "sanity") throw new Error(`Missing generated Sanity content: ${target}. Run npm run fetch-sanity-content first.`);
   const projects = extractCards(readFile(path.join(PUBLIC_DIR, config.source)), language);
   write(target, `${JSON.stringify(projects, null, 2)}\n`);
   return projects;

@@ -15,8 +15,11 @@
     "check-functionality": "node scripts/check-functionality.js",
     "check-seo": "node scripts/check-seo.js",
     "check-links": "node scripts/check-internal-links.js",
+    "check-content": "node scripts/check-cms-content.js",
+    "fetch-sanity-content": "node scripts/fetch-sanity-content.js",
     "build-content": "node scripts/build-project-pages.js",
     "build": "node scripts/build-project-pages.js && node scripts/check-seo.js && node scripts/check-internal-links.js",
+    "build:cms": "node scripts/build-cms.js",
     "recover": "node scripts/crawl-site.js && node scripts/download-assets.js && node scripts/rewrite-paths.js"
   },
   "devDependencies": {
