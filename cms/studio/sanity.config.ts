@@ -1,5 +1,7 @@
 import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
+import {dashboardTool, projectInfoWidget, projectUsersWidget} from '@sanity/dashboard'
+import {documentListWidget} from 'sanity-plugin-dashboard-widget-document-list'
 import {schemaTypes} from './schemaTypes'
 import {deskStructure} from './deskStructure'
 
@@ -10,7 +12,29 @@ export default defineConfig({
   projectId: 'g6xm8j7l',
   dataset: 'production',
 
-  plugins: [structureTool({structure: deskStructure})],
+  plugins: [
+    dashboardTool({
+      widgets: [
+        documentListWidget({
+          title: 'Att granska',
+          query: '*[_type == "project" && status == "review"] | order(_updatedAt desc)[0...6]',
+          showCreateButton: false,
+          layout: {width: 'large'},
+        }),
+        documentListWidget({
+          title: 'Senast ändrat',
+          types: ['project'],
+          order: '_updatedAt desc',
+          limit: 6,
+          createButtonText: 'Skapa projekt',
+          layout: {width: 'large'},
+        }),
+        projectInfoWidget({layout: {width: 'small'}}),
+        projectUsersWidget({layout: {width: 'small'}}),
+      ],
+    }),
+    structureTool({structure: deskStructure}),
+  ],
 
   schema: {
     types: schemaTypes,
