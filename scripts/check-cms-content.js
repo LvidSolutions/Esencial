@@ -11,6 +11,10 @@ for (const language of ["sv", "en"]) {
   else projectsByLanguage[language] = JSON.parse(fs.readFileSync(file, "utf8"));
 }
 for (const [language, projects] of Object.entries(projectsByLanguage)) {
+  if (!Array.isArray(projects) || projects.length === 0) {
+    problems.push(`${language}: no published projects found`);
+    continue;
+  }
   const seenSlugs = new Set();
   for (const project of projects) {
     const label = `${language}/${project.slug || project.title || "unknown"}`;
