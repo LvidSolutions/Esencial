@@ -9,7 +9,7 @@ export const projectType = defineType({
   groups: [
     {name: 'basics', title: '1. Grunduppgifter'},
     {name: 'content', title: '2. Innehall'},
-    {name: 'images', title: '3. Bilder'},
+    {name: 'images', title: '3. Bilder och planritningar'},
     {name: 'seo', title: '4. Granskning och sok'},
   ],
   fields: [
@@ -23,7 +23,10 @@ export const projectType = defineType({
     defineField({name: 'status', title: 'Arbetslage', type: 'string', group: 'basics', description: 'Utkast syns inte pa webbplatsen. Valj Att granska nar innehallet ar klart.', options: {list: [{title: 'Utkast', value: 'draft'}, {title: 'Att granska', value: 'review'}, {title: 'Publicerat', value: 'published'}, {title: 'Arkiverat', value: 'archived'}]}, initialValue: 'draft'}),
     defineField({name: 'summary', title: 'Kort projektintroduktion', type: 'text', group: 'content', rows: 5, validation: (Rule) => Rule.required().min(40).max(700)}),
     defineField({name: 'body', title: 'Langre projektberattelse', type: 'array', group: 'content', of: [{type: 'block'}]}),
-    defineField({name: 'images', title: 'Publicerade bilder', type: 'array', group: 'images', description: 'Lagg bara in bilder med godkanda rattigheter. Varje bild behover en beskrivning.', validation: (Rule) => Rule.custom((value, context) => !isPublished(context) || value?.length || context.parent?.legacyImages?.length ? true : 'Ett publicerat projekt behover minst en bild.'), of: [{type: 'image', options: {hotspot: true}, fields: [defineField({name: 'alt', title: 'Bildbeskrivning', type: 'string', validation: (Rule) => Rule.required()}), defineField({name: 'credit', title: 'Fotograf eller kalla', type: 'string'})]}]}),
+    defineField({name: 'heroImage', title: 'Huvudbild', type: 'projectHeroImage', group: 'images', description: 'Visas överst på projektsidan och används för projektkort där en huvudbild behövs. Lägg inte planritningar här.', validation: (Rule) => Rule.custom((value, context) => !isPublished(context) || value || context.parent?.images?.length || context.parent?.legacyImages?.length ? true : 'Ett publicerat projekt behöver en huvudbild. Migrerade äldre projekt får tillfälligt använda tidigare bilder.')}),
+    defineField({name: 'galleryImages', title: 'Projektgalleri', type: 'array', group: 'images', description: 'Vanliga bilder på projektsidan. Dra och släpp för ordning: första visas först, sista sist. Lägg aldrig planritningar här.', of: [{type: 'projectGalleryImage'}]}),
+    defineField({name: 'floorPlans', title: 'Planritningar', type: 'array', group: 'images', description: 'Endast planritningar. Dessa visas separat från projektgalleriet och kan inte blandas med vanliga bilder.', of: [{type: 'floorPlan'}]}),
+    defineField({name: 'images', title: 'Tidigare publicerade bilder', type: 'array', group: 'images', description: 'Äldre bildfält för redan migrerat innehåll. Använd Huvudbild och Projektgalleri för nya eller uppdaterade projekt.', hidden: ({document}) => Boolean(document?.heroImage || document?.galleryImages?.length), validation: (Rule) => Rule.custom((value, context) => !isPublished(context) || value?.length || context.parent?.heroImage || context.parent?.legacyImages?.length ? true : 'Ett publicerat projekt behöver minst en bild.'), of: [{type: 'image', options: {hotspot: true}, fields: [defineField({name: 'alt', title: 'Bildbeskrivning', type: 'string', validation: (Rule) => Rule.required()}), defineField({name: 'credit', title: 'Fotograf eller källa', type: 'string'})]}]}),
     defineField({name: 'imageRightsConfirmed', title: 'Bildrattigheter bekraftade', type: 'boolean', group: 'images', description: 'Bekrafta att alla bilder far publiceras.', validation: (Rule) => Rule.custom((value, context) => !isPublished(context) || value === true ? true : 'Bildrattigheter maste bekraftas fore publicering.')}),
     defineField({name: 'legacyImages', title: 'Bilder fran tidigare webbplats', type: 'array', group: 'images', description: 'Referenslista tills varje bild ar migrerad till Sanity.', readOnly: true, of: [{type: 'object', fields: [defineField({name: 'url', title: 'Befintlig bildadress', type: 'url'}), defineField({name: 'alt', title: 'Befintlig bildbeskrivning', type: 'string'})]}]}),
     defineField({name: 'seoTitle', title: 'Titel i Google', type: 'string', group: 'seo', validation: (Rule) => Rule.max(60).custom((value, context) => !isPublished(context) || value ? true : 'Ett publicerat projekt behover en titel i Google.')}),
@@ -38,5 +41,5 @@ export const projectType = defineType({
       defineField({name: 'imagesChecked', title: 'Bildbeskrivningar, credits och rattigheter ar kontrollerade', type: 'boolean'}),
     ], validation: (Rule) => Rule.custom((value, context) => !isPublished(context) || (value?.factsConfirmed && value?.languageChecked && value?.seoChecked && value?.imagesChecked) ? true : 'Slutfor publiceringschecklistan fore publicering.')}),
   ],
-  preview: {select: {title: 'title', location: 'location', language: 'language', status: 'status', media: 'images.0'}, prepare: ({title, location, language, status, media}) => ({title, subtitle: [language?.toUpperCase(), location, status].filter(Boolean).join(' - '), media})},
+  preview: {select: {title: 'title', location: 'location', language: 'language', status: 'status', hero: 'heroImage', media: 'images.0'}, prepare: ({title, location, language, status, hero, media}) => ({title, subtitle: [language?.toUpperCase(), location, status].filter(Boolean).join(' - '), media: hero || media})},
 })

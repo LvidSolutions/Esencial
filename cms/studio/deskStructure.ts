@@ -12,6 +12,10 @@ export const deskStructure: StructureResolver = (S) =>
         .child(S.documentList().title('Utkast').filter('_type == "project" && status == "draft"')),
       S.divider(),
       S.listItem()
+        .title('Startsida')
+        .child(S.document().schemaType('homePage').documentId('homePage')),
+      S.divider(),
+      S.listItem()
         .title('Svenska projekt')
         .child(S.documentList().title('Svenska projekt').filter('_type == "project" && language == "sv"')),
       S.listItem()
