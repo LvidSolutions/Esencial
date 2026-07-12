@@ -163,7 +163,17 @@ function updateOverview(html, language, projects) {
     const hashLink = new RegExp(`href="#${project.id}"`, "g");
     output = output.replace(hashLink, `href="${projectUrl(language, project)}"`);
   }
-  return output;
+  const selectedIds = loadHomeOrder();
+  if (!selectedIds.length) return output;
+  const cardPattern = /<div class=" css_grid_card_container [\s\S]*?(?=<div class=" css_grid_card_container |<\/main>)/g;
+  const cards = [...output.matchAll(cardPattern)].map((match) => match[0]);
+  const byId = new Map(cards.map((card) => [(card.match(/id="project-([^\"]+)-title"/i) || [])[1], card]));
+  const selected = selectedIds.map((id) => byId.get(id)).filter(Boolean);
+  if (!selected.length) return output;
+  const rest = cards.filter((card) => !selected.includes(card));
+  const ordered = [...selected, ...rest];
+  let index = 0;
+  return output.replace(cardPattern, () => ordered[index++]);
 }
 
 function write(file, content) {
@@ -174,6 +184,14 @@ function write(file, content) {
 function contentFile(language) {
   if (process.env.CONTENT_SOURCE === "sanity") return path.join(ROOT, "content", "generated", "sanity", `${language}.json`);
   return path.join(ROOT, "content", "projects", `${language}.json`);
+}
+
+function loadHomeOrder() {
+  if (process.env.CONTENT_SOURCE !== "sanity") return [];
+  const target = path.join(ROOT, "content", "generated", "sanity", "home.json");
+  if (!fs.existsSync(target)) return [];
+  const home = JSON.parse(readFile(target));
+  return (home.featuredProjects || []).map((entry) => entry.id).filter(Boolean);
 }
 
 function loadProjects(language, config) {
