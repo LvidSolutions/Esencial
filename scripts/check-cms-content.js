@@ -25,6 +25,9 @@ for (const [language, projects] of Object.entries(projectsByLanguage)) {
     if (project.seoDescription && project.seoDescription.length > 160) problems.push(`${label}: SEO description exceeds 160 characters`);
     if (!Array.isArray(project.images) || !project.images.length) problems.push(`${label}: missing image`);
     for (const image of project.images || []) if (!image.src || !image.alt) problems.push(`${label}: image needs both src and alt`);
+    if (project.heroImage && (!project.heroImage.alt || !project.heroImage.credit || !project.heroImage.rightsConfirmed)) problems.push(`${label}: main image needs alt text, credit and confirmed rights`);
+    for (const [index, image] of (project.galleryImages || []).entries()) if (!image.hideFromWebsite && (!image.src || !image.alt || !image.credit || !image.rightsConfirmed)) problems.push(`${label}: gallery image ${index + 1} needs alt text, credit and confirmed rights`);
+    for (const [index, plan] of (project.floorPlans || []).entries()) if (!plan.name || !plan.image?.src || !plan.image.alt) problems.push(`${label}: floor plan ${index + 1} needs a name, image and alt text`);
   }
 }
 const svIds = new Set((projectsByLanguage.sv || []).map((project) => project.id));

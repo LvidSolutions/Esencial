@@ -99,6 +99,12 @@ function pageHtml(project, language, translations) {
         <figure class="project-gallery__item${index === 0 ? " project-gallery__item--primary" : ""}">
           <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt)}" width="${escapeHtml(String(image.width || (index === 0 ? 1600 : 1200)))}" height="${escapeHtml(String(image.height || (index === 0 ? 1000 : 800)))}" loading="${index === 0 ? "eager" : "lazy"}"${index === 0 ? " fetchpriority=\"high\"" : ""} decoding="async">
         </figure>`).join("");
+  const floorPlanMarkup = (project.floorPlans || []).filter((plan) => plan.image?.src).map((plan) => `
+        <figure class="project-gallery__item project-floor-plan">
+          <img src="${escapeHtml(plan.image.src)}" alt="${escapeHtml(plan.image.alt || plan.name || "")}" width="${escapeHtml(String(plan.image.width || 1200))}" height="${escapeHtml(String(plan.image.height || 800))}" loading="lazy" decoding="async">
+          <figcaption>${escapeHtml([plan.name, plan.area, plan.description].filter(Boolean).join(" — "))}</figcaption>
+        </figure>`).join("");
+  const floorPlansSection = floorPlanMarkup ? `<section class="project-floor-plans" aria-labelledby="floor-plans-title"><h2 id="floor-plans-title">${language === "sv" ? "Planritningar" : "Floor plans"}</h2><div class="project-gallery">${floorPlanMarkup}</div></section>` : "";
   const facts = project.location ? `<dl class="project-facts"><div><dt>${language === "sv" ? "Plats" : "Location"}</dt><dd>${escapeHtml(project.location)}</dd></div></dl>` : "";
   return `<!doctype html>
 <html lang="${config.lang}">
@@ -143,7 +149,7 @@ ${projectSchema(project, language, translations)}
       <p class="project-intro__description">${escapeHtml(description)}</p>
     </section>
     <section class="project-gallery" aria-label="${language === "sv" ? "Bilder från" : "Images from"} ${escapeHtml(project.title)}">${imageMarkup}
-    </section>
+    </section>${floorPlansSection}
     <nav class="project-return" aria-label="${language === "sv" ? "Projektlänkar" : "Project links"}"><a href="${config.overview}">${language === "sv" ? "Se alla projekt" : "View all projects"}</a></nav>
   </main>
   <footer class="project-footer"><a href="${config.about}">${SITE_NAME}</a></footer>
