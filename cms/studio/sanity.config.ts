@@ -4,6 +4,8 @@ import {dashboardTool, projectInfoWidget, projectUsersWidget} from '@sanity/dash
 import {documentListWidget} from 'sanity-plugin-dashboard-widget-document-list'
 import {schemaTypes} from './schemaTypes'
 import {deskStructure} from './deskStructure'
+import {ContentOverviewTool, GrowthTool, PagePreviewTool} from './components/studioTools'
+import './components/studioTools.css'
 
 export default defineConfig({
   name: 'default',
@@ -22,6 +24,14 @@ export default defineConfig({
       ],
     }),
     structureTool({structure: deskStructure}),
+    {
+      name: 'esencial-editor-tools',
+      tools: [
+        {name: 'arbetsoversikt', title: 'Arbetsöversikt', component: ContentOverviewTool},
+        {name: 'sidforhandsvisning', title: 'Sidförhandsvisning', component: PagePreviewTool},
+        {name: 'webbplatsens-utveckling', title: 'Webbplatsens utveckling', component: GrowthTool},
+      ],
+    },
   ],
   schema: {
     types: schemaTypes,

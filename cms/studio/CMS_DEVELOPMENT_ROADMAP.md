@@ -1,6 +1,6 @@
 # Esencial CMS Development Roadmap
 
-**Status:** Planning only. No work in this roadmap starts until the project owner selects the decision points at the end.
+**Status (2026-07-12):** Bildmodell, Startsida-dokument, arbetsöversikt, lokal sidförhandsvisning och en säker analysadapter är implementerade lokalt. Inga Sanity-data, API-nycklar, hosting-inställningar, DNS eller nuvarande live-domän har ändrats.
 
 ## 1. Destination
 
@@ -40,6 +40,14 @@ Not yet connected:
 - Sanity images are not yet uploaded to the Sanity asset library
 - No protected frontend preview, visual editing, or automatic rebuild after CMS publication
 - No production hosting/DNS cutover for the replacement website
+
+Implemented in the current local change set:
+
+- Separate `heroImage`, `galleryImages`, and `floorPlans` fields with required metadata for new media
+- Drag-and-drop ordering through Sanity arrays, and a standalone `Startsida` document for featured-project order
+- `Arbetsöversikt`, `Sidförhandsvisning`, and `Webbplatsens utveckling` Studio tools
+- Build-time checks for empty project exports and incomplete new media
+- A Vercel-compatible, origin-protected analytics adapter plus setup documentation
 
 ## 3. Product Decisions Before Development
 
@@ -270,11 +278,10 @@ Some phases can overlap, but the order of dependencies should remain: content so
 | CMS becomes overcomplicated | Add features only when they remove recurring editorial work |
 | Build failure publishes a broken site | Quality gate, immutable deploys, and rollback target |
 
-## 14. Decisions Required to Start
+## 14. External Decisions Required for the Next Release
 
-1. Approve the recommended static-build-from-Sanity integration model, or choose server-rendered frontend.
-2. Choose hosting: Cloudflare Pages, Netlify, Vercel, or another provider.
-3. Confirm whether preview should be the recommended full Presentation Tool experience or a simpler preview-link-only first release.
-4. Name the Editor, Reviewer, Publisher, and Administrator roles.
-5. Confirm that image migration may begin only for assets with known publication rights.
-6. Confirm the first three priority projects for a full CMS-to-website pilot.
+1. Choose hosting: Cloudflare Pages, Netlify, Vercel, or another provider. The included analytics adapter targets Vercel and can be translated if another host is selected.
+2. Confirm which image assets have known publication rights before migrating them into the new image fields.
+3. Configure Plausible (or another approved privacy-first provider) and Google Search Console only after hosting and ownership are ready.
+4. Confirm whether to add the later protected full Presentation Tool preview. The current `Sidförhandsvisning` works locally in Studio and does not expose draft content publicly.
+5. Verify the GitHub account e-mail, then push the already validated safety commit `6dd2ac1` before publishing later local commits.

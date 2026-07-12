@@ -1,0 +1,13 @@
+.esencial-sidepanel {align-self:start; position:sticky; top:1rem}
+.esencial-canvas {min-height:640px; background:#fbfbfa}
+.esencial-thumb {display:block; width:100%; aspect-ratio:4/3; object-fit:cover; background:#e8e8e5}
+.esencial-thumb--empty {display:grid; place-items:center; color:#777}
+.esencial-preview-image {display:block; width:100%; padding:0; overflow:hidden; border:1px solid #d1d1ca; border-radius:8px; background:#fff; color:#1f1f1d; text-align:left; cursor:pointer}
+.esencial-preview-image:hover,.esencial-preview-image:focus-visible {border-color:#2276fc; box-shadow:0 0 0 2px #b9d4ff; outline:0}
+.esencial-preview-image span,.esencial-preview-image small {display:block; padding:7px 9px 0; font-size:12px; line-height:1.3}
+.esencial-preview-image small {padding:4px 9px 8px; color:#a63c20}
+.esencial-project-card .esencial-preview-image {border:0; border-radius:0}
+.esencial-issue {display:inline-flex; align-items:center; gap:4px; color:#a63c20}
+.esencial-issue svg {width:14px; height:14px}
+.esencial-actions {flex-wrap:wrap}
+@media (max-width: 700px) {.esencial-sidepanel {position:static}.esencial-canvas {min-height:0}}
