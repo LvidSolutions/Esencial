@@ -25,6 +25,7 @@ jobs:
           version: 9
       - run: pnpm install --frozen-lockfile
       - name: Build published CMS content
+        id: cms_build
         run: pnpm run build:cms
         env:
           SANITY_API_TOKEN: ${{ secrets.SANITY_API_TOKEN }}
@@ -37,3 +38,18 @@ jobs:
           git add -- public
           git diff --cached --quiet || git commit -m "Build website from published Sanity content"
           git push
+      - name: Write editor-friendly result
+        if: always()
+        run: |
+          {
+            echo "## CMS staging build"
+            if [ "${{ steps.cms_build.outcome }}" = "success" ]; then
+              echo "✅ Published CMS content passed validation and the generated site was pushed to \`main\`. Vercel staging will deploy that commit."
+              echo ""
+              echo "If staging does not change, open the Vercel deployment for this commit."
+            else
+              echo "❌ No website files were pushed. The prior staging deployment remains in place."
+              echo ""
+              echo "Open **Build published CMS content** above: its first validation error tells you which project, translation, SEO field or image needs attention."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

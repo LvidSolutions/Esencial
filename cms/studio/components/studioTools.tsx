@@ -1,16 +1,16 @@
-import {useEffect, useMemo, useState} from 'react'
-import {Box, Button, Card, Container, Flex, Grid, Heading, Inline, Select, Stack, Text} from '@sanity/ui'
-import {useClient} from 'sanity'
+import {useEffect, useMemo, useRef, useState} from 'react'
+import {Box, Button, Card, Checkbox, Container, Flex, Grid, Heading, Inline, Label, Select, Stack, Text, TextArea, TextInput} from '@sanity/ui'
+import {useClient, useDocumentOperation} from 'sanity'
 
-type ImageData = {url?: string; alt?: string; credit?: string; rightsConfirmed?: boolean; hideFromWebsite?: boolean; width?: number; height?: number}
-type Project = {_id: string; title?: string; location?: string; language?: string; status?: string; seoTitle?: string; seoDescription?: string; heroImage?: ImageData; galleryImages?: ImageData[]; floorPlans?: Array<{name?: string; area?: string; image?: ImageData}>}
-type HomeEntry = {displayStyle?: string; project?: Project}
+type ImageData = {_key?: string; _type?: string; assetRef?: string; url?: string; alt?: string; credit?: string; caption?: string; rightsConfirmed?: boolean; hideFromWebsite?: boolean; width?: number; height?: number}
+type Project = {_id: string; _updatedAt?: string; title?: string; slug?: string; location?: string; year?: number; language?: string; status?: string; summary?: string; seoTitle?: string; seoDescription?: string; imageRightsConfirmed?: boolean; heroImage?: ImageData; galleryImages?: ImageData[]; floorPlans?: Array<{_key?: string; name?: string; planType?: string; area?: string; description?: string; image?: ImageData}>}
+type HomeEntry = {_key?: string; displayStyle?: string; project?: Project; projectRef?: string}
 
 const apiVersion = '2025-02-19'
 const analyticsEndpoint = import.meta.env.SANITY_STUDIO_ANALYTICS_ENDPOINT || '/api/analytics'
-const imageProjection = `{"url": asset->url, alt, credit, rightsConfirmed, hideFromWebsite, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height}`
-const projectsQuery = `*[_type == "project"] | order(title asc) {_id, title, location, language, status, seoTitle, seoDescription, "heroImage": heroImage${imageProjection}, "galleryImages": galleryImages[]${imageProjection}, "floorPlans": floorPlans[]{name, area, "image": image${imageProjection}}}`
-const homeQuery = `*[_type == "homePage"][0]{"featuredProjects": featuredProjects[]{displayStyle, "project": project-> {_id, title, location, language, status, seoTitle, seoDescription, "heroImage": heroImage${imageProjection}}}}`
+const imageProjection = `{_key, _type, "assetRef": asset._ref, "url": asset->url, alt, credit, caption, rightsConfirmed, hideFromWebsite, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height}`
+const projectsQuery = `*[_type == "project"] | order(title asc) {_id, _updatedAt, title, "slug": slug.current, location, year, language, status, summary, seoTitle, seoDescription, imageRightsConfirmed, "heroImage": heroImage${imageProjection}, "galleryImages": galleryImages[]${imageProjection}, "floorPlans": floorPlans[]{_key, name, planType, area, description, "image": image${imageProjection}}}`
+const homeQuery = `*[_type == "homePage"][0]{"featuredProjects": featuredProjects[]{_key, displayStyle, "projectRef": project._ref, "project": project-> {_id, title, location, language, status, seoTitle, seoDescription, "heroImage": heroImage${imageProjection}}}}`
 
 function goToDocument(id: string, path?: string) {
   window.location.hash = `#/intent/edit/id=${encodeURIComponent(id)};type=project${path ? `;path=${encodeURIComponent(path)}` : ''}`
@@ -60,6 +60,199 @@ export function PagePreviewTool() {
     </Grid>
   </ToolShell>
 }
+
+/*
+ * The workspace intentionally writes to Sanity drafts as the editor works. The right
+ * panel uses the same local value first, so a text or media change is visible before
+ * the debounced draft mutation reaches Sanity. Publishing is still a separate choice.
+ */
+export function VisualWorkspaceTool() {
+  const client = useClient({apiVersion})
+  const [projects, setProjects] = useState<Project[]>([])
+  const [home, setHome] = useState<HomeEntry[]>([])
+  const [selectedId, setSelectedId] = useState('')
+  const [surface, setSurface] = useState<'project' | 'home'>('project')
+  const [viewport, setViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
+  const [saveState, setSaveState] = useState<'loading' | 'saved' | 'saving' | 'error'>('loading')
+  const pendingPatches = useRef<Record<string, Record<string, unknown>>>({})
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
+  const load = () => Promise.all([client.fetch<Project[]>(projectsQuery), client.fetch<{featuredProjects?: HomeEntry[]} | null>(homeQuery)])
+    .then(([nextProjects, nextHome]) => {
+      setProjects(nextProjects)
+      setHome(nextHome?.featuredProjects || [])
+      setSelectedId((current) => current || nextProjects[0]?._id || '')
+      setSaveState('saved')
+    })
+    .catch(() => setSaveState('error'))
+
+  useEffect(() => { void load() }, [client])
+  useEffect(() => () => { if (saveTimer.current) clearTimeout(saveTimer.current) }, [])
+
+  const selected = projects.find((project) => project._id === selectedId)
+  const queueProjectPatch = (id: string, patch: Record<string, unknown>) => {
+    pendingPatches.current[id] = {...pendingPatches.current[id], ...patch}
+    if (saveTimer.current) clearTimeout(saveTimer.current)
+    setSaveState('saving')
+    saveTimer.current = setTimeout(() => {
+      const changes = pendingPatches.current[id]
+      delete pendingPatches.current[id]
+      void client.patch(id).set(changes).commit({autoGenerateArrayKeys: true})
+        .then(() => setSaveState('saved'))
+        .catch(() => setSaveState('error'))
+    }, 450)
+  }
+  const updateProject = (patch: Partial<Project>) => {
+    if (!selected) return
+    setProjects((current) => current.map((project) => project._id === selected._id ? {...project, ...patch} : project))
+    queueProjectPatch(selected._id, patch as Record<string, unknown>)
+  }
+  const saveProjectNow = async (patch: Partial<Project>) => {
+    if (!selected) return
+    setProjects((current) => current.map((project) => project._id === selected._id ? {...project, ...patch} : project))
+    setSaveState('saving')
+    try {
+      await client.patch(selected._id).set(documentPatch(patch)).commit({autoGenerateArrayKeys: true})
+      setSaveState('saved')
+    } catch {
+      setSaveState('error')
+    }
+  }
+  const upload = async (placement: 'hero' | 'gallery' | 'floorPlan', file?: File) => {
+    if (!selected || !file) return
+    setSaveState('saving')
+    try {
+      const asset = await client.assets.upload('image', file, {filename: file.name})
+      const assetRef = asset._id
+      const url = (asset as unknown as {url?: string}).url
+      if (placement === 'hero') {
+        await saveProjectNow({heroImage: {_type: 'projectHeroImage', assetRef, url, alt: '', credit: '', rightsConfirmed: false}})
+      } else if (placement === 'gallery') {
+        const image: ImageData = {_type: 'projectGalleryImage', assetRef, url, alt: '', credit: '', rightsConfirmed: false, hideFromWebsite: false}
+        await saveProjectNow({galleryImages: [...(selected.galleryImages || []), image]})
+      } else {
+        const plan = {_type: 'floorPlan', name: file.name.replace(/\.[^.]+$/, ''), planType: 'planlosning', image: {_type: 'image', assetRef, url, alt: '', credit: '', rightsConfirmed: false}}
+        await saveProjectNow({floorPlans: [...(selected.floorPlans || []), plan]})
+      }
+    } catch {
+      setSaveState('error')
+    }
+  }
+  const saveHome = async (nextHome: HomeEntry[]) => {
+    setHome(nextHome)
+    setSaveState('saving')
+    try {
+      await client.createIfNotExists({_id: 'homePage', _type: 'homePage'})
+      await client.patch('homePage').set({featuredProjects: nextHome.map(cleanHomeEntry)}).commit({autoGenerateArrayKeys: true})
+      setSaveState('saved')
+    } catch {
+      setSaveState('error')
+    }
+  }
+
+  return <ToolShell title="Arbetsyta" subtitle="Redigera till vänster och se placeringen direkt till höger. Ändringar sparas som kladd; webbplatsen ändras först när du publicerar och stagingbygget godkänns.">
+    <Flex justify="space-between" align="center" wrap="wrap" gap={3}>
+      <Inline space={2} className="esencial-actions">
+        <Button mode={surface === 'project' ? 'default' : 'ghost'} text="Projekt" onClick={() => setSurface('project')} />
+        <Button mode={surface === 'home' ? 'default' : 'ghost'} text="Startsida" onClick={() => setSurface('home')} />
+        <Button mode="ghost" text="Öppna fullständig dokumentvy" disabled={!selected || surface === 'home'} onClick={() => selected && goToDocument(selected._id)} />
+      </Inline>
+      <Text size={1} muted>{saveState === 'loading' ? 'Laddar…' : saveState === 'saving' ? 'Sparar kladd…' : saveState === 'saved' ? 'Kladd sparat' : 'Kunde inte spara – kontrollera anslutningen'}</Text>
+    </Flex>
+    <Grid columns={[1, 1, 2]} gap={4} className="esencial-workspace">
+      <Card padding={[3, 4]} radius={2} border className="esencial-editor-pane">
+        {surface === 'project' ? <ProjectWorkspace projects={projects} selected={selected} selectedId={selectedId} onSelect={setSelectedId} onChange={updateProject} onSaveNow={saveProjectNow} onUpload={upload} /> : <HomeWorkspace projects={projects} entries={home} onChange={saveHome} />}
+      </Card>
+      <Card padding={3} radius={2} border className="esencial-live-pane">
+        <Flex justify="space-between" align="center" wrap="wrap" gap={2}>
+          <Text size={1} weight="semibold">Direkt förhandsvisning</Text>
+          <Inline space={1}>{(['desktop', 'tablet', 'mobile'] as const).map((size) => <Button key={size} mode={viewport === size ? 'default' : 'ghost'} text={size === 'desktop' ? 'Dator' : size === 'tablet' ? 'Platta' : 'Mobil'} onClick={() => setViewport(size)} />)}</Inline>
+        </Flex>
+        <Box marginTop={3} className={`esencial-device esencial-device--${viewport}`}>
+          {surface === 'project' && selected ? <PreviewCanvas mode="project" projects={[selected]} selected={selected} /> : <PreviewCanvas mode="home" projects={home.map((entry) => entry.project).filter((project): project is Project => Boolean(project))} />}
+        </Box>
+        <Box marginTop={3}><Text size={1} muted>Detta är den skyddade redigeringsvyn. Kontrollera sedan det riktiga statiska resultatet på staging innan en ändring anses klar.</Text></Box>
+      </Card>
+    </Grid>
+  </ToolShell>
+}
+
+function ProjectWorkspace({projects, selected, selectedId, onSelect, onChange, onSaveNow, onUpload}: {projects: Project[]; selected?: Project; selectedId: string; onSelect: (id: string) => void; onChange: (patch: Partial<Project>) => void; onSaveNow: (patch: Partial<Project>) => Promise<void>; onUpload: (placement: 'hero' | 'gallery' | 'floorPlan', file?: File) => Promise<void>}) {
+  const [draggedGallery, setDraggedGallery] = useState<number | undefined>()
+  const [draggedPlan, setDraggedPlan] = useState<number | undefined>()
+  const {publish} = useDocumentOperation(selected?._id || 'project-not-selected', 'project')
+  if (!selected) return <Stack space={3}><Heading as="h2" size={3}>Inget projekt ännu</Heading><Text>Skapa ett projekt i dokumentvyn för att börja arbeta visuellt.</Text></Stack>
+  const publishReady = Boolean(selected.title && selected.summary && selected.seoTitle && selected.seoDescription && selected.heroImage?.assetRef && selected.heroImage.alt && selected.heroImage.credit && selected.heroImage.rightsConfirmed && selected.imageRightsConfirmed)
+  const setStatus = (status: string) => {
+    if (status === 'published' && !publishReady) return
+    onChange({status})
+  }
+  const setGallery = (galleryImages: ImageData[]) => onSaveNow({galleryImages})
+  const setPlans = (floorPlans: NonNullable<Project['floorPlans']>) => onSaveNow({floorPlans})
+  const publishToSanity = async () => {
+    if (!publishReady || !publish.enabled) return
+    await onSaveNow({status: 'published'})
+    publish.execute()
+  }
+  return <Stack space={5}>
+    <Box>
+      <Label size={1}>Projekt att redigera</Label>
+      <Box marginTop={2}><Select value={selectedId} onChange={(event) => onSelect(event.currentTarget.value)}>{projects.map((project) => <option key={project._id} value={project._id}>{project.title || 'Namnlöst projekt'} · {project.language?.toUpperCase() || 'språk saknas'}</option>)}</Select></Box>
+    </Box>
+    <EditorSection title="Text och projektfakta" hint="Detta syns i rubrik, introduktion och Google-resultat.">
+      <Field label="Projektnamn"><TextInput value={selected.title || ''} onChange={(event) => onChange({title: event.currentTarget.value})} /></Field>
+      <Grid columns={[1, 2]} gap={3}><Field label="Plats"><TextInput value={selected.location || ''} onChange={(event) => onChange({location: event.currentTarget.value})} /></Field><Field label="År"><TextInput type="number" value={selected.year || ''} onChange={(event) => onChange({year: event.currentTarget.value ? Number(event.currentTarget.value) : undefined})} /></Field></Grid>
+      <Field label="Kort projektintroduktion"><TextArea value={selected.summary || ''} rows={5} onChange={(event) => onChange({summary: event.currentTarget.value})} /></Field>
+      <Grid columns={[1, 2]} gap={3}><Field label="Titel i Google"><TextInput value={selected.seoTitle || ''} onChange={(event) => onChange({seoTitle: event.currentTarget.value})} /></Field><Field label="Beskrivning i Google"><TextArea value={selected.seoDescription || ''} rows={3} onChange={(event) => onChange({seoDescription: event.currentTarget.value})} /></Field></Grid>
+    </EditorSection>
+    <EditorSection title="Huvudbild" hint="Visas både överst på projektsidan och på projektkortet. Planritningar hör aldrig hemma här.">
+      <DropZone label="Släpp huvudbild här" onFile={(file) => onUpload('hero', file)} />
+      {selected.heroImage && <MediaEditor image={selected.heroImage} onChange={(heroImage) => onSaveNow({heroImage})} />}
+    </EditorSection>
+    <EditorSection title="Projektgalleri" hint="Vanliga projektbilder. Dra korten för ordning; första bilden visas först efter huvudbilden.">
+      <DropZone label="Lägg till bilder i projektgalleriet" multiple onFile={(file) => onUpload('gallery', file)} />
+      <Stack space={3}>{(selected.galleryImages || []).map((image, index, all) => <MediaCard key={image._key || image.assetRef || index} image={image} label={`Galleri ${index + 1}${index === 0 ? ' · visas först' : ''}`} draggable onDragStart={() => setDraggedGallery(index)} onDrop={() => { if (draggedGallery !== undefined && draggedGallery !== index) setGallery(moveItem(all, draggedGallery, index)); setDraggedGallery(undefined) }} onChange={(next) => setGallery(all.map((value, itemIndex) => itemIndex === index ? next : value))} onRemove={() => setGallery(all.filter((_, itemIndex) => itemIndex !== index))} />)}</Stack>
+    </EditorSection>
+    <EditorSection title="Planritningar" hint="En egen plats på projektsidan. De blandas aldrig med projektgalleriet.">
+      <DropZone label="Lägg till planritning" onFile={(file) => onUpload('floorPlan', file)} />
+      <Stack space={3}>{(selected.floorPlans || []).map((plan, index, all) => <FloorPlanCard key={plan._key || plan.image?.assetRef || index} plan={plan} label={`Planritning ${index + 1}`} draggable onDragStart={() => setDraggedPlan(index)} onDrop={() => { if (draggedPlan !== undefined && draggedPlan !== index) setPlans(moveItem(all, draggedPlan, index)); setDraggedPlan(undefined) }} onChange={(next) => setPlans(all.map((value, itemIndex) => itemIndex === index ? next : value))} onRemove={() => setPlans(all.filter((_, itemIndex) => itemIndex !== index))} />)}</Stack>
+    </EditorSection>
+    <EditorSection title="Publicera till staging" hint="Publicerad betyder att nästa godkända CMS-bygg får använda innehållet. Det ändrar inte den nuvarande live-domänen.">
+      <Flex gap={2} align="center"><Checkbox checked={Boolean(selected.imageRightsConfirmed)} onChange={(event) => onChange({imageRightsConfirmed: event.currentTarget.checked})} /><Text size={1}>Jag har bekräftat rättigheterna för alla bilder i projektet.</Text></Flex>
+      <Box marginTop={3}><Select value={selected.status || 'draft'} onChange={(event) => setStatus(event.currentTarget.value)}><option value="draft">Under arbete</option><option value="review">Klar att publicera</option><option value="published" disabled={!publishReady}>Publicerad{publishReady ? '' : ' – komplettera fälten ovan först'}</option><option value="archived">Arkiverad</option></Select></Box>
+      {!publishReady && <Box marginTop={2}><Text size={1} muted>För publicering krävs rubrik, introduktion, SEO, en komplett huvudbild och bekräftade bildrättigheter. Öppna dokumentvyn för den fullständiga egenkontrollen.</Text></Box>}
+      <Box marginTop={3}><Button tone="positive" text="Publicera i Sanity och starta stagingbygge" disabled={!publishReady || !publish.enabled} onClick={() => void publishToSanity()} /></Box>
+      <Text size={1} muted>När Sanity-webhooken är ansluten startar detta den säkra CMS-byggprocessen. Ett underkänt bygge lämnar tidigare staging oförändrad.</Text>
+    </EditorSection>
+  </Stack>
+}
+
+function HomeWorkspace({projects, entries, onChange}: {projects: Project[]; entries: HomeEntry[]; onChange: (entries: HomeEntry[]) => Promise<void>}) {
+  const [dragged, setDragged] = useState<number | undefined>()
+  const featuredIds = new Set(entries.map((entry) => entry.project?._id || entry.projectRef))
+  const addProject = (project: Project) => void onChange([...entries, {displayStyle: 'card', projectRef: project._id, project}])
+  return <Stack space={5}>
+    <EditorSection title="Startsida" hint="Dessa kort visas på startsidan i denna ordning. Bilden kommer alltid från projektets huvudbild.">
+      <Stack space={3}>{entries.map((entry, index, all) => entry.project && <Card key={entry._key || entry.project._id} padding={3} border radius={2} draggable onDragStart={() => setDragged(index)} onDragOver={(event) => event.preventDefault()} onDrop={() => { if (dragged !== undefined && dragged !== index) void onChange(moveItem(all, dragged, index)); setDragged(undefined) }}><Flex gap={3} align="center">{img(entry.project.heroImage, entry.project.title)}<Box flex={1}><Text size={1} muted>Position {index + 1}</Text><Heading as="h2" size={2}>{entry.project.title || 'Namnlöst projekt'}</Heading><Box marginTop={2}><Select value={entry.displayStyle || 'card'} onChange={(event) => void onChange(all.map((value, itemIndex) => itemIndex === index ? {...value, displayStyle: event.currentTarget.value} : value))}><option value="card">Normalt kort</option><option value="featured">Huvudprojekt</option></Select></Box></Box><Button tone="critical" mode="ghost" text="Ta bort" onClick={() => void onChange(all.filter((_, itemIndex) => itemIndex !== index))} /></Flex></Card>)}</Stack>
+      {!entries.length && <Text size={1} muted>Inga projekt är valda till startsidan ännu.</Text>}
+    </EditorSection>
+    <EditorSection title="Lägg till projekt" hint="Välj bara publicerade projekt när startsidan ska motsvara staging.">
+      <Stack space={2}>{projects.filter((project) => project.status === 'published' && !featuredIds.has(project._id)).map((project) => <Button key={project._id} mode="ghost" text={`Lägg till: ${project.title || 'Namnlöst projekt'} (${project.language?.toUpperCase() || '–'})`} onClick={() => addProject(project)} />)}</Stack>
+    </EditorSection>
+  </Stack>
+}
+
+function EditorSection({title, hint, children}: {title: string; hint: string; children: React.ReactNode}) { return <Card padding={3} radius={2} border><Stack space={3}><Box><Heading as="h2" size={2}>{title}</Heading><Text size={1} muted>{hint}</Text></Box>{children}</Stack></Card> }
+function Field({label, children}: {label: string; children: React.ReactNode}) { return <Stack space={2}><Label size={1}>{label}</Label>{children}</Stack> }
+function DropZone({label, multiple, onFile}: {label: string; multiple?: boolean; onFile: (file?: File) => void}) { return <label className="esencial-drop-zone" onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); [...event.dataTransfer.files].forEach((file) => onFile(file)) }}><strong>{label}</strong><span>Klicka eller dra en bild hit. Bilden sparas som kladd och visas direkt till höger.</span><input type="file" accept="image/*" multiple={multiple} onChange={(event) => { [...(event.currentTarget.files || [])].forEach((file) => onFile(file)); event.currentTarget.value = '' }} /></label> }
+function MediaEditor({image, onChange}: {image: ImageData; onChange: (image: ImageData) => void}) { return <Stack space={3}><Card padding={2} radius={2} border>{img(image, 'Huvudbild')}</Card><Grid columns={[1, 2]} gap={3}><Field label="Alt-text"><TextInput value={image.alt || ''} onChange={(event) => onChange({...image, alt: event.currentTarget.value})} /></Field><Field label="Fotograf / kredit"><TextInput value={image.credit || ''} onChange={(event) => onChange({...image, credit: event.currentTarget.value})} /></Field></Grid><Flex gap={2} align="center"><Checkbox checked={Boolean(image.rightsConfirmed)} onChange={(event) => onChange({...image, rightsConfirmed: event.currentTarget.checked})} /><Text size={1}>Rättigheter bekräftade</Text></Flex></Stack> }
+function MediaCard({image, label, draggable, onDragStart, onDrop, onChange, onRemove}: {image: ImageData; label: string; draggable?: boolean; onDragStart?: () => void; onDrop?: () => void; onChange: (image: ImageData) => void; onRemove: () => void}) { return <Card padding={3} radius={2} border draggable={draggable} onDragStart={onDragStart} onDragOver={(event) => event.preventDefault()} onDrop={onDrop}><Stack space={3}><Flex justify="space-between" align="center"><Text size={1} weight="semibold">↕ {label}</Text><Button tone="critical" mode="ghost" text="Ta bort" onClick={onRemove} /></Flex>{img(image, label)}<MediaEditor image={image} onChange={onChange} /><Field label="Bildtext (valfri)"><TextInput value={image.caption || ''} onChange={(event) => onChange({...image, caption: event.currentTarget.value})} /></Field><Flex gap={2} align="center"><Checkbox checked={Boolean(image.hideFromWebsite)} onChange={(event) => onChange({...image, hideFromWebsite: event.currentTarget.checked})} /><Text size={1}>Behåll i CMS men visa inte publikt</Text></Flex></Stack></Card> }
+function FloorPlanCard({plan, label, draggable, onDragStart, onDrop, onChange, onRemove}: {plan: NonNullable<Project['floorPlans']>[number]; label: string; draggable?: boolean; onDragStart?: () => void; onDrop?: () => void; onChange: (plan: NonNullable<Project['floorPlans']>[number]) => void; onRemove: () => void}) { return <Card padding={3} radius={2} border draggable={draggable} onDragStart={onDragStart} onDragOver={(event) => event.preventDefault()} onDrop={onDrop}><Stack space={3}><Flex justify="space-between" align="center"><Text size={1} weight="semibold">↕ {label}</Text><Button tone="critical" mode="ghost" text="Ta bort" onClick={onRemove} /></Flex>{img(plan.image, label)}<Grid columns={[1, 2]} gap={3}><Field label="Namn"><TextInput value={plan.name || ''} onChange={(event) => onChange({...plan, name: event.currentTarget.value})} /></Field><Field label="Typ"><Select value={plan.planType || 'planlosning'} onChange={(event) => onChange({...plan, planType: event.currentTarget.value})}><option value="planlosning">Planlösning</option><option value="situationsplan">Situationsplan</option><option value="sektion">Sektion</option><option value="fasad">Fasad</option><option value="annat">Annat</option></Select></Field></Grid><Field label="Våning / område"><TextInput value={plan.area || ''} onChange={(event) => onChange({...plan, area: event.currentTarget.value})} /></Field>{plan.image && <MediaEditor image={plan.image} onChange={(image) => onChange({...plan, image})} />}</Stack></Card> }
+function moveItem<T>(items: T[], from: number, to: number) { const next = [...items]; const [item] = next.splice(from, 1); next.splice(to, 0, item); return next }
+function cleanImage(image: ImageData) { const result: Record<string, unknown> = {_type: image._type || 'image'}; if (image._key) result._key = image._key; if (image.assetRef) result.asset = {_type: 'reference', _ref: image.assetRef}; for (const key of ['alt', 'credit', 'caption', 'rightsConfirmed', 'hideFromWebsite'] as const) if (image[key] !== undefined) result[key] = image[key]; return result }
+function cleanFloorPlan(plan: NonNullable<Project['floorPlans']>[number]) { const result: Record<string, unknown> = {_type: 'floorPlan', name: plan.name, planType: plan.planType, area: plan.area, description: plan.description}; if (plan._key) result._key = plan._key; if (plan.image) result.image = cleanImage(plan.image); return result }
+function cleanHomeEntry(entry: HomeEntry) { const result: Record<string, unknown> = {_type: 'object', displayStyle: entry.displayStyle || 'card', project: {_type: 'reference', _ref: entry.project?._id || entry.projectRef}}; if (entry._key) result._key = entry._key; return result }
+function documentPatch(patch: Partial<Project>) { const result: Record<string, unknown> = {...patch}; if (patch.heroImage) result.heroImage = cleanImage(patch.heroImage); if (patch.galleryImages) result.galleryImages = patch.galleryImages.map(cleanImage); if (patch.floorPlans) result.floorPlans = patch.floorPlans.map(cleanFloorPlan); return result }
 
 function PreviewCanvas({mode, projects, selected}: {mode: 'home' | 'list' | 'project'; projects: Project[]; selected?: Project}) {
   if (mode === 'project' && selected) return <Stack space={5}>

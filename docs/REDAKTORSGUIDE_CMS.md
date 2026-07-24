@@ -1,5 +1,18 @@
 # Redaktörsguide – Esencial CMS
 
+## Arbeta i Arbetsyta (rekommenderat)
+
+**Arbetsyta** är den dagliga vyn för en person som uppdaterar webbplatsen. Den stora vänstra delen är redigeringen och högerspalten visar resultatet direkt medan du skriver eller byter bild. Kladd sparas automatiskt i Sanity; den publika webbplatsen, den nuvarande live-domänen och DNS ändras inte av detta.
+
+1. Välj ett projekt och fyll i text, plats, år och SEO i **Text och projektfakta**.
+2. Släpp en bild i den tydligt märkta ytan **Huvudbild**. Den är alltid både projektkortets bild och bilden högst upp på projektsidan.
+3. Släpp vanliga bilder i **Projektgalleri** och dra korten till rätt ordning. En dold bild ligger kvar i CMS men visas inte på webbplatsen.
+4. Släpp ritningar endast i **Planritningar**. Fältet har eget namn, typ, våning/område och bildbeskrivning.
+5. Växla högerspalten mellan **Dator**, **Platta** och **Mobil**. Byt till **Startsida** för att ordna de utvalda projektkorten oberoende av galleriet.
+6. När alla varningar är åtgärdade, bekräfta bildrättigheter och välj **Klar att publicera**. Kontrollera sedan det riktiga resultatet på staging innan du väljer **Publicerad**.
+
+Knapparna i högerspalten är en snabb, skyddad redigeringsförhandsvisning. Staging är fortfarande kontrollen av det verkliga statiska bygget och blir tillgänglig först när Vercel-projektet och Sanity-webhooken är anslutna.
+
 ## Bilder i ett projekt
 
 Öppna ett projekt och välj fliken **3. Bilder och planritningar**.

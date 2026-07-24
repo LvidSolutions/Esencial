@@ -52,8 +52,8 @@ Already in `main`:
 
 Not yet complete:
 
-- A right-hand preview that updates from unsaved edits while the editor works.
-- Visual drop zones integrated into a dominant editing workspace.
+- A right-hand preview that uses the real static renderer and is verified against staging. The Studio workspace now updates locally while editing, but the protected Vercel preview runtime is still needed for pixel-level parity with the static site.
+- Final browser-based verification of the visual drop zones and dominant editing workspace after the Studio deployment.
 - A connected Vercel staging project, webhook, secrets, Matomo, Cookiebot, and Search Console.
 - Browser-based Studio/staging end-to-end tests and a completed editorial pilot.
 

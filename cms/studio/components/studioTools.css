@@ -10,4 +10,16 @@
 .esencial-issue {display:inline-flex; align-items:center; gap:4px; color:#a63c20}
 .esencial-issue svg {width:14px; height:14px}
 .esencial-actions {flex-wrap:wrap}
+.esencial-workspace {align-items:start}
+.esencial-editor-pane {min-width:0}
+.esencial-live-pane {align-self:start; position:sticky; top:1rem; min-width:0}
+.esencial-device {max-width:100%; margin:0 auto; min-height:560px; padding:22px; overflow:auto; border:1px solid #d1d1ca; border-radius:10px; background:#fbfbfa; transition:max-width .2s ease}
+.esencial-device--desktop {max-width:100%}
+.esencial-device--tablet {max-width:760px}
+.esencial-device--mobile {max-width:420px}
+.esencial-drop-zone {display:grid; width:100%; min-height:104px; place-content:center; gap:6px; padding:18px; border:2px dashed #8a8a82; border-radius:8px; background:#f7f7f5; color:#1f1f1d; text-align:center; cursor:pointer}
+.esencial-drop-zone:hover,.esencial-drop-zone:focus-visible {border-color:#2276fc; background:#f0f6ff; outline:0}
+.esencial-drop-zone span {font-size:12px; line-height:1.4; color:#5b5b55}
+.esencial-drop-zone input {display:none}
 @media (max-width: 700px) {.esencial-sidepanel {position:static}.esencial-canvas {min-height:0}}
+@media (max-width: 899px) {.esencial-live-pane {position:static}.esencial-device {min-height:0}}
