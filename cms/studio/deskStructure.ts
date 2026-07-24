@@ -5,11 +5,11 @@ export const deskStructure: StructureResolver = (S) =>
     .title('Esencial CMS')
     .items([
       S.listItem()
-        .title('Att granska')
-        .child(S.documentList().title('Att granska').filter('_type == "project" && status == "review"')),
+        .title('Klar att publicera')
+        .child(S.documentList().title('Klar att publicera').filter('_type == "project" && status == "review"')),
       S.listItem()
-        .title('Utkast')
-        .child(S.documentList().title('Utkast').filter('_type == "project" && status == "draft"')),
+        .title('Under arbete')
+        .child(S.documentList().title('Under arbete').filter('_type == "project" && status == "draft"')),
       S.divider(),
       S.listItem()
         .title('Startsida')

@@ -4,6 +4,7 @@ const path = require('path');
 const scripts = [
   'fetch-sanity-content.js',
   'build-project-pages.js',
+  'inject-matomo-tracker.js',
   'check-cms-content.js',
   'check-seo.js',
   'check-internal-links.js',

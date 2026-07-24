@@ -1,4 +1,4 @@
-name: CMS production build
+name: CMS staging build
 
 on:
   workflow_dispatch:
@@ -7,6 +7,10 @@ on:
 
 permissions:
   contents: write
+
+concurrency:
+  group: cms-staging-build
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -30,6 +34,6 @@ jobs:
         run: |
           git config user.name "Esencial CMS build"
           git config user.email "cms-build@users.noreply.github.com"
-          git add public
+          git add -- public
           git diff --cached --quiet || git commit -m "Build website from published Sanity content"
           git push

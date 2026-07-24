@@ -15,7 +15,7 @@ export default defineConfig({
   plugins: [
     dashboardTool({
       widgets: [
-        documentListWidget({title: 'Att granska', query: '*[_type == "project" && status == "review"] | order(_updatedAt desc)[0...6]', showCreateButton: false, layout: {width: 'large'}}),
+        documentListWidget({title: 'Klar att publicera', query: '*[_type == "project" && status == "review"] | order(_updatedAt desc)[0...6]', showCreateButton: false, layout: {width: 'large'}}),
         documentListWidget({title: 'Senast andrat', types: ['project'], order: '_updatedAt desc', limit: 6, createButtonText: 'Skapa projekt', layout: {width: 'large'}}),
         documentListWidget({title: 'Saknar SEO eller bilder', query: '*[_type == "project" && status in ["draft", "review"] && (!defined(seoTitle) || !defined(seoDescription) || (!defined(images) || count(images) == 0))] | order(_updatedAt desc)[0...12]', showCreateButton: false, layout: {width: 'large'}}),
         documentListWidget({title: 'Oversattning att slutfora', query: '*[_type == "project" && translationStatus != "approved"] | order(_updatedAt desc)[0...12]', showCreateButton: false, layout: {width: 'large'}}),

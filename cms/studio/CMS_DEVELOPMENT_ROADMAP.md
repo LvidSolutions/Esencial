@@ -270,7 +270,7 @@ Some phases can overlap, but the order of dependencies should remain: content so
 
 | Risk | Control |
 | --- | --- |
-| Editors accidentally expose unfinished work | Private drafts, protected preview, separate publish role |
+| A webbredaktör råkar exponera ofärdigt arbete | Statusen Under arbete, publiceringskontroll, kvalitetsgrind och separat staging |
 | Old and new content differ | One source of truth after Phase 1, rollback snapshot retained |
 | Broken URLs hurt search | Immutable slugs by default, redirect registry, automated checks |
 | Image rights are unclear | Rights confirmation before Sanity asset migration and publication |
@@ -278,10 +278,9 @@ Some phases can overlap, but the order of dependencies should remain: content so
 | CMS becomes overcomplicated | Add features only when they remove recurring editorial work |
 | Build failure publishes a broken site | Quality gate, immutable deploys, and rollback target |
 
-## 14. External Decisions Required for the Next Release
+## 14. External Setup Required for the Next Release
 
-1. Choose hosting: Cloudflare Pages, Netlify, Vercel, or another provider. The included analytics adapter targets Vercel and can be translated if another host is selected.
+1. The technical decisions are now Vercel staging, Sanity, Matomo Cloud, Cookiebot, and Google Search Console. Follow `docs/STAGING_SETUP.md` and `docs/ANALYTICS_SETUP.md`; do not connect the existing live domain or DNS.
 2. Confirm which image assets have known publication rights before migrating them into the new image fields.
-3. Configure Plausible (or another approved privacy-first provider) and Google Search Console only after hosting and ownership are ready.
-4. Confirm whether to add the later protected full Presentation Tool preview. The current `Sidförhandsvisning` works locally in Studio and does not expose draft content publicly.
-5. Verify the GitHub account e-mail, then push the already validated safety commit `6dd2ac1` before publishing later local commits.
+3. Configure Matomo Cloud, Cookiebot, and Google Search Console only after the staging address exists.
+4. Run the image/content pilot before deciding whether a later protected full Presentation Tool preview is necessary. The current `Sidförhandsvisning` works in Studio and does not expose draft content publicly.

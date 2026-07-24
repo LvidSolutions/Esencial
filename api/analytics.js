@@ -1,7 +1,7 @@
 /*
- * Server-side analytics adapter for a future Vercel deployment.
- * Keep all variables in the hosting provider's encrypted environment settings.
- * This endpoint intentionally returns only aggregated data to the Studio.
+ * Server-side analytics adapter for Vercel.
+ * Provider credentials stay in encrypted Vercel environment variables; the
+ * Studio receives aggregated figures only.
  */
 const crypto = require('node:crypto')
 
@@ -24,33 +24,80 @@ function dateRange(days, offset = 0) {
   return {start: start.toISOString().slice(0, 10), end: end.toISOString().slice(0, 10)}
 }
 
-async function plausibleQuery(body) {
-  const result = await fetch('https://plausible.io/api/v2/query', {
-    method: 'POST',
-    headers: {Authorization: `Bearer ${process.env.PLAUSIBLE_API_KEY}`, 'Content-Type': 'application/json'},
-    body: JSON.stringify(body),
-  })
-  if (!result.ok) throw new Error(`Plausible svarade ${result.status}`)
-  return result.json()
+function matomoEndpoint() {
+  const configured = process.env.MATOMO_URL
+  if (!configured) return undefined
+  const url = new URL(configured)
+  if (url.protocol !== 'https:') throw new Error('MATOMO_URL must use HTTPS.')
+  if (!url.pathname.endsWith('.php')) url.pathname = `${url.pathname.replace(/\/$/, '')}/index.php`
+  return url
 }
 
-async function traffic(days) {
-  if (!process.env.PLAUSIBLE_API_KEY || !process.env.PLAUSIBLE_SITE_ID) return undefined
-  const range = dateRange(days)
-  const query = {site_id: process.env.PLAUSIBLE_SITE_ID, date_range: [range.start, range.end], metrics: ['visitors', 'pageviews']}
-  const pages = {...query, dimensions: ['event:page'], metrics: ['visitors'], pagination: {limit: 10, offset: 0}}
-  const [summary, pageRows] = await Promise.all([plausibleQuery(query), plausibleQuery(pages)])
-  const values = summary.results?.[0]?.metrics || []
+async function matomoQuery(method, parameters) {
+  const endpoint = matomoEndpoint()
+  if (!endpoint || !process.env.MATOMO_API_TOKEN || !process.env.MATOMO_SITE_ID) return undefined
+  const body = new URLSearchParams({
+    module: 'API',
+    method,
+    idSite: process.env.MATOMO_SITE_ID,
+    format: 'JSON',
+    token_auth: process.env.MATOMO_API_TOKEN,
+    ...parameters,
+  })
+  const result = await fetch(endpoint, {method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'}, body})
+  if (!result.ok) throw new Error(`Matomo svarade ${result.status}`)
+  const data = await result.json()
+  if (data?.result === 'error') throw new Error('Matomo avvisade statistikförfrågan.')
+  return data
+}
+
+function rangeParameters(range) {
+  return {period: 'range', date: `${range.start},${range.end}`}
+}
+
+function number(value) {
+  return Number(value || 0)
+}
+
+function frequencyMetric(rows, pattern, metric) {
+  const row = (rows || []).find((item) => pattern.test(String(item.label || item.segment || '')))
+  return row ? number(row[metric]) : 0
+}
+
+async function trafficSummary(range) {
+  const parameters = rangeParameters(range)
+  const [summary, actions, frequency] = await Promise.all([
+    matomoQuery('VisitsSummary.get', parameters),
+    matomoQuery('Actions.get', parameters),
+    matomoQuery('VisitFrequency.get', parameters),
+  ])
   return {
-    visitors: Number(values[0] || 0),
-    pageviews: Number(values[1] || 0),
-    // Plausible's aggregate API does not expose returning visitors. We deliberately do not infer it.
-    returningVisitors: null,
-    topPages: (pageRows.results || []).map((row) => ({label: row.dimensions?.[0] || '/', value: Number(row.metrics?.[0] || 0)})),
+    visitors: number(summary?.nb_visits),
+    uniqueVisitors: number(summary?.nb_uniq_visitors),
+    pageviews: number(actions?.nb_pageviews || summary?.nb_pageviews),
+    returningVisitors: frequencyMetric(frequency, /return/i, 'nb_uniq_visitors'),
   }
 }
 
-function base64url(value) { return Buffer.from(value).toString('base64url') }
+async function traffic(days) {
+  if (!process.env.MATOMO_URL || !process.env.MATOMO_API_TOKEN || !process.env.MATOMO_SITE_ID) return undefined
+  const current = dateRange(days)
+  const previous = dateRange(days, days)
+  const [summary, previousSummary, pageRows] = await Promise.all([
+    trafficSummary(current),
+    trafficSummary(previous),
+    matomoQuery('Actions.getPageUrls', {...rangeParameters(current), flat: '1', filter_limit: '10'}),
+  ])
+  return {
+    ...summary,
+    previous: previousSummary,
+    topPages: (pageRows || []).map((row) => ({label: row.label || '/', value: number(row.nb_hits || row.nb_pageviews)})),
+  }
+}
+
+function base64url(value) {
+  return Buffer.from(value).toString('base64url')
+}
 
 async function serviceAccountToken() {
   const account = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON || '{}')
@@ -72,19 +119,34 @@ async function searchConsoleQuery(token, body) {
   return result.json()
 }
 
+function searchTotals(data) {
+  return (data.rows || []).reduce((all, row) => ({clicks: all.clicks + number(row.clicks), impressions: all.impressions + number(row.impressions), weightedPosition: all.weightedPosition + number(row.position) * number(row.impressions)}), {clicks: 0, impressions: 0, weightedPosition: 0})
+}
+
 async function search(days) {
   if (!process.env.GOOGLE_SEARCH_CONSOLE_SITE_URL || !process.env.GOOGLE_SERVICE_ACCOUNT_JSON) return undefined
   const token = await serviceAccountToken()
-  const range = dateRange(days)
-  const base = {startDate: range.start, endDate: range.end, type: 'web'}
-  const [summary, pages, queries] = await Promise.all([
-    searchConsoleQuery(token, base),
-    searchConsoleQuery(token, {...base, dimensions: ['page'], rowLimit: 10}),
-    searchConsoleQuery(token, {...base, dimensions: ['query'], rowLimit: 10}),
+  const current = dateRange(days)
+  const previous = dateRange(days, days)
+  const currentBase = {startDate: current.start, endDate: current.end, type: 'web'}
+  const previousBase = {startDate: previous.start, endDate: previous.end, type: 'web'}
+  const [summary, previousSummary, pages, queries] = await Promise.all([
+    searchConsoleQuery(token, currentBase),
+    searchConsoleQuery(token, previousBase),
+    searchConsoleQuery(token, {...currentBase, dimensions: ['page'], rowLimit: 10}),
+    searchConsoleQuery(token, {...currentBase, dimensions: ['query'], rowLimit: 10}),
   ])
-  const rows = summary.rows || []
-  const totals = rows.reduce((all, row) => ({clicks: all.clicks + row.clicks, impressions: all.impressions + row.impressions, weightedPosition: all.weightedPosition + row.position * row.impressions}), {clicks: 0, impressions: 0, weightedPosition: 0})
-  return {clicks: totals.clicks, impressions: totals.impressions, ctr: totals.impressions ? totals.clicks / totals.impressions : 0, position: totals.impressions ? totals.weightedPosition / totals.impressions : 0, topPages: (pages.rows || []).map((row) => ({label: row.keys?.[0], value: row.clicks})), queries: (queries.rows || []).map((row) => ({label: row.keys?.[0], value: row.clicks}))}
+  const totals = searchTotals(summary)
+  const prior = searchTotals(previousSummary)
+  return {
+    clicks: totals.clicks,
+    impressions: totals.impressions,
+    ctr: totals.impressions ? totals.clicks / totals.impressions : 0,
+    position: totals.impressions ? totals.weightedPosition / totals.impressions : 0,
+    previous: {clicks: prior.clicks, impressions: prior.impressions},
+    topPages: (pages.rows || []).map((row) => ({label: row.keys?.[0], value: number(row.clicks)})),
+    queries: (queries.rows || []).map((row) => ({label: row.keys?.[0], value: number(row.clicks)})),
+  }
 }
 
 function observations(searchData) {
@@ -102,10 +164,10 @@ module.exports = async (req, res) => {
   if (origin && origin !== studioOrigin) return response(res, 403, {message: 'Den här statistiken är endast tillgänglig från CMS.'})
   const requested = Number.parseInt(req.query?.days, 10)
   const days = [7, 30, 90].includes(requested) ? requested : 30
-  if (!process.env.PLAUSIBLE_API_KEY && !process.env.GOOGLE_SERVICE_ACCOUNT_JSON) return response(res, 200, {configured: false, message: 'Anslut Plausible och/eller Google Search Console i hostingens miljövariabler. Inga siffror visas förrän dess.'})
+  if (!process.env.MATOMO_API_TOKEN && !process.env.GOOGLE_SERVICE_ACCOUNT_JSON) return response(res, 200, {configured: false, message: 'Anslut Matomo Cloud och/eller Google Search Console i Vercels miljövariabler. Inga siffror visas förrän dess.'})
   try {
     const [trafficData, searchData] = await Promise.all([traffic(days), search(days)])
-    return response(res, 200, {configured: true, periodDays: days, traffic: trafficData, search: searchData, observations: observations(searchData), limitations: trafficData?.returningVisitors === null ? ['Återkommande besökare visas som – tills vald trafikkälla kan leverera måttet.'] : []})
+    return response(res, 200, {configured: true, periodDays: days, traffic: trafficData, search: searchData, observations: observations(searchData), limitations: trafficData ? ['Återkommande besökare avser endast besökare som har godkänt statistikcookies.'] : []})
   } catch (error) {
     return response(res, 502, {configured: false, message: `Statistiken kunde inte hämtas: ${error.message}`})
   }

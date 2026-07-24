@@ -26,8 +26,8 @@ Klicka på en bild i förhandsvisningen för att öppna dess redigeringsfält. V
 
 ## Arbeta från översikten
 
-I **Arbetsöversikt** leder varje ruta till en konkret uppgift: utkast, granskning, bilder, SEO och publicerat innehåll. Rätta röda bild- och SEO-rutor innan du väljer Publicerat. Publicering ska alltid ha svensk och engelsk projektversion samt en färdig checklista.
+I **Arbetsöversikt** är du den enda som behöver göra publiceringskontrollen. Rutorna leder till konkreta uppgifter: under arbete, klar att publicera, bilder, SEO och publicerat innehåll. Rätta röda bild- och SEO-rutor, bocka av egenkontrollen och välj först **Klar att publicera**. När du har kontrollerat staging väljer du **Publicerad**. Publicering ska alltid ha svensk och engelsk projektversion samt en färdig checklista.
 
 ## Läsa statistikpanelen
 
-**Webbplatsens utveckling** visar endast verkliga data från en ansluten trafikkälla och Google Search Console. Innan anslutning visas ett tomt läge. `–` betyder att den valda datakällan inte kan leverera måttet, inte noll. Se `docs/ANALYTICS_SETUP.md` för administratörens externa konfiguration.
+**Webbplatsens utveckling** visar endast verkliga data från Matomo Cloud och Google Search Console. Välj 7, 30 eller 90 dagar för att jämföra med den föregående lika långa perioden. Återkommande besökare avser dem som godkänt statistikcookies. Innan anslutning visas ett tomt läge. Se `docs/ANALYTICS_SETUP.md` för den enda externa engångskonfigurationen.

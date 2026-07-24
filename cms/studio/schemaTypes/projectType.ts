@@ -20,7 +20,7 @@ export const projectType = defineType({
     defineField({name: 'translationStatus', title: 'Oversattningsstatus', type: 'string', group: 'basics', options: {list: [{title: 'Ej paborjad', value: 'not-started'}, {title: 'Under arbete', value: 'in-progress'}, {title: 'Klar for granskning', value: 'ready-for-review'}, {title: 'Godkand', value: 'approved'}]}, initialValue: 'not-started'}),
     defineField({name: 'location', title: 'Publicerad plats', type: 'string', group: 'basics'}),
     defineField({name: 'year', title: 'Ar', type: 'number', group: 'basics', validation: (Rule) => Rule.integer().min(1900).max(2100)}),
-    defineField({name: 'status', title: 'Arbetslage', type: 'string', group: 'basics', description: 'Utkast syns inte pa webbplatsen. Valj Att granska nar innehallet ar klart.', options: {list: [{title: 'Utkast', value: 'draft'}, {title: 'Att granska', value: 'review'}, {title: 'Publicerat', value: 'published'}, {title: 'Arkiverat', value: 'archived'}]}, initialValue: 'draft'}),
+    defineField({name: 'status', title: 'Publiceringsläge', type: 'string', group: 'basics', description: 'Arbeta klart, välj Klar att publicera och gör sedan en sista egenkontroll. Endast Publicerad byggs till webbplatsen.', options: {list: [{title: 'Under arbete', value: 'draft'}, {title: 'Klar att publicera', value: 'review'}, {title: 'Publicerad', value: 'published'}, {title: 'Arkiverad', value: 'archived'}]}, initialValue: 'draft'}),
     defineField({name: 'summary', title: 'Kort projektintroduktion', type: 'text', group: 'content', rows: 5, validation: (Rule) => Rule.required().min(40).max(700)}),
     defineField({name: 'body', title: 'Langre projektberattelse', type: 'array', group: 'content', of: [{type: 'block'}]}),
     defineField({name: 'heroImage', title: 'Huvudbild', type: 'projectHeroImage', group: 'images', description: 'Visas överst på projektsidan och används för projektkort där en huvudbild behövs. Lägg inte planritningar här.', validation: (Rule) => Rule.custom((value, context) => !isPublished(context) || value || context.parent?.images?.length || context.parent?.legacyImages?.length ? true : 'Ett publicerat projekt behöver en huvudbild. Migrerade äldre projekt får tillfälligt använda tidigare bilder.')}),
@@ -31,10 +31,10 @@ export const projectType = defineType({
     defineField({name: 'legacyImages', title: 'Bilder fran tidigare webbplats', type: 'array', group: 'images', description: 'Referenslista tills varje bild ar migrerad till Sanity.', readOnly: true, of: [{type: 'object', fields: [defineField({name: 'url', title: 'Befintlig bildadress', type: 'url'}), defineField({name: 'alt', title: 'Befintlig bildbeskrivning', type: 'string'})]}]}),
     defineField({name: 'seoTitle', title: 'Titel i Google', type: 'string', group: 'seo', validation: (Rule) => Rule.max(60).custom((value, context) => !isPublished(context) || value ? true : 'Ett publicerat projekt behover en titel i Google.')}),
     defineField({name: 'seoDescription', title: 'Beskrivning i Google', type: 'text', group: 'seo', rows: 3, validation: (Rule) => Rule.max(160).custom((value, context) => !isPublished(context) || value ? true : 'Ett publicerat projekt behover en beskrivning i Google.')}),
-    defineField({name: 'reviewOwner', title: 'Ansvarig granskare', type: 'string', group: 'seo'}),
-    defineField({name: 'lastReviewedAt', title: 'Senast granskad', type: 'datetime', group: 'seo'}),
-    defineField({name: 'reviewNotes', title: 'Granskningsanteckningar', type: 'text', group: 'seo', rows: 4}),
-    defineField({name: 'publishChecklist', title: 'Publiceringschecklista', type: 'object', group: 'seo', fields: [
+    defineField({name: 'reviewOwner', title: 'Tidigare granskningsansvarig', type: 'string', group: 'seo', hidden: true}),
+    defineField({name: 'lastReviewedAt', title: 'Tidigare granskningsdatum', type: 'datetime', group: 'seo', hidden: true}),
+    defineField({name: 'reviewNotes', title: 'Egna anteckningar', type: 'text', group: 'seo', rows: 4}),
+    defineField({name: 'publishChecklist', title: 'Egenkontroll före publicering', type: 'object', group: 'seo', description: 'Bocka av själv innan du väljer Publicerad. Ingen separat granskare krävs.', fields: [
       defineField({name: 'factsConfirmed', title: 'Projektfakta ar godkanda', type: 'boolean'}),
       defineField({name: 'languageChecked', title: 'Sprak och oversattning ar kontrollerade', type: 'boolean'}),
       defineField({name: 'seoChecked', title: 'Titel och beskrivning ar kontrollerade', type: 'boolean'}),
