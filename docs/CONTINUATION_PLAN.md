@@ -2,6 +2,8 @@
 
 **Beslutsstatus:** beslutad teknisk riktning. Planen ändrar inte nuvarande live-domän, DNS, hosting, Sanity-data eller externa konton.
 
+> **Genomförande:** Den detaljerade, självständiga leveransplanen med exakta manuella steg, hemlighetsinventering, acceptanskriterier och blockeringshantering finns i [MASTER_DELIVERY_PLAN.md](MASTER_DELIVERY_PLAN.md). Följ den planen för fortsatt implementation.
+
 ## Målet
 
 En person ska kunna uppdatera webbplatsen tryggt utan utvecklarstöd i vardagen:
