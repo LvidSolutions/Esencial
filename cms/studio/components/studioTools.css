@@ -13,6 +13,8 @@
 .esencial-workspace {align-items:start}
 .esencial-editor-pane {min-width:0}
 .esencial-live-pane {align-self:start; position:sticky; top:1rem; min-width:0}
+.esencial-workspace-analytics {background:#fafaf7}
+.esencial-workspace-lower {padding-top:4px; border-top:1px solid #d1d1ca}
 .esencial-device {max-width:100%; margin:0 auto; min-height:560px; padding:22px; overflow:auto; border:1px solid #d1d1ca; border-radius:10px; background:#fbfbfa; transition:max-width .2s ease}
 .esencial-device--desktop {max-width:100%}
 .esencial-device--tablet {max-width:760px}

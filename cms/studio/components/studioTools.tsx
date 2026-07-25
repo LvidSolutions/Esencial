@@ -172,9 +172,43 @@ export function VisualWorkspaceTool() {
           {surface === 'project' && selected ? <PreviewCanvas mode="project" projects={[selected]} selected={selected} /> : <PreviewCanvas mode="home" projects={home.map((entry) => entry.project).filter((project): project is Project => Boolean(project))} />}
         </Box>
         <Box marginTop={3}><Text size={1} muted>Detta är den skyddade redigeringsvyn. Kontrollera sedan det riktiga statiska resultatet på staging innan en ändring anses klar.</Text></Box>
+        <Card marginTop={4} padding={3} radius={2} border className="esencial-workspace-analytics">
+          <WorkspaceAnalytics />
+        </Card>
       </Card>
     </Grid>
+    <WorkspaceLower projects={projects} home={home} />
   </ToolShell>
+}
+
+function WorkspaceAnalytics() {
+  const [state, setState] = useState<{loading: boolean; data?: Analytics}>({loading: true})
+  useEffect(() => { fetch(`${analyticsEndpoint}?days=30`).then((response) => response.ok ? response.json() : undefined).then((data) => setState({loading: false, data})).catch(() => setState({loading: false})) }, [])
+  const traffic = state.data?.traffic
+  return <Stack space={3}>
+    <Flex justify="space-between" align="center"><Text size={1} weight="semibold">Webbplatsens utveckling</Text><Text size={1} muted>Senaste 30 dagar</Text></Flex>
+    {state.loading ? <Text size={1} muted>Laddar statistik…</Text> : !state.data?.configured ? <Text size={1} muted>Vercel Analytics ansluts här när konto-inställningarna är klara. Inga exempelvärden visas.</Text> : <Grid columns={3} gap={2}>{[{label: 'Besök', value: traffic?.visitors}, {label: 'Sidvisningar', value: traffic?.pageviews}, {label: 'Organiska klick', value: state.data.search?.clicks}].map((metric) => <Box key={metric.label}><Text size={1} muted>{metric.label}</Text><Heading as="p" size={2}>{metric.value ?? '–'}</Heading></Box>)}</Grid>}
+    <Text size={1} muted>Källor: Vercel Web Analytics och, när den är ansluten, Google Search Console.</Text>
+  </Stack>
+}
+
+function WorkspaceLower({projects, home}: {projects: Project[]; home: HomeEntry[]}) {
+  const queues = {
+    drafts: projects.filter((project) => project.status === 'draft'),
+    images: projects.filter((project) => !project.heroImage?.url || !project.heroImage.alt || !project.heroImage.rightsConfirmed),
+    seo: projects.filter((project) => !project.seoTitle || !project.seoDescription),
+  }
+  return <Box marginTop={5} className="esencial-workspace-lower">
+    <Heading as="h2" size={3}>Arbete, struktur och projektinformation</Heading>
+    <Grid columns={[1, 2, 3]} gap={3} marginTop={3}>
+      <QueueCard title="Under arbete" action="Färdigställ innehållet i redigeringsytan ovan." items={queues.drafts} />
+      <QueueCard title="Bildkontroll" action="Komplettera huvudbild, alt-text eller rättighetsbekräftelse." items={queues.images} tone="critical" />
+      <QueueCard title="SEO-kontroll" action="Lägg till Google-titel och beskrivning." items={queues.seo} tone="critical" />
+      <Card padding={4} radius={2} border><Stack space={3}><Heading as="h3" size={2}>Startsida</Heading><Text size={1} muted>{home.length} utvalda projekt. Ordna dem i fliken Startsida ovan.</Text></Stack></Card>
+      <Card padding={4} radius={2} border><Stack space={3}><Heading as="h3" size={2}>Struktur</Heading><Text size={1} muted>Avancerad struktur och nya dokument är undantag. Den dagliga redigeringen görs på denna sida.</Text></Stack></Card>
+      <Card padding={4} radius={2} border><Stack space={3}><Heading as="h3" size={2}>Projektinformation</Heading><Text size={1} muted>Text, bilder, planritningar, SEO och publicering för det valda projektet redigeras ovan.</Text></Stack></Card>
+    </Grid>
+  </Box>
 }
 
 function ProjectWorkspace({projects, selected, selectedId, onSelect, onChange, onSaveNow, onUpload}: {projects: Project[]; selected?: Project; selectedId: string; onSelect: (id: string) => void; onChange: (patch: Partial<Project>) => void; onSaveNow: (patch: Partial<Project>) => Promise<void>; onUpload: (placement: 'hero' | 'gallery' | 'floorPlan', file?: File) => Promise<void>}) {
