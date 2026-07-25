@@ -11,6 +11,9 @@ function localTarget(raw, pageRoute) {
   if (!raw || /^(#|mailto:|tel:|javascript:|data:|blob:)/i.test(raw)) return null;
   const url = new URL(raw, new URL(pageRoute, `${BASE_URL}/`));
   if (url.origin !== BASE_URL) return null;
+  // Vercel serves this platform resource at deployment time; it is not part of
+  // the generated static archive that this checker validates.
+  if (url.pathname.startsWith('/_vercel/')) return null;
   return url.pathname;
 }
 
