@@ -25,29 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Kemeri National Park Observation tower",
-  "description": "There are two possible ways of exploring the Kemeri National park by foot today.",
-  "url": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2020/07/Kemeri_PHOTO_01.jpg",
-    "https://www.esencial.se/wp-content/uploads/2020/07/Kemeri_DWG_01.png"
-  ],
-  "inLanguage": "en",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": "Kemeri"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projekt/kemeri-national-park-observation-tower/",
-    "inLanguage": "sv"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2020/07/Kemeri_PHOTO_01.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2020/07/Kemeri_PHOTO_01.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/#webpage",
+      "url": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/",
+      "name": "Kemeri National Park Observation tower | Esencial",
+      "description": "There are two possible ways of exploring the Kemeri National park by foot today.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "en",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/#project",
+      "url": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/",
+      "name": "Kemeri National Park Observation tower",
+      "description": "There are two possible ways of exploring the Kemeri National park by foot today.",
+      "inLanguage": "en",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2020/07/Kemeri_PHOTO_01.jpg",
+        "https://www.esencial.se/wp-content/uploads/2020/07/Kemeri_DWG_01.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projects",
+          "item": "https://www.esencial.se/projects/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Kemeri National Park Observation tower",
+          "item": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

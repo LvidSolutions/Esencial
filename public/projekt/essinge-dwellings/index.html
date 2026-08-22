@@ -25,29 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Essinge Dwellings",
-  "description": "Byggnaden är vackert belägen vid vattnet på Lilla Essingen.",
-  "url": "https://www.esencial.se/projekt/essinge-dwellings/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2018/12/5_essingedwellings_photo_01a.jpg",
-    "https://www.esencial.se/wp-content/uploads/2018/12/5_essingedwellings_draw_01.png"
-  ],
-  "inLanguage": "sv",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": "Lilla Essingen, Stockholm"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projects/essinge-dwellings/",
-    "inLanguage": "en"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projekt/essinge-dwellings/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2018/12/5_essingedwellings_photo_01a.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2018/12/5_essingedwellings_photo_01a.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projekt/essinge-dwellings/#webpage",
+      "url": "https://www.esencial.se/projekt/essinge-dwellings/",
+      "name": "Essinge Dwellings | Esencial",
+      "description": "Byggnaden är vackert belägen vid vattnet på Lilla Essingen.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "sv",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projekt/essinge-dwellings/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projekt/essinge-dwellings/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projekt/essinge-dwellings/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projekt/essinge-dwellings/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projekt/essinge-dwellings/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projekt/essinge-dwellings/#project",
+      "url": "https://www.esencial.se/projekt/essinge-dwellings/",
+      "name": "Essinge Dwellings",
+      "description": "Byggnaden är vackert belägen vid vattnet på Lilla Essingen.",
+      "inLanguage": "sv",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2018/12/5_essingedwellings_photo_01a.jpg",
+        "https://www.esencial.se/wp-content/uploads/2018/12/5_essingedwellings_draw_01.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projekt/essinge-dwellings/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projekt/essinge-dwellings/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projekt",
+          "item": "https://www.esencial.se/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Essinge Dwellings",
+          "item": "https://www.esencial.se/projekt/essinge-dwellings/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

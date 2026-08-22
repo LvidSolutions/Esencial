@@ -25,29 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Hamnbadet",
-  "description": "Hamnbadet i Göteborg är kulmen på en lång period av urban transformation i ett centralt område, som gått från övergiven hamn till en blågrön stadspark.",
-  "url": "https://www.esencial.se/projekt/hamnbadet/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2023/11/Blaparken_photo_01-1.jpg",
-    "https://www.esencial.se/wp-content/uploads/2023/11/BLAPARKEN_DWG_01-1.png"
-  ],
-  "inLanguage": "sv",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": "Göteborg"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projects/hamnbadet/",
-    "inLanguage": "en"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projekt/hamnbadet/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2023/11/Blaparken_photo_01-1.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2023/11/Blaparken_photo_01-1.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projekt/hamnbadet/#webpage",
+      "url": "https://www.esencial.se/projekt/hamnbadet/",
+      "name": "Hamnbadet | Esencial",
+      "description": "Hamnbadet i Göteborg är kulmen på en lång period av urban transformation i ett centralt område, som gått från övergiven hamn till en blågrön stadspark.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "sv",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projekt/hamnbadet/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projekt/hamnbadet/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projekt/hamnbadet/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projekt/hamnbadet/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projekt/hamnbadet/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projekt/hamnbadet/#project",
+      "url": "https://www.esencial.se/projekt/hamnbadet/",
+      "name": "Hamnbadet",
+      "description": "Hamnbadet i Göteborg är kulmen på en lång period av urban transformation i ett centralt område, som gått från övergiven hamn till en blågrön stadspark.",
+      "inLanguage": "sv",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2023/11/Blaparken_photo_01-1.jpg",
+        "https://www.esencial.se/wp-content/uploads/2023/11/BLAPARKEN_DWG_01-1.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projekt/hamnbadet/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projekt/hamnbadet/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projekt",
+          "item": "https://www.esencial.se/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Hamnbadet",
+          "item": "https://www.esencial.se/projekt/hamnbadet/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

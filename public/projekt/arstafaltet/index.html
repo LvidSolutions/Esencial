@@ -25,29 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Årstafältet",
-  "description": "Årstafältet är ett arkitekturprojekt av Esencial i Stockholm.",
-  "url": "https://www.esencial.se/projekt/arstafaltet/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2018/12/Arstafaltet_PHOTO_01.jpg",
-    "https://www.esencial.se/wp-content/uploads/2018/12/arstafaltet_dwg_00.png"
-  ],
-  "inLanguage": "sv",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": "Stockholm"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projects/arstafaltet/",
-    "inLanguage": "en"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projekt/arstafaltet/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2018/12/Arstafaltet_PHOTO_01.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2018/12/Arstafaltet_PHOTO_01.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projekt/arstafaltet/#webpage",
+      "url": "https://www.esencial.se/projekt/arstafaltet/",
+      "name": "Årstafältet | Esencial",
+      "description": "Årstafältet är ett arkitekturprojekt av Esencial i Stockholm.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "sv",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projekt/arstafaltet/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projekt/arstafaltet/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projekt/arstafaltet/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projekt/arstafaltet/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projekt/arstafaltet/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projekt/arstafaltet/#project",
+      "url": "https://www.esencial.se/projekt/arstafaltet/",
+      "name": "Årstafältet",
+      "description": "Årstafältet är ett arkitekturprojekt av Esencial i Stockholm.",
+      "inLanguage": "sv",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2018/12/Arstafaltet_PHOTO_01.jpg",
+        "https://www.esencial.se/wp-content/uploads/2018/12/arstafaltet_dwg_00.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projekt/arstafaltet/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projekt/arstafaltet/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projekt",
+          "item": "https://www.esencial.se/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Årstafältet",
+          "item": "https://www.esencial.se/projekt/arstafaltet/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

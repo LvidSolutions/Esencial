@@ -25,29 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Sara Hildén Museum",
-  "description": "While moving around the building a playful experience of spaces at eye level is orchestrated by the facetted building volume",
-  "url": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2023/11/Hilden_photo_02.jpg",
-    "https://www.esencial.se/wp-content/uploads/2023/11/Hilden_DWG_01.png"
-  ],
-  "inLanguage": "en",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": "Tampere, Finland"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projekt/sara-hilden-museumtillbyggnad/",
-    "inLanguage": "sv"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2023/11/Hilden_photo_02.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2023/11/Hilden_photo_02.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/#webpage",
+      "url": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/",
+      "name": "Sara Hildén Museum | Esencial",
+      "description": "While moving around the building a playful experience of spaces at eye level is orchestrated by the facetted building volume",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "en",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/#project",
+      "url": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/",
+      "name": "Sara Hildén Museum",
+      "description": "While moving around the building a playful experience of spaces at eye level is orchestrated by the facetted building volume",
+      "inLanguage": "en",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2023/11/Hilden_photo_02.jpg",
+        "https://www.esencial.se/wp-content/uploads/2023/11/Hilden_DWG_01.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projects",
+          "item": "https://www.esencial.se/projects/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Sara Hildén Museum",
+          "item": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

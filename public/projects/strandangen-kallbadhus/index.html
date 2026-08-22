@@ -25,29 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Strandängen kallbadhus",
-  "description": "Strandängen kallbadhus is an architecture project by Esencial in Jönköping.",
-  "url": "https://www.esencial.se/projects/strandangen-kallbadhus/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2020/07/Kallbadhus_PHOTO_01.jpg",
-    "https://www.esencial.se/wp-content/uploads/2020/07/Kallbadhus_DWG_03.png"
-  ],
-  "inLanguage": "en",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": "Jönköping"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projekt/strandangen-kallbadhus/",
-    "inLanguage": "sv"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projects/strandangen-kallbadhus/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2020/07/Kallbadhus_PHOTO_01.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2020/07/Kallbadhus_PHOTO_01.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projects/strandangen-kallbadhus/#webpage",
+      "url": "https://www.esencial.se/projects/strandangen-kallbadhus/",
+      "name": "Strandängen kallbadhus | Esencial",
+      "description": "Strandängen kallbadhus is an architecture project by Esencial in Jönköping.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "en",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projects/strandangen-kallbadhus/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projects/strandangen-kallbadhus/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projects/strandangen-kallbadhus/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projects/strandangen-kallbadhus/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projects/strandangen-kallbadhus/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projects/strandangen-kallbadhus/#project",
+      "url": "https://www.esencial.se/projects/strandangen-kallbadhus/",
+      "name": "Strandängen kallbadhus",
+      "description": "Strandängen kallbadhus is an architecture project by Esencial in Jönköping.",
+      "inLanguage": "en",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2020/07/Kallbadhus_PHOTO_01.jpg",
+        "https://www.esencial.se/wp-content/uploads/2020/07/Kallbadhus_DWG_03.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projects/strandangen-kallbadhus/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projects/strandangen-kallbadhus/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projects",
+          "item": "https://www.esencial.se/projects/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Strandängen kallbadhus",
+          "item": "https://www.esencial.se/projects/strandangen-kallbadhus/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

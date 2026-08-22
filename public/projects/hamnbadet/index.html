@@ -25,29 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Hamnbadet",
-  "description": "Hamnbadet is an architecture project by Esencial in Gothenburg.",
-  "url": "https://www.esencial.se/projects/hamnbadet/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2023/11/Blaparken_photo_01-1.jpg",
-    "https://www.esencial.se/wp-content/uploads/2023/11/BLAPARKEN_DWG_01-1.png"
-  ],
-  "inLanguage": "en",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": "Gothenburg"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projekt/hamnbadet/",
-    "inLanguage": "sv"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projects/hamnbadet/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2023/11/Blaparken_photo_01-1.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2023/11/Blaparken_photo_01-1.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projects/hamnbadet/#webpage",
+      "url": "https://www.esencial.se/projects/hamnbadet/",
+      "name": "Hamnbadet | Esencial",
+      "description": "Hamnbadet is an architecture project by Esencial in Gothenburg.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "en",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projects/hamnbadet/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projects/hamnbadet/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projects/hamnbadet/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projects/hamnbadet/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projects/hamnbadet/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projects/hamnbadet/#project",
+      "url": "https://www.esencial.se/projects/hamnbadet/",
+      "name": "Hamnbadet",
+      "description": "Hamnbadet is an architecture project by Esencial in Gothenburg.",
+      "inLanguage": "en",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2023/11/Blaparken_photo_01-1.jpg",
+        "https://www.esencial.se/wp-content/uploads/2023/11/BLAPARKEN_DWG_01-1.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projects/hamnbadet/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projects/hamnbadet/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projects",
+          "item": "https://www.esencial.se/projects/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Hamnbadet",
+          "item": "https://www.esencial.se/projects/hamnbadet/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

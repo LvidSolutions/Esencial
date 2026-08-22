@@ -25,29 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Edificio de Ciencias Biomédicas",
-  "description": "Edificio de Ciencias Biomédicas is an architecture project by Esencial in Madrid.",
-  "url": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2020/07/Getafe_PHOTO_01.jpg",
-    "https://www.esencial.se/wp-content/uploads/2020/07/Getafe_DWG_02.png"
-  ],
-  "inLanguage": "en",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": "Madrid"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projekt/edificio-de-ciencias-biomedicas/",
-    "inLanguage": "sv"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2020/07/Getafe_PHOTO_01.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2020/07/Getafe_PHOTO_01.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/#webpage",
+      "url": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/",
+      "name": "Edificio de Ciencias Biomédicas | Esencial",
+      "description": "Edificio de Ciencias Biomédicas is an architecture project by Esencial in Madrid.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "en",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/#project",
+      "url": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/",
+      "name": "Edificio de Ciencias Biomédicas",
+      "description": "Edificio de Ciencias Biomédicas is an architecture project by Esencial in Madrid.",
+      "inLanguage": "en",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2020/07/Getafe_PHOTO_01.jpg",
+        "https://www.esencial.se/wp-content/uploads/2020/07/Getafe_DWG_02.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projects",
+          "item": "https://www.esencial.se/projects/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Edificio de Ciencias Biomédicas",
+          "item": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

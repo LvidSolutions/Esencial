@@ -25,25 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Highrise in Wood",
-  "description": "Highrise in Wood is an architecture project by Esencial.",
-  "url": "https://www.esencial.se/projects/highrise-in-wood/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2018/12/4_highriseinwood_photo_01.jpg",
-    "https://www.esencial.se/wp-content/uploads/2018/12/4_highriseinwood_draw_01.png"
-  ],
-  "inLanguage": "en",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projekt/highrise-in-wood/",
-    "inLanguage": "sv"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projects/highrise-in-wood/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2018/12/4_highriseinwood_photo_01.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2018/12/4_highriseinwood_photo_01.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projects/highrise-in-wood/#webpage",
+      "url": "https://www.esencial.se/projects/highrise-in-wood/",
+      "name": "Highrise in Wood | Esencial",
+      "description": "Highrise in Wood is an architecture project by Esencial.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "en",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projects/highrise-in-wood/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projects/highrise-in-wood/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projects/highrise-in-wood/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projects/highrise-in-wood/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projects/highrise-in-wood/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projects/highrise-in-wood/#project",
+      "url": "https://www.esencial.se/projects/highrise-in-wood/",
+      "name": "Highrise in Wood",
+      "description": "Highrise in Wood is an architecture project by Esencial.",
+      "inLanguage": "en",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2018/12/4_highriseinwood_photo_01.jpg",
+        "https://www.esencial.se/wp-content/uploads/2018/12/4_highriseinwood_draw_01.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projects/highrise-in-wood/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projects/highrise-in-wood/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projects",
+          "item": "https://www.esencial.se/projects/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Highrise in Wood",
+          "item": "https://www.esencial.se/projects/highrise-in-wood/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

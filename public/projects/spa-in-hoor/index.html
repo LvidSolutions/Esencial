@@ -25,29 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Spa in Höör",
-  "description": "The new relax section is located on a slope between an existing courtyard and a nature area with oak trees that are a hundred years old.",
-  "url": "https://www.esencial.se/projects/spa-in-hoor/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2018/12/3_spahoor_photo_03.jpg",
-    "https://www.esencial.se/wp-content/uploads/2018/12/3_spahoor_draw_01.png"
-  ],
-  "inLanguage": "en",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": "Höör"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projekt/spa-in-hoor/",
-    "inLanguage": "sv"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projects/spa-in-hoor/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2018/12/3_spahoor_photo_03.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2018/12/3_spahoor_photo_03.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projects/spa-in-hoor/#webpage",
+      "url": "https://www.esencial.se/projects/spa-in-hoor/",
+      "name": "Spa in Höör | Esencial",
+      "description": "The new relax section is located on a slope between an existing courtyard and a nature area with oak trees that are a hundred years old.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "en",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projects/spa-in-hoor/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projects/spa-in-hoor/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projects/spa-in-hoor/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projects/spa-in-hoor/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projects/spa-in-hoor/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projects/spa-in-hoor/#project",
+      "url": "https://www.esencial.se/projects/spa-in-hoor/",
+      "name": "Spa in Höör",
+      "description": "The new relax section is located on a slope between an existing courtyard and a nature area with oak trees that are a hundred years old.",
+      "inLanguage": "en",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2018/12/3_spahoor_photo_03.jpg",
+        "https://www.esencial.se/wp-content/uploads/2018/12/3_spahoor_draw_01.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projects/spa-in-hoor/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projects/spa-in-hoor/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projects",
+          "item": "https://www.esencial.se/projects/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Spa in Höör",
+          "item": "https://www.esencial.se/projects/spa-in-hoor/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

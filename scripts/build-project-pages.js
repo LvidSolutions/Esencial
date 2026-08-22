@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { BASE_URL, PUBLIC_DIR, ROOT, ensureDir } = require("./recovery-utils");
+const { buildPageGraph, serializeStructuredData } = require("./lib/schema/entity-graph");
 
 const SITE_NAME = "Esencial";
 const IMAGE_MANIFEST_FILE = path.join(ROOT, "content", "image-variants.json");
@@ -140,29 +141,28 @@ function languageLinks(project, language, translations) {
   ].join("\n");
 }
 
-function projectSchema(project, language, translations) {
-  const currentUrl = `${BASE_URL}${projectUrl(language, project)}`;
-  const otherLanguage = language === "sv" ? "en" : "sv";
-  const translated = translations[otherLanguage].get(project.id);
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "CreativeWork",
-    name: project.title,
-    description: projectDescription(project, language),
-    url: currentUrl,
-    image: project.images.map(image => absoluteUrl(image.src)),
-    inLanguage: language,
-    creator: { "@type": "Organization", name: SITE_NAME, url: BASE_URL },
-    ...(project.location ? { locationCreated: { "@type": "Place", name: project.location } } : {}),
-    ...(translated ? { workTranslation: { "@type": "CreativeWork", url: `${BASE_URL}${projectUrl(otherLanguage, translated)}`, inLanguage: otherLanguage } } : {})
-  };
-  return JSON.stringify(schema, null, 2);
-}
-
 function pageHtml(project, language, translations, projectsById) {
   const config = LANGUAGE_CONFIG[language];
   const title = project.seoTitle || `${project.title} | ${SITE_NAME}`;
   const description = projectDescription(project, language);
+  const canonicalUrl = `${BASE_URL}${projectUrl(language, project)}`;
+  const structuredData = buildPageGraph({
+    pageType: "WebPage",
+    canonicalUrl,
+    title,
+    description,
+    language,
+    primaryImage: absoluteUrl(project.images[0].src),
+    project: {
+      name: project.title,
+      description,
+      images: project.images.map(image => absoluteUrl(image.src))
+    },
+    breadcrumbs: [
+      { name: config.overviewLabel, url: `${BASE_URL}${config.overview}` },
+      { name: project.title, url: canonicalUrl }
+    ]
+  });
   const visibleDescriptionLanguage = project.descriptionLanguage && project.descriptionLanguage !== language ? ` lang="${escapeHtml(project.descriptionLanguage)}"` : "";
   const imageMarkup = project.images.map((image, index) => {
     const responsive = responsiveImageAttributes(image, index);
@@ -208,7 +208,7 @@ function pageHtml(project, language, translations, projectsById) {
   <link rel="stylesheet" href="/wp-content/themes/esencial/css/styles.css">
   <link rel="stylesheet" href="/assets/css/project-pages.css">
   <script type="application/ld+json">
-${projectSchema(project, language, translations)}
+${serializeStructuredData(structuredData)}
   </script>
 </head>
 <body class="project-page">

@@ -25,29 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Norra Kanalområdets utomhusscen",
-  "description": "Den nya scenbyggnaden placeras centralt i Norra Kanalområdet och hjälper att organisera flöden i den framtida parken",
-  "url": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2023/11/Karlsborg_photo_01.jpg",
-    "https://www.esencial.se/wp-content/uploads/2023/11/Karlsborg_DWG_01.png"
-  ],
-  "inLanguage": "sv",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": "Karlsborg"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projects/norra-kanalomradets-utomhusscen/",
-    "inLanguage": "en"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2023/11/Karlsborg_photo_01.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2023/11/Karlsborg_photo_01.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/#webpage",
+      "url": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/",
+      "name": "Norra Kanalområdets utomhusscen | Esencial",
+      "description": "Den nya scenbyggnaden placeras centralt i Norra Kanalområdet och hjälper att organisera flöden i den framtida parken",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "sv",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/#project",
+      "url": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/",
+      "name": "Norra Kanalområdets utomhusscen",
+      "description": "Den nya scenbyggnaden placeras centralt i Norra Kanalområdet och hjälper att organisera flöden i den framtida parken",
+      "inLanguage": "sv",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2023/11/Karlsborg_photo_01.jpg",
+        "https://www.esencial.se/wp-content/uploads/2023/11/Karlsborg_DWG_01.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projekt",
+          "item": "https://www.esencial.se/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Norra Kanalområdets utomhusscen",
+          "item": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

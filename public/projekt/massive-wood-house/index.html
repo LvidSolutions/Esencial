@@ -25,25 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Massive Wood House",
-  "description": "Målsättningen är att skapa ett typhus i massivträ som såväl ensamt som i grupp kan bli en integrerad del av natur- och kulturlandskapet.",
-  "url": "https://www.esencial.se/projekt/massive-wood-house/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2018/12/8_massivewoodhouse_photo_01.jpg",
-    "https://www.esencial.se/wp-content/uploads/2018/12/8_massivewoodhouse_draw_01.png"
-  ],
-  "inLanguage": "sv",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projects/massive-wood-house/",
-    "inLanguage": "en"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projekt/massive-wood-house/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2018/12/8_massivewoodhouse_photo_01.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2018/12/8_massivewoodhouse_photo_01.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projekt/massive-wood-house/#webpage",
+      "url": "https://www.esencial.se/projekt/massive-wood-house/",
+      "name": "Massive Wood House | Esencial",
+      "description": "Målsättningen är att skapa ett typhus i massivträ som såväl ensamt som i grupp kan bli en integrerad del av natur- och kulturlandskapet.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "sv",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projekt/massive-wood-house/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projekt/massive-wood-house/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projekt/massive-wood-house/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projekt/massive-wood-house/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projekt/massive-wood-house/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projekt/massive-wood-house/#project",
+      "url": "https://www.esencial.se/projekt/massive-wood-house/",
+      "name": "Massive Wood House",
+      "description": "Målsättningen är att skapa ett typhus i massivträ som såväl ensamt som i grupp kan bli en integrerad del av natur- och kulturlandskapet.",
+      "inLanguage": "sv",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2018/12/8_massivewoodhouse_photo_01.jpg",
+        "https://www.esencial.se/wp-content/uploads/2018/12/8_massivewoodhouse_draw_01.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projekt/massive-wood-house/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projekt/massive-wood-house/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projekt",
+          "item": "https://www.esencial.se/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Massive Wood House",
+          "item": "https://www.esencial.se/projekt/massive-wood-house/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

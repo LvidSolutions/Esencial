@@ -25,29 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Träbyn",
-  "description": "Träbyn is an architecture project by Esencial in Ekhagen, Jönköping.",
-  "url": "https://www.esencial.se/projects/ekhagen/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2018/12/Ekhagen_photo_01-1.jpg",
-    "https://www.esencial.se/wp-content/uploads/2018/12/jonkoping_dwg_02.png"
-  ],
-  "inLanguage": "en",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": "Ekhagen, Jönköping"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projekt/ekhagen/",
-    "inLanguage": "sv"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projects/ekhagen/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2018/12/Ekhagen_photo_01-1.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2018/12/Ekhagen_photo_01-1.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projects/ekhagen/#webpage",
+      "url": "https://www.esencial.se/projects/ekhagen/",
+      "name": "Träbyn | Esencial",
+      "description": "Träbyn is an architecture project by Esencial in Ekhagen, Jönköping.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "en",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projects/ekhagen/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projects/ekhagen/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projects/ekhagen/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projects/ekhagen/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projects/ekhagen/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projects/ekhagen/#project",
+      "url": "https://www.esencial.se/projects/ekhagen/",
+      "name": "Träbyn",
+      "description": "Träbyn is an architecture project by Esencial in Ekhagen, Jönköping.",
+      "inLanguage": "en",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2018/12/Ekhagen_photo_01-1.jpg",
+        "https://www.esencial.se/wp-content/uploads/2018/12/jonkoping_dwg_02.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projects/ekhagen/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projects/ekhagen/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projects",
+          "item": "https://www.esencial.se/projects/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Träbyn",
+          "item": "https://www.esencial.se/projects/ekhagen/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

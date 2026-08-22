@@ -25,29 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Ny verkstadsbyggnad Museene i Akterhus",
-  "description": "Verksamheten äger rum kring en samlande Verkstadsgata.",
-  "url": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2023/11/Mia_photo_01.jpg",
-    "https://www.esencial.se/wp-content/uploads/2023/11/Mia_DWG_01.png"
-  ],
-  "inLanguage": "sv",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": "Drøbak, Norge"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projects/ny-verkstadsbyggnad-museene-i-akterhus/",
-    "inLanguage": "en"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2023/11/Mia_photo_01.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2023/11/Mia_photo_01.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/#webpage",
+      "url": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/",
+      "name": "Ny verkstadsbyggnad Museene i Akterhus | Esencial",
+      "description": "Verksamheten äger rum kring en samlande Verkstadsgata.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "sv",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/#project",
+      "url": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/",
+      "name": "Ny verkstadsbyggnad Museene i Akterhus",
+      "description": "Verksamheten äger rum kring en samlande Verkstadsgata.",
+      "inLanguage": "sv",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2023/11/Mia_photo_01.jpg",
+        "https://www.esencial.se/wp-content/uploads/2023/11/Mia_DWG_01.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projekt",
+          "item": "https://www.esencial.se/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Ny verkstadsbyggnad Museene i Akterhus",
+          "item": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

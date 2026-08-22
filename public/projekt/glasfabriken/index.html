@@ -25,29 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Glasfabriken",
-  "description": "Den befintliga industribyggnaden är byggd på 50-talet för att inrymma en glasfabrik.",
-  "url": "https://www.esencial.se/projekt/glasfabriken/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2018/12/Pasen_PHOTO_01-1.jpg",
-    "https://www.esencial.se/wp-content/uploads/2018/12/Pasen_DWG_01_b.png"
-  ],
-  "inLanguage": "sv",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": "Virkesvägen, Stockholm"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projects/glasfabriken/",
-    "inLanguage": "en"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projekt/glasfabriken/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2018/12/Pasen_PHOTO_01-1.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2018/12/Pasen_PHOTO_01-1.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projekt/glasfabriken/#webpage",
+      "url": "https://www.esencial.se/projekt/glasfabriken/",
+      "name": "Glasfabriken | Esencial",
+      "description": "Den befintliga industribyggnaden är byggd på 50-talet för att inrymma en glasfabrik.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "sv",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projekt/glasfabriken/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projekt/glasfabriken/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projekt/glasfabriken/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projekt/glasfabriken/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projekt/glasfabriken/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projekt/glasfabriken/#project",
+      "url": "https://www.esencial.se/projekt/glasfabriken/",
+      "name": "Glasfabriken",
+      "description": "Den befintliga industribyggnaden är byggd på 50-talet för att inrymma en glasfabrik.",
+      "inLanguage": "sv",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2018/12/Pasen_PHOTO_01-1.jpg",
+        "https://www.esencial.se/wp-content/uploads/2018/12/Pasen_DWG_01_b.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projekt/glasfabriken/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projekt/glasfabriken/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projekt",
+          "item": "https://www.esencial.se/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Glasfabriken",
+          "item": "https://www.esencial.se/projekt/glasfabriken/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

@@ -25,29 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Södertälje",
-  "description": "Södertälje Centrums stationstorg har idag en speciell rumslighet som är resultatet av hundrasextio års utveckling kopplad till järnvägen.",
-  "url": "https://www.esencial.se/projekt/sodertalje/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2018/12/sodertalje_photo_01.jpg",
-    "https://www.esencial.se/wp-content/uploads/2018/12/sodertalje_dwg_06.png"
-  ],
-  "inLanguage": "sv",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "locationCreated": {
-    "@type": "Place",
-    "name": "Södertälje"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projects/sodertalje/",
-    "inLanguage": "en"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projekt/sodertalje/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2018/12/sodertalje_photo_01.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2018/12/sodertalje_photo_01.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projekt/sodertalje/#webpage",
+      "url": "https://www.esencial.se/projekt/sodertalje/",
+      "name": "Södertälje | Esencial",
+      "description": "Södertälje Centrums stationstorg har idag en speciell rumslighet som är resultatet av hundrasextio års utveckling kopplad till järnvägen.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "sv",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projekt/sodertalje/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projekt/sodertalje/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projekt/sodertalje/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projekt/sodertalje/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projekt/sodertalje/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projekt/sodertalje/#project",
+      "url": "https://www.esencial.se/projekt/sodertalje/",
+      "name": "Södertälje",
+      "description": "Södertälje Centrums stationstorg har idag en speciell rumslighet som är resultatet av hundrasextio års utveckling kopplad till järnvägen.",
+      "inLanguage": "sv",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2018/12/sodertalje_photo_01.jpg",
+        "https://www.esencial.se/wp-content/uploads/2018/12/sodertalje_dwg_06.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projekt/sodertalje/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projekt/sodertalje/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projekt",
+          "item": "https://www.esencial.se/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Södertälje",
+          "item": "https://www.esencial.se/projekt/sodertalje/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 

@@ -32,48 +32,11 @@
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": ["Organization", "ProfessionalService"],
+      "@type": "Organization",
       "@id": "https://www.esencial.se/#organization",
       "name": "Esencial",
       "legalName": "Esencial AB",
-      "url": "https://www.esencial.se/",
-      "description": "Esencial is a progressive architecture office based in Stockholm, developing projects from concept to built architecture.",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Ragvaldsgatan 19B",
-        "postalCode": "11846",
-        "addressLocality": "Stockholm",
-        "addressCountry": "SE"
-      },
-      "email": "contact@esencial.se",
-      "sameAs": [
-        "https://www.instagram.com/esencial_se/",
-        "https://www.facebook.com/esencialarkitekter/"
-      ],
-      "founder": [
-        {
-          "@type": "Person",
-          "name": "Carmen Izquierdo",
-          "sameAs": "https://www.linkedin.com/in/carmen-izquierdo-56388418/"
-        },
-        {
-          "@type": "Person",
-          "name": "Mariano Tellechea",
-          "sameAs": "https://www.linkedin.com/in/mariano-tellechea-58661512a/"
-        }
-      ],
-      "areaServed": {
-        "@type": "Country",
-        "name": "Sweden"
-      },
-      "knowsAbout": [
-        "Architecture",
-        "Urban development",
-        "Housing",
-        "Public buildings",
-        "Timber architecture",
-        "Office architecture"
-      ]
+      "url": "https://www.esencial.se/"
     },
     {
       "@type": "WebSite",
@@ -83,10 +46,19 @@
       "publisher": {
         "@id": "https://www.esencial.se/#organization"
       },
-      "inLanguage": ["sv", "en"]
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
     },
     {
-      "@type": "WebPage",
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2018/12/Ekhagen_photo_01-1-768x520.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2018/12/Ekhagen_photo_01-1-768x520.jpg"
+    },
+    {
+      "@type": "CollectionPage",
       "@id": "https://www.esencial.se/#webpage",
       "url": "https://www.esencial.se/",
       "name": "Esencial | Arkitektur och projekt i Stockholm",
@@ -94,13 +66,19 @@
       "isPartOf": {
         "@id": "https://www.esencial.se/#website"
       },
-      "about": {
-        "@id": "https://www.esencial.se/#organization"
-      },
       "publisher": {
         "@id": "https://www.esencial.se/#organization"
       },
-      "inLanguage": "sv"
+      "inLanguage": "sv",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/#organization"
+      }
     }
   ]
 }

@@ -25,25 +25,99 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CreativeWork",
-  "name": "Kulturhuset i Skellefteå",
-  "description": "Vi föreslår ett hus med generositet i de gemensamma ytorna, ett hus som bjuder in till spontana möten och som lämnar plats för medborgarnas initiativ att ta form.",
-  "url": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/",
-  "image": [
-    "https://www.esencial.se/wp-content/uploads/2018/12/7_kulturhuset_photo_01.jpg",
-    "https://www.esencial.se/wp-content/uploads/2018/12/7_kulturhuset_draw_01.png"
-  ],
-  "inLanguage": "sv",
-  "creator": {
-    "@type": "Organization",
-    "name": "Esencial",
-    "url": "https://www.esencial.se"
-  },
-  "workTranslation": {
-    "@type": "CreativeWork",
-    "url": "https://www.esencial.se/projects/kulturhuset-i-skelleftea/",
-    "inLanguage": "en"
-  }
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.esencial.se/#organization",
+      "name": "Esencial",
+      "legalName": "Esencial AB",
+      "url": "https://www.esencial.se/"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.esencial.se/#website",
+      "url": "https://www.esencial.se/",
+      "name": "Esencial",
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": [
+        "sv",
+        "en"
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "@id": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/#primaryimage",
+      "url": "https://www.esencial.se/wp-content/uploads/2018/12/7_kulturhuset_photo_01.jpg",
+      "contentUrl": "https://www.esencial.se/wp-content/uploads/2018/12/7_kulturhuset_photo_01.jpg"
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/#webpage",
+      "url": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/",
+      "name": "Kulturhuset i Skellefteå | Esencial",
+      "description": "Vi föreslår ett hus med generositet i de gemensamma ytorna, ett hus som bjuder in till spontana möten och som lämnar plats för medborgarnas initiativ att ta form.",
+      "isPartOf": {
+        "@id": "https://www.esencial.se/#website"
+      },
+      "publisher": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "inLanguage": "sv",
+      "primaryImageOfPage": {
+        "@id": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/#primaryimage"
+      },
+      "image": {
+        "@id": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/#primaryimage"
+      },
+      "about": {
+        "@id": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/#project"
+      },
+      "mainEntity": {
+        "@id": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/#project"
+      },
+      "breadcrumb": {
+        "@id": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/#breadcrumb"
+      }
+    },
+    {
+      "@type": "CreativeWork",
+      "@id": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/#project",
+      "url": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/",
+      "name": "Kulturhuset i Skellefteå",
+      "description": "Vi föreslår ett hus med generositet i de gemensamma ytorna, ett hus som bjuder in till spontana möten och som lämnar plats för medborgarnas initiativ att ta form.",
+      "inLanguage": "sv",
+      "image": [
+        "https://www.esencial.se/wp-content/uploads/2018/12/7_kulturhuset_photo_01.jpg",
+        "https://www.esencial.se/wp-content/uploads/2018/12/7_kulturhuset_draw_01.png"
+      ],
+      "creator": {
+        "@id": "https://www.esencial.se/#organization"
+      },
+      "mainEntityOfPage": {
+        "@id": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/#webpage"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Projekt",
+          "item": "https://www.esencial.se/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Kulturhuset i Skellefteå",
+          "item": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/"
+        }
+      ]
+    }
+  ]
 }
   </script>
 
