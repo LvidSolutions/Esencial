@@ -3,7 +3,7 @@ const path = require('path')
 const {ROOT} = require('./recovery-utils')
 
 const publicDirectory = path.join(ROOT, 'public')
-const marker = /\n?<!-- ESENCIAL_ANALYTICS_START -->[\s\S]*?<!-- ESENCIAL_ANALYTICS_END -->\n?/g
+const marker = /[\t\r\n ]*<!-- ESENCIAL_ANALYTICS_START -->[\s\S]*?<!-- ESENCIAL_ANALYTICS_END -->[\t\r\n ]*/g
 const ignoredDirectories = new Set([
   'ESENCIAL%20%7C%20PROJEKT',
   path.join('about', 'ESENCIAL%20%7C%20PROJEKT'),

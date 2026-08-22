@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "counts": {
+    "sitemapPages": 56,
+    "swedishPages": 28,
+    "englishPages": 28,
+    "crossLanguageVisibleExcerpts": 9,
+    "warnings": 0,
+    "errors": 0
+  },
+  "checks": {
+    "pairedSourceRecords": true,
+    "exactHreflangClusters": true,
+    "metadataParity": true,
+    "languageMarkup": true
+  },
+  "warnings": [],
+  "errors": []
+}

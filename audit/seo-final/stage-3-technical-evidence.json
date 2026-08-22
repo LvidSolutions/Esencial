@@ -1,0 +1,307 @@
+{
+  "status": "passed",
+  "canonicalOrigin": "https://www.esencial.se",
+  "canonicalPolicy": "lowercase HTTPS www URLs with a trailing slash except the site root",
+  "counts": {
+    "discoveredHtmlPages": 56,
+    "checkedRoutes": 56,
+    "indexablePages": 56,
+    "sitemapUrls": 56,
+    "sitemapLastmods": 0,
+    "uniqueCanonicals": 56,
+    "warnings": 0,
+    "errors": 0
+  },
+  "checks": {
+    "robots": true,
+    "sitemap": true,
+    "vercelRouting": true,
+    "exactIndexableSitemapSet": true,
+    "uniqueCanonicals": true,
+    "pageChecks": true
+  },
+  "routes": [
+    {
+      "route": "/",
+      "canonical": "https://www.esencial.se/",
+      "indexable": true
+    },
+    {
+      "route": "/about/",
+      "canonical": "https://www.esencial.se/about/",
+      "indexable": true
+    },
+    {
+      "route": "/om-oss/",
+      "canonical": "https://www.esencial.se/om-oss/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/",
+      "canonical": "https://www.esencial.se/projects/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/5-hus/",
+      "canonical": "https://www.esencial.se/projects/5-hus/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/arstafaltet/",
+      "canonical": "https://www.esencial.se/projects/arstafaltet/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/domkyrkoforum/",
+      "canonical": "https://www.esencial.se/projects/domkyrkoforum/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/edificio-de-ciencias-biomedicas/",
+      "canonical": "https://www.esencial.se/projects/edificio-de-ciencias-biomedicas/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/ekhagen/",
+      "canonical": "https://www.esencial.se/projects/ekhagen/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/essinge-dwellings/",
+      "canonical": "https://www.esencial.se/projects/essinge-dwellings/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/glasfabriken/",
+      "canonical": "https://www.esencial.se/projects/glasfabriken/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/hamnbadet/",
+      "canonical": "https://www.esencial.se/projects/hamnbadet/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/highrise-in-wood/",
+      "canonical": "https://www.esencial.se/projects/highrise-in-wood/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/hubba/",
+      "canonical": "https://www.esencial.se/projects/hubba/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/kemeri-national-park-observation-tower/",
+      "canonical": "https://www.esencial.se/projects/kemeri-national-park-observation-tower/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/kulturhuset-i-skelleftea/",
+      "canonical": "https://www.esencial.se/projects/kulturhuset-i-skelleftea/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/kusttradgarden/",
+      "canonical": "https://www.esencial.se/projects/kusttradgarden/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/lss-bostader-och-kontorsbyggnad-kiruna/",
+      "canonical": "https://www.esencial.se/projects/lss-bostader-och-kontorsbyggnad-kiruna/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/maritim-museum/",
+      "canonical": "https://www.esencial.se/projects/maritim-museum/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/massive-wood-house/",
+      "canonical": "https://www.esencial.se/projects/massive-wood-house/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/norra-kanalomradets-utomhusscen/",
+      "canonical": "https://www.esencial.se/projects/norra-kanalomradets-utomhusscen/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/ny-verkstadsbyggnad-museene-i-akterhus/",
+      "canonical": "https://www.esencial.se/projects/ny-verkstadsbyggnad-museene-i-akterhus/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/plaza-del-almacen/",
+      "canonical": "https://www.esencial.se/projects/plaza-del-almacen/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/sara-hilden-museumtillbyggnad/",
+      "canonical": "https://www.esencial.se/projects/sara-hilden-museumtillbyggnad/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/sodertalje/",
+      "canonical": "https://www.esencial.se/projects/sodertalje/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/spa-in-hoor/",
+      "canonical": "https://www.esencial.se/projects/spa-in-hoor/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/strandangen-kallbadhus/",
+      "canonical": "https://www.esencial.se/projects/strandangen-kallbadhus/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/strangnas-domkyrka-med-domkyrkoberget/",
+      "canonical": "https://www.esencial.se/projects/strangnas-domkyrka-med-domkyrkoberget/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/the-forest-of-venice/",
+      "canonical": "https://www.esencial.se/projects/the-forest-of-venice/",
+      "indexable": true
+    },
+    {
+      "route": "/projects/visioner-i-norr-rum-for-egenmakt-ett-mikrosystem-for-manga-mojliga-framtider/",
+      "canonical": "https://www.esencial.se/projects/visioner-i-norr-rum-for-egenmakt-ett-mikrosystem-for-manga-mojliga-framtider/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/5-hus/",
+      "canonical": "https://www.esencial.se/projekt/5-hus/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/arstafaltet/",
+      "canonical": "https://www.esencial.se/projekt/arstafaltet/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/domkyrkoforum/",
+      "canonical": "https://www.esencial.se/projekt/domkyrkoforum/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/edificio-de-ciencias-biomedicas/",
+      "canonical": "https://www.esencial.se/projekt/edificio-de-ciencias-biomedicas/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/ekhagen/",
+      "canonical": "https://www.esencial.se/projekt/ekhagen/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/essinge-dwellings/",
+      "canonical": "https://www.esencial.se/projekt/essinge-dwellings/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/glasfabriken/",
+      "canonical": "https://www.esencial.se/projekt/glasfabriken/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/hamnbadet/",
+      "canonical": "https://www.esencial.se/projekt/hamnbadet/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/highrise-in-wood/",
+      "canonical": "https://www.esencial.se/projekt/highrise-in-wood/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/hubba/",
+      "canonical": "https://www.esencial.se/projekt/hubba/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/kemeri-national-park-observation-tower/",
+      "canonical": "https://www.esencial.se/projekt/kemeri-national-park-observation-tower/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/kulturhuset-i-skelleftea/",
+      "canonical": "https://www.esencial.se/projekt/kulturhuset-i-skelleftea/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/kusttradgarden/",
+      "canonical": "https://www.esencial.se/projekt/kusttradgarden/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/lss-bostader-och-kontorsbyggnad-kiruna/",
+      "canonical": "https://www.esencial.se/projekt/lss-bostader-och-kontorsbyggnad-kiruna/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/maritim-museum/",
+      "canonical": "https://www.esencial.se/projekt/maritim-museum/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/massive-wood-house/",
+      "canonical": "https://www.esencial.se/projekt/massive-wood-house/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/norra-kanalomradets-utomhusscen/",
+      "canonical": "https://www.esencial.se/projekt/norra-kanalomradets-utomhusscen/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/ny-verkstadsbyggnad-museene-i-akterhus/",
+      "canonical": "https://www.esencial.se/projekt/ny-verkstadsbyggnad-museene-i-akterhus/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/plaza-del-almacen/",
+      "canonical": "https://www.esencial.se/projekt/plaza-del-almacen/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/sara-hilden-museumtillbyggnad/",
+      "canonical": "https://www.esencial.se/projekt/sara-hilden-museumtillbyggnad/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/sodertalje/",
+      "canonical": "https://www.esencial.se/projekt/sodertalje/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/spa-in-hoor/",
+      "canonical": "https://www.esencial.se/projekt/spa-in-hoor/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/strandangen-kallbadhus/",
+      "canonical": "https://www.esencial.se/projekt/strandangen-kallbadhus/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/strangnas-domkyrka-med-domkyrkoberget/",
+      "canonical": "https://www.esencial.se/projekt/strangnas-domkyrka-med-domkyrkoberget/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/the-forest-of-venice/",
+      "canonical": "https://www.esencial.se/projekt/the-forest-of-venice/",
+      "indexable": true
+    },
+    {
+      "route": "/projekt/visioner-i-norr-rum-for-egenmakt-ett-mikrosystem-for-manga-mojliga-framtider/",
+      "canonical": "https://www.esencial.se/projekt/visioner-i-norr-rum-for-egenmakt-ett-mikrosystem-for-manga-mojliga-framtider/",
+      "indexable": true
+    }
+  ],
+  "warnings": [],
+  "errors": []
+}

@@ -1,0 +1,417 @@
+{
+  "generatedAt": "2026-08-21T23:00:51.954Z",
+  "entries": {
+    "/wp-content/uploads/2018/12/1_domkyrkoforum_photo_01.jpg": {
+      "width": 800,
+      "height": 537,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/1-domkyrkoforum-photo-01-b20eea102c-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2018/12/1_domkyrkoforum_draw_01.png": {
+      "width": 1800,
+      "height": 1442,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2023/11/Blaparken_photo_01-1.jpg": {
+      "width": 800,
+      "height": 1136,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/blaparken-photo-01-1-021e1859b7-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2023/11/BLAPARKEN_DWG_01-1.png": {
+      "width": 800,
+      "height": 559,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/Ekhagen_photo_01-1.jpg": {
+      "width": 800,
+      "height": 542,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/ekhagen-photo-01-1-5fdf6bad76-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2018/12/jonkoping_dwg_02.png": {
+      "width": 1800,
+      "height": 1273,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/Pasen_PHOTO_01-1.jpg": {
+      "width": 800,
+      "height": 560,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/pasen-photo-01-1-ee996b3c99-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2018/12/Pasen_DWG_01_b.png": {
+      "width": 1796,
+      "height": 1409,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2023/11/Visionerinorr_PHOTO_03.jpg": {
+      "width": 800,
+      "height": 1001,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/visionerinorr-photo-03-91824bcc2f-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2023/11/Visionerinorr_DWG_01.png": {
+      "width": 800,
+      "height": 1560,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2023/11/KARANTANEN_PHOTO_03.jpg": {
+      "width": 800,
+      "height": 523,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/karantanen-photo-03-c9dcf74ade-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2023/11/KARANTANEN_DWG_01.png": {
+      "width": 800,
+      "height": 874,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2023/11/Karlsborg_photo_01.jpg": {
+      "width": 800,
+      "height": 688,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/karlsborg-photo-01-bb4aaf73b8-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2023/11/Karlsborg_DWG_01.png": {
+      "width": 800,
+      "height": 543,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2023/11/LSS_PHOTO_01.jpg": {
+      "width": 800,
+      "height": 434,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/lss-photo-01-1b03166c11-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2023/11/LSS_DWG_01.png": {
+      "width": 800,
+      "height": 666,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2023/11/Hilden_photo_02.jpg": {
+      "width": 800,
+      "height": 541,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/hilden-photo-02-a4f16fca28-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2023/11/Hilden_DWG_01.png": {
+      "width": 800,
+      "height": 1045,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2023/11/Mia_photo_01.jpg": {
+      "width": 800,
+      "height": 450,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/mia-photo-01-30753f1915-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2023/11/Mia_DWG_01.png": {
+      "width": 800,
+      "height": 727,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2020/07/Duved_PHOTO_01.jpg": {
+      "width": 533,
+      "height": 646,
+      "kind": "photo",
+      "variants": []
+    },
+    "/wp-content/uploads/2020/07/Duved_DWG_01.png": {
+      "width": 905,
+      "height": 1065,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2020/07/Kallbadhus_PHOTO_01.jpg": {
+      "width": 800,
+      "height": 640,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/kallbadhus-photo-01-6343d79e33-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2020/07/Kallbadhus_DWG_03.png": {
+      "width": 1571,
+      "height": 1800,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/Arstafaltet_PHOTO_01.jpg": {
+      "width": 800,
+      "height": 1200,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/arstafaltet-photo-01-57eba3b412-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2018/12/arstafaltet_dwg_00.png": {
+      "width": 1576,
+      "height": 1800,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2020/07/Getafe_PHOTO_01.jpg": {
+      "width": 800,
+      "height": 640,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/getafe-photo-01-a0c795d152-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2020/07/Getafe_DWG_02.png": {
+      "width": 1800,
+      "height": 1800,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2020/07/Domkyrkoberget_PHOTO_01.jpg": {
+      "width": 591,
+      "height": 800,
+      "kind": "photo",
+      "variants": []
+    },
+    "/wp-content/uploads/2020/07/Domkyrkoberget_DWG_01.jpg": {
+      "width": 576,
+      "height": 572,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/sodertalje_photo_01.jpg": {
+      "width": 800,
+      "height": 320,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/sodertalje-photo-01-eed4ca91a0-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2018/12/sodertalje_dwg_06.png": {
+      "width": 1800,
+      "height": 1228,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/hubba_photo_01.jpg": {
+      "width": 800,
+      "height": 533,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/hubba-photo-01-00e4017248-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2018/12/hubba_dwg_01.png": {
+      "width": 799,
+      "height": 800,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2020/07/Kemeri_PHOTO_01.jpg": {
+      "width": 560,
+      "height": 800,
+      "kind": "photo",
+      "variants": []
+    },
+    "/wp-content/uploads/2020/07/Kemeri_DWG_01.png": {
+      "width": 1303,
+      "height": 1800,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2020/07/Lanzarote_PHOTO_01.jpg": {
+      "width": 800,
+      "height": 800,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/lanzarote-photo-01-2d628d5cd6-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2020/07/Lanzarote_DWG_01.png": {
+      "width": 1800,
+      "height": 1662,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/5_essingedwellings_photo_01a.jpg": {
+      "width": 800,
+      "height": 640,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/5-essingedwellings-photo-01a-33a827d8b4-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2018/12/5_essingedwellings_draw_01.png": {
+      "width": 1800,
+      "height": 1800,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/3_spahoor_photo_03.jpg": {
+      "width": 640,
+      "height": 800,
+      "kind": "photo",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/3_spahoor_draw_01.png": {
+      "width": 1800,
+      "height": 1800,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/4_highriseinwood_photo_01.jpg": {
+      "width": 640,
+      "height": 800,
+      "kind": "photo",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/4_highriseinwood_draw_01.png": {
+      "width": 1800,
+      "height": 1800,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/1_theforestofvenice_photo_01.jpg": {
+      "width": 640,
+      "height": 800,
+      "kind": "photo",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/2_theforestofvenice_draw_01.png": {
+      "width": 1800,
+      "height": 1800,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/7_kulturhuset_photo_01.jpg": {
+      "width": 800,
+      "height": 640,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/7-kulturhuset-photo-01-846d431446-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2018/12/7_kulturhuset_draw_01.png": {
+      "width": 1800,
+      "height": 1800,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/6_maritimmuseum_photo_01.jpg": {
+      "width": 800,
+      "height": 640,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/6-maritimmuseum-photo-01-50e1a19299-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2018/12/6_maritimmuseum_draw_01.png": {
+      "width": 1800,
+      "height": 1800,
+      "kind": "drawing",
+      "variants": []
+    },
+    "/wp-content/uploads/2018/12/8_massivewoodhouse_photo_01.jpg": {
+      "width": 800,
+      "height": 640,
+      "kind": "photo",
+      "variants": [
+        {
+          "src": "/assets/images/project/8-massivewoodhouse-photo-01-9e9a1218c4-640.webp",
+          "width": 640
+        }
+      ]
+    },
+    "/wp-content/uploads/2018/12/8_massivewoodhouse_draw_01.png": {
+      "width": 1800,
+      "height": 1800,
+      "kind": "drawing",
+      "variants": []
+    }
+  }
+}

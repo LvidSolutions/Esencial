@@ -33,9 +33,14 @@ async function main() {
     const livePadded = padPng(live, width, height);
     const localPadded = padPng(local, width, height);
     const diff = new PNG({ width, height });
-    const diffPixels = pixelmatch(livePadded.data, localPadded.data, diff.data, width, height, {
+    const rawDiff = new PNG({ width, height });
+    const rawDiffPixels = pixelmatch(livePadded.data, localPadded.data, rawDiff.data, width, height, {
       threshold: 0.1,
       includeAA: true
+    });
+    const diffPixels = pixelmatch(livePadded.data, localPadded.data, diff.data, width, height, {
+      threshold: 0.1,
+      includeAA: false
     });
     const diffFile = path.join(SCREENSHOT_DIR, "diff", `${path.basename(capture.live, ".png")}.png`);
     fs.writeFileSync(diffFile, PNG.sync.write(diff));
@@ -47,6 +52,8 @@ async function main() {
       diff: diffFile,
       liveSize: `${live.width}x${live.height}`,
       localSize: `${local.width}x${local.height}`,
+      rawDiffPixels,
+      rawDiffPercent: Number(((rawDiffPixels / (width * height)) * 100).toFixed(4)),
       diffPixels,
       diffPercent: Number(((diffPixels / (width * height)) * 100).toFixed(4))
     });
@@ -55,11 +62,11 @@ async function main() {
   const report = [
     "# Visual Diff Report",
     "",
-    "| Page | Viewport | Difference | Live | Local | Diff | Notes |",
-    "| --- | --- | ---: | --- | --- | --- | --- |",
-    ...rows.map(row => `| ${row.page} | ${row.viewport} | ${row.diffPercent}% | ${path.relative(process.cwd(), row.live).replace(/\\/g, "/")} | ${path.relative(process.cwd(), row.local).replace(/\\/g, "/")} | ${path.relative(process.cwd(), row.diff).replace(/\\/g, "/")} | ${row.liveSize === row.localSize ? "Same screenshot dimensions." : `Different dimensions: live ${row.liveSize}, local ${row.localSize}.`} |`),
+    "| Page | Viewport | Tolerant difference | Raw difference | Live | Local | Diff | Notes |",
+    "| --- | --- | ---: | ---: | --- | --- | --- | --- |",
+    ...rows.map(row => `| ${row.page} | ${row.viewport} | ${row.diffPercent}% | ${row.rawDiffPercent}% | ${path.relative(process.cwd(), row.live).replace(/\\/g, "/")} | ${path.relative(process.cwd(), row.local).replace(/\\/g, "/")} | ${path.relative(process.cwd(), row.diff).replace(/\\/g, "/")} | ${row.liveSize === row.localSize ? "Same screenshot dimensions." : `Different dimensions: live ${row.liveSize}, local ${row.localSize}.`} |`),
     "",
-    "Differences are image-based and include minor dynamic rendering differences such as antialiasing, third-party request timing, and live-site animation state.",
+    "The tolerant metric excludes pixels identified as antialiasing by Pixelmatch. The raw metric retains them for diagnosis. Neither metric is a substitute for bounding-box, computed-style, and interaction checks.",
     ""
   ];
   fs.writeFileSync(path.join(AUDIT_DIR, "visual-diff-report.md"), report.join("\n"), "utf8");

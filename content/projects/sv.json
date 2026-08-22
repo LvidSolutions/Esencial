@@ -140,6 +140,7 @@
     "slug": "sara-hilden-museumtillbyggnad",
     "title": "Sara Hildén Museum",
     "location": "Tammerfors, Finland",
+    "descriptionLanguage": "en",
     "description": "While moving around the building a playful experience of spaces at eye level is orchestrated by the facetted building volume",
     "images": [
       {
@@ -293,6 +294,7 @@
     "slug": "kemeri-national-park-observation-tower",
     "title": "Kemeri National Park Observation tower",
     "location": "Kemeri",
+    "descriptionLanguage": "en",
     "description": "There are two possible ways of exploring the Kemeri National park by foot today.",
     "images": [
       {
@@ -310,6 +312,7 @@
     "slug": "plaza-del-almacen",
     "title": "Plaza del Almacén",
     "location": "Lanzarote",
+    "descriptionLanguage": "es",
     "description": "La plaza del almacén – Plaza",
     "images": [
       {

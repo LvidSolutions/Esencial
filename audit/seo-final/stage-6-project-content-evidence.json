@@ -1,0 +1,770 @@
+{
+  "generatedAt": "2026-08-21T22:58:12.513Z",
+  "languages": {
+    "sv": {
+      "projects": 26,
+      "missing": {
+        "location": [
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ],
+        "year": [
+          "domkyrkoforum",
+          "hamnbadet",
+          "ekhagen",
+          "glasfabriken",
+          "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "kusttradgarden",
+          "norra_kanalomradets_utomhusscen",
+          "lss_bostader_och_kontorsbyggnad_kiruna",
+          "sara_hilden_museumtillbyggnad",
+          "ny_verkstadsbyggnad_museene_i_akterhus",
+          "5_hus",
+          "strandangen_kallbadhus",
+          "arstafaltet",
+          "edificio_de_ciencias_biomedicas",
+          "strangnas_domkyrka_med_domkyrkoberget",
+          "sodertalje",
+          "hubba",
+          "kemeri_national_park_observation_tower",
+          "plaza_del_almacen",
+          "essinge_dwellings",
+          "spa_in_hoor",
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ],
+        "typology": [
+          "domkyrkoforum",
+          "hamnbadet",
+          "ekhagen",
+          "glasfabriken",
+          "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "kusttradgarden",
+          "norra_kanalomradets_utomhusscen",
+          "lss_bostader_och_kontorsbyggnad_kiruna",
+          "sara_hilden_museumtillbyggnad",
+          "ny_verkstadsbyggnad_museene_i_akterhus",
+          "5_hus",
+          "strandangen_kallbadhus",
+          "arstafaltet",
+          "edificio_de_ciencias_biomedicas",
+          "strangnas_domkyrka_med_domkyrkoberget",
+          "sodertalje",
+          "hubba",
+          "kemeri_national_park_observation_tower",
+          "plaza_del_almacen",
+          "essinge_dwellings",
+          "spa_in_hoor",
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ],
+        "client": [
+          "domkyrkoforum",
+          "hamnbadet",
+          "ekhagen",
+          "glasfabriken",
+          "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "kusttradgarden",
+          "norra_kanalomradets_utomhusscen",
+          "lss_bostader_och_kontorsbyggnad_kiruna",
+          "sara_hilden_museumtillbyggnad",
+          "ny_verkstadsbyggnad_museene_i_akterhus",
+          "5_hus",
+          "strandangen_kallbadhus",
+          "arstafaltet",
+          "edificio_de_ciencias_biomedicas",
+          "strangnas_domkyrka_med_domkyrkoberget",
+          "sodertalje",
+          "hubba",
+          "kemeri_national_park_observation_tower",
+          "plaza_del_almacen",
+          "essinge_dwellings",
+          "spa_in_hoor",
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ],
+        "team": [
+          "domkyrkoforum",
+          "hamnbadet",
+          "ekhagen",
+          "glasfabriken",
+          "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "kusttradgarden",
+          "norra_kanalomradets_utomhusscen",
+          "lss_bostader_och_kontorsbyggnad_kiruna",
+          "sara_hilden_museumtillbyggnad",
+          "ny_verkstadsbyggnad_museene_i_akterhus",
+          "5_hus",
+          "strandangen_kallbadhus",
+          "arstafaltet",
+          "edificio_de_ciencias_biomedicas",
+          "strangnas_domkyrka_med_domkyrkoberget",
+          "sodertalje",
+          "hubba",
+          "kemeri_national_park_observation_tower",
+          "plaza_del_almacen",
+          "essinge_dwellings",
+          "spa_in_hoor",
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ],
+        "services": [
+          "domkyrkoforum",
+          "hamnbadet",
+          "ekhagen",
+          "glasfabriken",
+          "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "kusttradgarden",
+          "norra_kanalomradets_utomhusscen",
+          "lss_bostader_och_kontorsbyggnad_kiruna",
+          "sara_hilden_museumtillbyggnad",
+          "ny_verkstadsbyggnad_museene_i_akterhus",
+          "5_hus",
+          "strandangen_kallbadhus",
+          "arstafaltet",
+          "edificio_de_ciencias_biomedicas",
+          "strangnas_domkyrka_med_domkyrkoberget",
+          "sodertalje",
+          "hubba",
+          "kemeri_national_park_observation_tower",
+          "plaza_del_almacen",
+          "essinge_dwellings",
+          "spa_in_hoor",
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ],
+        "body": [
+          "domkyrkoforum",
+          "hamnbadet",
+          "ekhagen",
+          "glasfabriken",
+          "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "kusttradgarden",
+          "norra_kanalomradets_utomhusscen",
+          "lss_bostader_och_kontorsbyggnad_kiruna",
+          "sara_hilden_museumtillbyggnad",
+          "ny_verkstadsbyggnad_museene_i_akterhus",
+          "5_hus",
+          "strandangen_kallbadhus",
+          "arstafaltet",
+          "edificio_de_ciencias_biomedicas",
+          "strangnas_domkyrka_med_domkyrkoberget",
+          "sodertalje",
+          "hubba",
+          "kemeri_national_park_observation_tower",
+          "plaza_del_almacen",
+          "essinge_dwellings",
+          "spa_in_hoor",
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ],
+        "relatedProjectIds": [
+          "domkyrkoforum",
+          "hamnbadet",
+          "ekhagen",
+          "glasfabriken",
+          "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "kusttradgarden",
+          "norra_kanalomradets_utomhusscen",
+          "lss_bostader_och_kontorsbyggnad_kiruna",
+          "sara_hilden_museumtillbyggnad",
+          "ny_verkstadsbyggnad_museene_i_akterhus",
+          "5_hus",
+          "strandangen_kallbadhus",
+          "arstafaltet",
+          "edificio_de_ciencias_biomedicas",
+          "strangnas_domkyrka_med_domkyrkoberget",
+          "sodertalje",
+          "hubba",
+          "kemeri_national_park_observation_tower",
+          "plaza_del_almacen",
+          "essinge_dwellings",
+          "spa_in_hoor",
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ]
+      },
+      "shortIntroductions": [
+        "ekhagen",
+        "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+        "kusttradgarden",
+        "lss_bostader_och_kontorsbyggnad_kiruna",
+        "ny_verkstadsbyggnad_museene_i_akterhus",
+        "5_hus",
+        "arstafaltet",
+        "edificio_de_ciencias_biomedicas",
+        "hubba",
+        "plaza_del_almacen",
+        "essinge_dwellings",
+        "the_forest_of_venice"
+      ],
+      "genericIntroductions": [
+        "ekhagen",
+        "5_hus",
+        "arstafaltet",
+        "edificio_de_ciencias_biomedicas",
+        "hubba",
+        "the_forest_of_venice"
+      ],
+      "languageTaggedIntroductions": [
+        {
+          "id": "sara_hilden_museumtillbyggnad",
+          "language": "en"
+        },
+        {
+          "id": "kemeri_national_park_observation_tower",
+          "language": "en"
+        },
+        {
+          "id": "plaza_del_almacen",
+          "language": "es"
+        }
+      ]
+    },
+    "en": {
+      "projects": 26,
+      "missing": {
+        "location": [
+          "highrise_in_wood",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ],
+        "year": [
+          "domkyrkoforum",
+          "hamnbadet",
+          "ekhagen",
+          "glasfabriken",
+          "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "kusttradgarden",
+          "norra_kanalomradets_utomhusscen",
+          "lss_bostader_och_kontorsbyggnad_kiruna",
+          "sara_hilden_museumtillbyggnad",
+          "ny_verkstadsbyggnad_museene_i_akterhus",
+          "5_hus",
+          "strandangen_kallbadhus",
+          "arstafaltet",
+          "edificio_de_ciencias_biomedicas",
+          "strangnas_domkyrka_med_domkyrkoberget",
+          "sodertalje",
+          "hubba",
+          "kemeri_national_park_observation_tower",
+          "plaza_del_almacen",
+          "essinge_dwellings",
+          "spa_in_hoor",
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ],
+        "typology": [
+          "domkyrkoforum",
+          "hamnbadet",
+          "ekhagen",
+          "glasfabriken",
+          "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "kusttradgarden",
+          "norra_kanalomradets_utomhusscen",
+          "lss_bostader_och_kontorsbyggnad_kiruna",
+          "sara_hilden_museumtillbyggnad",
+          "ny_verkstadsbyggnad_museene_i_akterhus",
+          "5_hus",
+          "strandangen_kallbadhus",
+          "arstafaltet",
+          "edificio_de_ciencias_biomedicas",
+          "strangnas_domkyrka_med_domkyrkoberget",
+          "sodertalje",
+          "hubba",
+          "kemeri_national_park_observation_tower",
+          "plaza_del_almacen",
+          "essinge_dwellings",
+          "spa_in_hoor",
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ],
+        "client": [
+          "domkyrkoforum",
+          "hamnbadet",
+          "ekhagen",
+          "glasfabriken",
+          "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "kusttradgarden",
+          "norra_kanalomradets_utomhusscen",
+          "lss_bostader_och_kontorsbyggnad_kiruna",
+          "sara_hilden_museumtillbyggnad",
+          "ny_verkstadsbyggnad_museene_i_akterhus",
+          "5_hus",
+          "strandangen_kallbadhus",
+          "arstafaltet",
+          "edificio_de_ciencias_biomedicas",
+          "strangnas_domkyrka_med_domkyrkoberget",
+          "sodertalje",
+          "hubba",
+          "kemeri_national_park_observation_tower",
+          "plaza_del_almacen",
+          "essinge_dwellings",
+          "spa_in_hoor",
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ],
+        "team": [
+          "domkyrkoforum",
+          "hamnbadet",
+          "ekhagen",
+          "glasfabriken",
+          "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "kusttradgarden",
+          "norra_kanalomradets_utomhusscen",
+          "lss_bostader_och_kontorsbyggnad_kiruna",
+          "sara_hilden_museumtillbyggnad",
+          "ny_verkstadsbyggnad_museene_i_akterhus",
+          "5_hus",
+          "strandangen_kallbadhus",
+          "arstafaltet",
+          "edificio_de_ciencias_biomedicas",
+          "strangnas_domkyrka_med_domkyrkoberget",
+          "sodertalje",
+          "hubba",
+          "kemeri_national_park_observation_tower",
+          "plaza_del_almacen",
+          "essinge_dwellings",
+          "spa_in_hoor",
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ],
+        "services": [
+          "domkyrkoforum",
+          "hamnbadet",
+          "ekhagen",
+          "glasfabriken",
+          "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "kusttradgarden",
+          "norra_kanalomradets_utomhusscen",
+          "lss_bostader_och_kontorsbyggnad_kiruna",
+          "sara_hilden_museumtillbyggnad",
+          "ny_verkstadsbyggnad_museene_i_akterhus",
+          "5_hus",
+          "strandangen_kallbadhus",
+          "arstafaltet",
+          "edificio_de_ciencias_biomedicas",
+          "strangnas_domkyrka_med_domkyrkoberget",
+          "sodertalje",
+          "hubba",
+          "kemeri_national_park_observation_tower",
+          "plaza_del_almacen",
+          "essinge_dwellings",
+          "spa_in_hoor",
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ],
+        "body": [
+          "domkyrkoforum",
+          "hamnbadet",
+          "ekhagen",
+          "glasfabriken",
+          "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "kusttradgarden",
+          "norra_kanalomradets_utomhusscen",
+          "lss_bostader_och_kontorsbyggnad_kiruna",
+          "sara_hilden_museumtillbyggnad",
+          "ny_verkstadsbyggnad_museene_i_akterhus",
+          "5_hus",
+          "strandangen_kallbadhus",
+          "arstafaltet",
+          "edificio_de_ciencias_biomedicas",
+          "strangnas_domkyrka_med_domkyrkoberget",
+          "sodertalje",
+          "hubba",
+          "kemeri_national_park_observation_tower",
+          "plaza_del_almacen",
+          "essinge_dwellings",
+          "spa_in_hoor",
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ],
+        "relatedProjectIds": [
+          "domkyrkoforum",
+          "hamnbadet",
+          "ekhagen",
+          "glasfabriken",
+          "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "kusttradgarden",
+          "norra_kanalomradets_utomhusscen",
+          "lss_bostader_och_kontorsbyggnad_kiruna",
+          "sara_hilden_museumtillbyggnad",
+          "ny_verkstadsbyggnad_museene_i_akterhus",
+          "5_hus",
+          "strandangen_kallbadhus",
+          "arstafaltet",
+          "edificio_de_ciencias_biomedicas",
+          "strangnas_domkyrka_med_domkyrkoberget",
+          "sodertalje",
+          "hubba",
+          "kemeri_national_park_observation_tower",
+          "plaza_del_almacen",
+          "essinge_dwellings",
+          "spa_in_hoor",
+          "highrise_in_wood",
+          "the_forest_of_venice",
+          "kulturhuset_i_skelleftea",
+          "maritim_museum",
+          "massive_wood_house"
+        ]
+      },
+      "shortIntroductions": [
+        "ekhagen",
+        "glasfabriken",
+        "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+        "kusttradgarden",
+        "lss_bostader_och_kontorsbyggnad_kiruna",
+        "ny_verkstadsbyggnad_museene_i_akterhus",
+        "5_hus",
+        "strandangen_kallbadhus",
+        "arstafaltet",
+        "hubba",
+        "plaza_del_almacen",
+        "essinge_dwellings",
+        "highrise_in_wood"
+      ],
+      "genericIntroductions": [
+        "ekhagen",
+        "glasfabriken",
+        "5_hus",
+        "strandangen_kallbadhus",
+        "arstafaltet",
+        "edificio_de_ciencias_biomedicas",
+        "strangnas_domkyrka_med_domkyrkoberget",
+        "hubba",
+        "highrise_in_wood"
+      ],
+      "languageTaggedIntroductions": [
+        {
+          "id": "hamnbadet",
+          "language": "sv"
+        },
+        {
+          "id": "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+          "language": "sv"
+        },
+        {
+          "id": "kusttradgarden",
+          "language": "sv"
+        },
+        {
+          "id": "norra_kanalomradets_utomhusscen",
+          "language": "sv"
+        },
+        {
+          "id": "ny_verkstadsbyggnad_museene_i_akterhus",
+          "language": "sv"
+        },
+        {
+          "id": "plaza_del_almacen",
+          "language": "es"
+        }
+      ]
+    }
+  },
+  "requiresHumanApproval": [
+    {
+      "language": "sv",
+      "id": "domkyrkoforum",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "hamnbadet",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "ekhagen",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "glasfabriken",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "kusttradgarden",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "norra_kanalomradets_utomhusscen",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "lss_bostader_och_kontorsbyggnad_kiruna",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "sara_hilden_museumtillbyggnad",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "ny_verkstadsbyggnad_museene_i_akterhus",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "5_hus",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "strandangen_kallbadhus",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "arstafaltet",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "edificio_de_ciencias_biomedicas",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "strangnas_domkyrka_med_domkyrkoberget",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "sodertalje",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "hubba",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "kemeri_national_park_observation_tower",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "plaza_del_almacen",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "essinge_dwellings",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "spa_in_hoor",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "highrise_in_wood",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "the_forest_of_venice",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "kulturhuset_i_skelleftea",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "maritim_museum",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "sv",
+      "id": "massive_wood_house",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "domkyrkoforum",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "hamnbadet",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "ekhagen",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "glasfabriken",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "visioner_i_norr_rum_for_egenmakt_ett_mikrosystem_for_manga_mojliga_framtider",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "kusttradgarden",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "norra_kanalomradets_utomhusscen",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "lss_bostader_och_kontorsbyggnad_kiruna",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "sara_hilden_museumtillbyggnad",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "ny_verkstadsbyggnad_museene_i_akterhus",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "5_hus",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "strandangen_kallbadhus",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "arstafaltet",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "edificio_de_ciencias_biomedicas",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "strangnas_domkyrka_med_domkyrkoberget",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "sodertalje",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "hubba",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "kemeri_national_park_observation_tower",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "plaza_del_almacen",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "essinge_dwellings",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "spa_in_hoor",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "highrise_in_wood",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "the_forest_of_venice",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "kulturhuset_i_skelleftea",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "maritim_museum",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    },
+    {
+      "language": "en",
+      "id": "massive_wood_house",
+      "reason": "Missing optional public project facts or approved long-form narrative."
+    }
+  ]
+}

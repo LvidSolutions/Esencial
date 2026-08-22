@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "counts": {
+    "canonical200Responses": 56,
+    "canonicalRoutes": 56,
+    "slashless308Responses": 55,
+    "slashlessRoutes": 55,
+    "errors": 0
+  },
+  "checks": {
+    "canonicalRoutesReturn200": true,
+    "slashlessRoutesReturn308": true,
+    "missingRouteReturns404": true,
+    "uppercaseRouteReturns404": true,
+    "queryPreservedAcrossRedirect": true,
+    "robotsReturnsText200": true,
+    "sitemapReturnsXml200": true
+  },
+  "errors": []
+}

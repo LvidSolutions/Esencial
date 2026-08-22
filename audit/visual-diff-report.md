@@ -1,30 +1,46 @@
 # Visual Diff Report
 
-| Page | Viewport | Difference | Live | Local | Diff | Notes |
-| --- | --- | ---: | --- | --- | --- | --- |
-| / | desktop-1440x1200 | 0% | screenshots/live/home--desktop-1440x1200.png | screenshots/local/home--desktop-1440x1200.png | screenshots/diff/home--desktop-1440x1200.png | Same screenshot dimensions. |
-| /om-oss/ | desktop-1440x1200 | 0.5707% | screenshots/live/om-oss--desktop-1440x1200.png | screenshots/local/om-oss--desktop-1440x1200.png | screenshots/diff/om-oss--desktop-1440x1200.png | Same screenshot dimensions. |
-| /projects/ | desktop-1440x1200 | 0% | screenshots/live/projects--desktop-1440x1200.png | screenshots/local/projects--desktop-1440x1200.png | screenshots/diff/projects--desktop-1440x1200.png | Same screenshot dimensions. |
-| /about/ | desktop-1440x1200 | 0.5903% | screenshots/live/about--desktop-1440x1200.png | screenshots/local/about--desktop-1440x1200.png | screenshots/diff/about--desktop-1440x1200.png | Same screenshot dimensions. |
-| / | desktop-1280x1000 | 0% | screenshots/live/home--desktop-1280x1000.png | screenshots/local/home--desktop-1280x1000.png | screenshots/diff/home--desktop-1280x1000.png | Same screenshot dimensions. |
-| /om-oss/ | desktop-1280x1000 | 0.5% | screenshots/live/om-oss--desktop-1280x1000.png | screenshots/local/om-oss--desktop-1280x1000.png | screenshots/diff/om-oss--desktop-1280x1000.png | Same screenshot dimensions. |
-| /projects/ | desktop-1280x1000 | 0% | screenshots/live/projects--desktop-1280x1000.png | screenshots/local/projects--desktop-1280x1000.png | screenshots/diff/projects--desktop-1280x1000.png | Same screenshot dimensions. |
-| /about/ | desktop-1280x1000 | 0.5326% | screenshots/live/about--desktop-1280x1000.png | screenshots/local/about--desktop-1280x1000.png | screenshots/diff/about--desktop-1280x1000.png | Same screenshot dimensions. |
-| / | desktop-1024x900 | 0% | screenshots/live/home--desktop-1024x900.png | screenshots/local/home--desktop-1024x900.png | screenshots/diff/home--desktop-1024x900.png | Same screenshot dimensions. |
-| /om-oss/ | desktop-1024x900 | 0.5123% | screenshots/live/om-oss--desktop-1024x900.png | screenshots/local/om-oss--desktop-1024x900.png | screenshots/diff/om-oss--desktop-1024x900.png | Same screenshot dimensions. |
-| /projects/ | desktop-1024x900 | 0% | screenshots/live/projects--desktop-1024x900.png | screenshots/local/projects--desktop-1024x900.png | screenshots/diff/projects--desktop-1024x900.png | Same screenshot dimensions. |
-| /about/ | desktop-1024x900 | 0.4471% | screenshots/live/about--desktop-1024x900.png | screenshots/local/about--desktop-1024x900.png | screenshots/diff/about--desktop-1024x900.png | Same screenshot dimensions. |
-| / | mobile-430x932 | 0% | screenshots/live/home--mobile-430x932.png | screenshots/local/home--mobile-430x932.png | screenshots/diff/home--mobile-430x932.png | Same screenshot dimensions. |
-| /om-oss/ | mobile-430x932 | 1.0365% | screenshots/live/om-oss--mobile-430x932.png | screenshots/local/om-oss--mobile-430x932.png | screenshots/diff/om-oss--mobile-430x932.png | Same screenshot dimensions. |
-| /projects/ | mobile-430x932 | 0% | screenshots/live/projects--mobile-430x932.png | screenshots/local/projects--mobile-430x932.png | screenshots/diff/projects--mobile-430x932.png | Same screenshot dimensions. |
-| /about/ | mobile-430x932 | 0.9377% | screenshots/live/about--mobile-430x932.png | screenshots/local/about--mobile-430x932.png | screenshots/diff/about--mobile-430x932.png | Same screenshot dimensions. |
-| / | mobile-390x844 | 0% | screenshots/live/home--mobile-390x844.png | screenshots/local/home--mobile-390x844.png | screenshots/diff/home--mobile-390x844.png | Same screenshot dimensions. |
-| /om-oss/ | mobile-390x844 | 1.0316% | screenshots/live/om-oss--mobile-390x844.png | screenshots/local/om-oss--mobile-390x844.png | screenshots/diff/om-oss--mobile-390x844.png | Same screenshot dimensions. |
-| /projects/ | mobile-390x844 | 0% | screenshots/live/projects--mobile-390x844.png | screenshots/local/projects--mobile-390x844.png | screenshots/diff/projects--mobile-390x844.png | Same screenshot dimensions. |
-| /about/ | mobile-390x844 | 0.8744% | screenshots/live/about--mobile-390x844.png | screenshots/local/about--mobile-390x844.png | screenshots/diff/about--mobile-390x844.png | Same screenshot dimensions. |
-| / | mobile-375x812 | 0.0003% | screenshots/live/home--mobile-375x812.png | screenshots/local/home--mobile-375x812.png | screenshots/diff/home--mobile-375x812.png | Same screenshot dimensions. |
-| /om-oss/ | mobile-375x812 | 1.009% | screenshots/live/om-oss--mobile-375x812.png | screenshots/local/om-oss--mobile-375x812.png | screenshots/diff/om-oss--mobile-375x812.png | Same screenshot dimensions. |
-| /projects/ | mobile-375x812 | 0.0003% | screenshots/live/projects--mobile-375x812.png | screenshots/local/projects--mobile-375x812.png | screenshots/diff/projects--mobile-375x812.png | Same screenshot dimensions. |
-| /about/ | mobile-375x812 | 0.9207% | screenshots/live/about--mobile-375x812.png | screenshots/local/about--mobile-375x812.png | screenshots/diff/about--mobile-375x812.png | Same screenshot dimensions. |
+| Page | Viewport | Tolerant difference | Raw difference | Live | Local | Diff | Notes |
+| --- | --- | ---: | ---: | --- | --- | --- | --- |
+| / | desktop-1920x1080 | 0.4658% | 0.565% | screenshots/live/home--desktop-1920x1080.png | screenshots/local/home--desktop-1920x1080.png | screenshots/diff/home--desktop-1920x1080.png | Same screenshot dimensions. |
+| /om-oss/ | desktop-1920x1080 | 0.5957% | 1.2889% | screenshots/live/om-oss--desktop-1920x1080.png | screenshots/local/om-oss--desktop-1920x1080.png | screenshots/diff/om-oss--desktop-1920x1080.png | Same screenshot dimensions. |
+| /projects/ | desktop-1920x1080 | 0.4655% | 0.5644% | screenshots/live/projects--desktop-1920x1080.png | screenshots/local/projects--desktop-1920x1080.png | screenshots/diff/projects--desktop-1920x1080.png | Same screenshot dimensions. |
+| /about/ | desktop-1920x1080 | 0.2033% | 0.6382% | screenshots/live/about--desktop-1920x1080.png | screenshots/local/about--desktop-1920x1080.png | screenshots/diff/about--desktop-1920x1080.png | Same screenshot dimensions. |
+| / | desktop-1440x1200 | 0.2743% | 0.3118% | screenshots/live/home--desktop-1440x1200.png | screenshots/local/home--desktop-1440x1200.png | screenshots/diff/home--desktop-1440x1200.png | Same screenshot dimensions. |
+| /om-oss/ | desktop-1440x1200 | 0.3511% | 0.7328% | screenshots/live/om-oss--desktop-1440x1200.png | screenshots/local/om-oss--desktop-1440x1200.png | screenshots/diff/om-oss--desktop-1440x1200.png | Same screenshot dimensions. |
+| /projects/ | desktop-1440x1200 | 0.274% | 0.3116% | screenshots/live/projects--desktop-1440x1200.png | screenshots/local/projects--desktop-1440x1200.png | screenshots/diff/projects--desktop-1440x1200.png | Same screenshot dimensions. |
+| /about/ | desktop-1440x1200 | 0.3493% | 0.7525% | screenshots/live/about--desktop-1440x1200.png | screenshots/local/about--desktop-1440x1200.png | screenshots/diff/about--desktop-1440x1200.png | Same screenshot dimensions. |
+| / | desktop-1280x1000 | 0.3271% | 0.3684% | screenshots/live/home--desktop-1280x1000.png | screenshots/local/home--desktop-1280x1000.png | screenshots/diff/home--desktop-1280x1000.png | Same screenshot dimensions. |
+| /om-oss/ | desktop-1280x1000 | 0.2034% | 0.5376% | screenshots/live/om-oss--desktop-1280x1000.png | screenshots/local/om-oss--desktop-1280x1000.png | screenshots/diff/om-oss--desktop-1280x1000.png | Same screenshot dimensions. |
+| /projects/ | desktop-1280x1000 | 0.3282% | 0.3687% | screenshots/live/projects--desktop-1280x1000.png | screenshots/local/projects--desktop-1280x1000.png | screenshots/diff/projects--desktop-1280x1000.png | Same screenshot dimensions. |
+| /about/ | desktop-1280x1000 | 0.2117% | 0.57% | screenshots/live/about--desktop-1280x1000.png | screenshots/local/about--desktop-1280x1000.png | screenshots/diff/about--desktop-1280x1000.png | Same screenshot dimensions. |
+| / | desktop-1024x900 | 0.1175% | 0.1292% | screenshots/live/home--desktop-1024x900.png | screenshots/local/home--desktop-1024x900.png | screenshots/diff/home--desktop-1024x900.png | Same screenshot dimensions. |
+| /om-oss/ | desktop-1024x900 | 0.3075% | 0.6542% | screenshots/live/om-oss--desktop-1024x900.png | screenshots/local/om-oss--desktop-1024x900.png | screenshots/diff/om-oss--desktop-1024x900.png | Same screenshot dimensions. |
+| /projects/ | desktop-1024x900 | 0.1177% | 0.1293% | screenshots/live/projects--desktop-1024x900.png | screenshots/local/projects--desktop-1024x900.png | screenshots/diff/projects--desktop-1024x900.png | Same screenshot dimensions. |
+| /about/ | desktop-1024x900 | 0.2847% | 0.5877% | screenshots/live/about--desktop-1024x900.png | screenshots/local/about--desktop-1024x900.png | screenshots/diff/about--desktop-1024x900.png | Same screenshot dimensions. |
+| / | tablet-820x1180 | 0.5687% | 0.6191% | screenshots/live/home--tablet-820x1180.png | screenshots/local/home--tablet-820x1180.png | screenshots/diff/home--tablet-820x1180.png | Same screenshot dimensions. |
+| /om-oss/ | tablet-820x1180 | 0.829% | 1.9125% | screenshots/live/om-oss--tablet-820x1180.png | screenshots/local/om-oss--tablet-820x1180.png | screenshots/diff/om-oss--tablet-820x1180.png | Same screenshot dimensions. |
+| /projects/ | tablet-820x1180 | 0.5687% | 0.6192% | screenshots/live/projects--tablet-820x1180.png | screenshots/local/projects--tablet-820x1180.png | screenshots/diff/projects--tablet-820x1180.png | Same screenshot dimensions. |
+| /about/ | tablet-820x1180 | 0.8058% | 1.8205% | screenshots/live/about--tablet-820x1180.png | screenshots/local/about--tablet-820x1180.png | screenshots/diff/about--tablet-820x1180.png | Same screenshot dimensions. |
+| / | tablet-768x1024 | 0.662% | 0.7299% | screenshots/live/home--tablet-768x1024.png | screenshots/local/home--tablet-768x1024.png | screenshots/diff/home--tablet-768x1024.png | Same screenshot dimensions. |
+| /om-oss/ | tablet-768x1024 | 1.5743% | 2.5875% | screenshots/live/om-oss--tablet-768x1024.png | screenshots/local/om-oss--tablet-768x1024.png | screenshots/diff/om-oss--tablet-768x1024.png | Same screenshot dimensions. |
+| /projects/ | tablet-768x1024 | 0.6626% | 0.7302% | screenshots/live/projects--tablet-768x1024.png | screenshots/local/projects--tablet-768x1024.png | screenshots/diff/projects--tablet-768x1024.png | Same screenshot dimensions. |
+| /about/ | tablet-768x1024 | 1.5588% | 2.5836% | screenshots/live/about--tablet-768x1024.png | screenshots/local/about--tablet-768x1024.png | screenshots/diff/about--tablet-768x1024.png | Same screenshot dimensions. |
+| / | mobile-430x932 | 0.4524% | 0.5507% | screenshots/live/home--mobile-430x932.png | screenshots/local/home--mobile-430x932.png | screenshots/diff/home--mobile-430x932.png | Same screenshot dimensions. |
+| /om-oss/ | mobile-430x932 | 0.7552% | 1.4409% | screenshots/live/om-oss--mobile-430x932.png | screenshots/local/om-oss--mobile-430x932.png | screenshots/diff/om-oss--mobile-430x932.png | Same screenshot dimensions. |
+| /projects/ | mobile-430x932 | 0.4516% | 0.55% | screenshots/live/projects--mobile-430x932.png | screenshots/local/projects--mobile-430x932.png | screenshots/diff/projects--mobile-430x932.png | Same screenshot dimensions. |
+| /about/ | mobile-430x932 | 0.7165% | 1.3337% | screenshots/live/about--mobile-430x932.png | screenshots/local/about--mobile-430x932.png | screenshots/diff/about--mobile-430x932.png | Same screenshot dimensions. |
+| / | mobile-390x844 | 0.5728% | 0.6147% | screenshots/live/home--mobile-390x844.png | screenshots/local/home--mobile-390x844.png | screenshots/diff/home--mobile-390x844.png | Same screenshot dimensions. |
+| /om-oss/ | mobile-390x844 | 0.5386% | 1.23% | screenshots/live/om-oss--mobile-390x844.png | screenshots/local/om-oss--mobile-390x844.png | screenshots/diff/om-oss--mobile-390x844.png | Same screenshot dimensions. |
+| /projects/ | mobile-390x844 | 0.5727% | 0.6147% | screenshots/live/projects--mobile-390x844.png | screenshots/local/projects--mobile-390x844.png | screenshots/diff/projects--mobile-390x844.png | Same screenshot dimensions. |
+| /about/ | mobile-390x844 | 0.4759% | 1.066% | screenshots/live/about--mobile-390x844.png | screenshots/local/about--mobile-390x844.png | screenshots/diff/about--mobile-390x844.png | Same screenshot dimensions. |
+| / | mobile-375x812 | 0.5079% | 0.5426% | screenshots/live/home--mobile-375x812.png | screenshots/local/home--mobile-375x812.png | screenshots/diff/home--mobile-375x812.png | Same screenshot dimensions. |
+| /om-oss/ | mobile-375x812 | 0.4226% | 1.0945% | screenshots/live/om-oss--mobile-375x812.png | screenshots/local/om-oss--mobile-375x812.png | screenshots/diff/om-oss--mobile-375x812.png | Same screenshot dimensions. |
+| /projects/ | mobile-375x812 | 0.5095% | 0.5433% | screenshots/live/projects--mobile-375x812.png | screenshots/local/projects--mobile-375x812.png | screenshots/diff/projects--mobile-375x812.png | Same screenshot dimensions. |
+| /about/ | mobile-375x812 | 0.3869% | 1.0056% | screenshots/live/about--mobile-375x812.png | screenshots/local/about--mobile-375x812.png | screenshots/diff/about--mobile-375x812.png | Same screenshot dimensions. |
+| / | mobile-360x800 | 0.5621% | 0.5931% | screenshots/live/home--mobile-360x800.png | screenshots/local/home--mobile-360x800.png | screenshots/diff/home--mobile-360x800.png | Same screenshot dimensions. |
+| /om-oss/ | mobile-360x800 | 0.4473% | 1.1572% | screenshots/live/om-oss--mobile-360x800.png | screenshots/local/om-oss--mobile-360x800.png | screenshots/diff/om-oss--mobile-360x800.png | Same screenshot dimensions. |
+| /projects/ | mobile-360x800 | 0.5618% | 0.5926% | screenshots/live/projects--mobile-360x800.png | screenshots/local/projects--mobile-360x800.png | screenshots/diff/projects--mobile-360x800.png | Same screenshot dimensions. |
+| /about/ | mobile-360x800 | 0.3971% | 1.0049% | screenshots/live/about--mobile-360x800.png | screenshots/local/about--mobile-360x800.png | screenshots/diff/about--mobile-360x800.png | Same screenshot dimensions. |
 
-Differences are image-based and include minor dynamic rendering differences such as antialiasing, third-party request timing, and live-site animation state.
+The tolerant metric excludes pixels identified as antialiasing by Pixelmatch. The raw metric retains them for diagnosis. Neither metric is a substitute for bounding-box, computed-style, and interaction checks.

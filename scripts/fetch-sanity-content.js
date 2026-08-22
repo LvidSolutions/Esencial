@@ -12,8 +12,8 @@ if (!token) {
 }
 
 const query = `*[_type == "project" && status == "published"] | order(title asc) {
-  "id": coalesce(translationKey, _id), "slug": slug.current, title, location, year,
-  "description": coalesce(seoDescription, summary), seoTitle, seoDescription, language,
+  "id": coalesce(translationKey, _id), "slug": slug.current, title, location, year, typology, client, team, services, body,
+  "description": coalesce(seoDescription, summary), seoTitle, seoDescription, language, "relatedProjectIds": relatedProjects[]->coalesce(translationKey, _id),
   "heroImage": heroImage{"src": asset->url, alt, credit, rightsConfirmed, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height},
   "galleryImages": galleryImages[]{"src": asset->url, alt, credit, rightsConfirmed, caption, hideFromWebsite, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height},
   "legacyImages": coalesce(images[]{"src": asset->url, alt, credit, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height}, legacyImages[]{"src": url, alt}),

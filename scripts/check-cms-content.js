@@ -19,6 +19,7 @@ for (const [language, projects] of Object.entries(projectsByLanguage)) {
   for (const project of projects) {
     const label = `${language}/${project.slug || project.title || "unknown"}`;
     for (const field of ["id", "slug", "title", "description"]) if (!project[field]) problems.push(`${label}: missing ${field}`);
+    if (project.descriptionLanguage && !["sv", "en", "es"].includes(project.descriptionLanguage)) problems.push(`${label}: descriptionLanguage must be sv, en, or es when supplied`);
     if (seenSlugs.has(project.slug)) problems.push(`${label}: duplicate slug`);
     seenSlugs.add(project.slug);
     if (project.seoTitle && project.seoTitle.length > 60) problems.push(`${label}: SEO title exceeds 60 characters`);

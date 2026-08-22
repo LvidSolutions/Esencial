@@ -1,3 +1,27 @@
+/* Retained from the removed WordPress block stylesheet because the semantic page H1 uses it. */
+.screen-reader-text {
+  border: 0;
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  word-wrap: normal !important;
+}
+
+/* Preserve the live project's scroll landing position without loading the WordPress admin bar. */
+html {
+  scroll-padding-top: 32px;
+}
+
+@media screen and (max-width: 782px) {
+  html {
+    scroll-padding-top: 46px;
+  }
+}
+
 @media screen and (max-width: 40em) {
   :root {
     font-size: 10px;
@@ -1747,4 +1771,14 @@ html {
 .css_about_info_wrapper > .css_about_info_label {
   width: 100%;
   flex-basis: 100%;
+}
+
+/* Preserve the visual system when the about-page labels are real section headings. */
+h2.css_about_info_label {
+  margin-top: 0;
+}
+
+/* Semantic grid images must reproduce the recovered background-image crop. */
+.css_grid_photo_item > img[data-seo-image="grid"] {
+  object-fit: contain !important;
 }

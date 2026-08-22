@@ -12,7 +12,7 @@ The recovery preserves the current public frontend only. No CMS, SEO, metadata c
 - `/about/`
 - Public WordPress theme assets under `/wp-content/themes/esencial/`
 - Public upload assets under `/wp-content/uploads/`
-- Public WordPress include/plugin assets needed for rendering
+- The one retained WordPress include asset (`jquery.min.js`) still needed by the recovered interaction code
 - External Roboto font CSS/font files needed for visual fidelity
 
 ## Build and validate
@@ -23,7 +23,9 @@ The content source is under `content/projects/`. The generated project pages und
 npm run build
 ```
 
-This generates project pages and `sitemap.xml`, then validates every sitemap URL for title, description, canonical URL, H1, crawl rules, language links, JSON-LD, and image alt attributes.
+This generates project pages and `sitemap.xml`, then validates every indexable HTML page and sitemap URL for status mapping, unique self-canonical URLs, crawl rules, language-link targets, JSON-LD, and image alt attributes. It also verifies the canonical host/trailing-slash deployment policy and API `X-Robots-Tag` protection.
+
+Run `npm run audit:technical-seo` to validate both generated files and local HTTP behavior and to write the deterministic evidence files used by the Stage 3 report.
 
 See [the editor guide](docs/CMS_USER_GUIDE.md), [crawler policy](docs/AI_CRAWLER_POLICY.md), and [domain cutover checklist](docs/DOMAIN_CUTOVER.md).
 
@@ -87,19 +89,17 @@ Audit reports are saved under `audit/`.
 
 ## Current Verification Result
 
-- 24 live/local screenshot pairs were compared.
-- The largest recorded visual difference is `1.0365%`.
-- Home and projects are pixel-identical or near-pixel-identical in the captured desktop/mobile viewports.
-- About and om-oss show small differences mostly from text antialiasing and live rendering variation.
-- Computed styles and bounding boxes matched for inspected key elements.
+- 40 live/local screenshot pairs were compared across ten required desktop, tablet, and mobile viewports.
+- The largest antialias-tolerant visual difference is `1.5743%`; exact geometry and selected computed styles match.
+- Four live/local interaction scenarios pass for hover, filtering, card opening/scrolling, and language links.
 - Local navigation checks returned `200` for all four recovered routes.
 
 ## Known Limitations
 
-- The live site exposes WordPress/static-export traces that were intentionally preserved.
-- `noindex` metadata was intentionally preserved.
-- Analytics/external behavior was not cleaned or modernized.
-- No CMS or SEO implementation has been started.
+- WordPress upload and theme paths remain for URL compatibility; their path names do not make actively used files dead code.
+- jQuery core remains because the recovered filter, feed, and carousel interactions still depend on it. jQuery Migrate and unused WordPress admin/plugin assets were removed in Stage 2.
+- The obsolete ExactMetrics/Google Analytics wrapper was removed. Vercel Web Analytics remains active; final measurement architecture is reserved for the analytics stage.
+- Project carousel data still contains production-domain image URLs for media that has not yet been localized. Image dependency cleanup belongs to the image stage.
 
 ## Recommended Next Step
 

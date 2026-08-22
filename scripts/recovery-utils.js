@@ -11,12 +11,16 @@ const BASE_URL = "https://www.esencial.se";
 const LOCAL_ORIGIN = process.env.LOCAL_ORIGIN || "http://127.0.0.1:3000";
 const REQUIRED_PATHS = ["/", "/om-oss/", "/projects/", "/about/"];
 const VIEWPORTS = [
+  { name: "desktop-1920x1080", width: 1920, height: 1080 },
   { name: "desktop-1440x1200", width: 1440, height: 1200 },
   { name: "desktop-1280x1000", width: 1280, height: 1000 },
   { name: "desktop-1024x900", width: 1024, height: 900 },
+  { name: "tablet-820x1180", width: 820, height: 1180 },
+  { name: "tablet-768x1024", width: 768, height: 1024 },
   { name: "mobile-430x932", width: 430, height: 932 },
   { name: "mobile-390x844", width: 390, height: 844 },
-  { name: "mobile-375x812", width: 375, height: 812 }
+  { name: "mobile-375x812", width: 375, height: 812 },
+  { name: "mobile-360x800", width: 360, height: 800 }
 ];
 
 function browserLaunchOptions() {
@@ -237,6 +241,8 @@ function startStaticServer(port = 3000) {
     ".css": "text/css; charset=utf-8",
     ".js": "text/javascript; charset=utf-8",
     ".json": "application/json; charset=utf-8",
+    ".txt": "text/plain; charset=utf-8",
+    ".xml": "application/xml; charset=utf-8",
     ".png": "image/png",
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
@@ -255,6 +261,16 @@ function startStaticServer(port = 3000) {
   const server = http.createServer((req, res) => {
     const reqUrl = new URL(req.url, `http://127.0.0.1:${port}`);
     let pathname = decodeURIComponent(reqUrl.pathname);
+    if (pathname === "/_vercel/insights/script.js") {
+      res.writeHead(200, { "Content-Type": "text/javascript; charset=utf-8", "Cache-Control": "no-store" });
+      res.end("/* Vercel Web Analytics is supplied by the deployment platform. */\n");
+      return;
+    }
+    if (pathname !== "/" && !pathname.endsWith("/") && !path.extname(pathname)) {
+      res.writeHead(308, { Location: `${reqUrl.pathname}/${reqUrl.search}` });
+      res.end();
+      return;
+    }
     if (pathname.endsWith("/")) pathname += "index.html";
     let target = path.join(PUBLIC_DIR, pathname.replace(/^\/+/, ""));
     if (!target.startsWith(PUBLIC_DIR)) {

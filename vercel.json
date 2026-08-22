@@ -2,6 +2,46 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build",
   "outputDirectory": "public",
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "esencial.se"
+        }
+      ],
+      "destination": "https://www.esencial.se/:path*",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": ".*\\.vercel\\.app"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/api/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
+  ],
   "functions": {
     "api/analytics.js": {
       "maxDuration": 10

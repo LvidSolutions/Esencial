@@ -21,6 +21,11 @@ body.project-page { background: #fff; color: #111; font-family: Arial, Helvetica
 .project-gallery__item { margin: 0; min-width: 0; }
 .project-gallery__item--primary { grid-column: 1 / -1; }
 .project-gallery img { display: block; height: auto; width: 100%; }
+.project-narrative, .project-related { border-top: 1px solid #111; margin-top: 5rem; max-width: 52rem; padding-top: 1rem; }
+.project-narrative h2, .project-related h2 { font-size: 1rem; font-weight: 700; letter-spacing: .02em; margin: 0 0 1.25rem; text-transform: uppercase; }
+.project-narrative p { font-size: 1.1rem; line-height: 1.55; margin: 0 0 1rem; }
+.project-related ul { list-style: none; margin: 0; padding: 0; }
+.project-related li { margin: 0 0 .65rem; }
 .project-return { border-top: 1px solid #111; margin-top: 5rem; padding: 1rem 0 4rem; }
 .project-footer { border-top: 1px solid #d8d8d8; border-bottom: 0; }
 @media (max-width: 700px) { .project-header, .project-footer { padding: 1rem; } .project-main { padding: 1rem; } .project-header nav { gap: .8rem; } .project-breadcrumb { margin-bottom: 3.5rem; } .project-intro { padding-bottom: 3.5rem; } .project-gallery { grid-template-columns: 1fr; } .project-gallery__item--primary { grid-column: auto; } }

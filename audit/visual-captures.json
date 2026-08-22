@@ -1,146 +1,242 @@
 [
   {
     "page": "/",
+    "viewport": "desktop-1920x1080",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\home--desktop-1920x1080.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\home--desktop-1920x1080.png"
+  },
+  {
+    "page": "/om-oss/",
+    "viewport": "desktop-1920x1080",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\om-oss--desktop-1920x1080.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\om-oss--desktop-1920x1080.png"
+  },
+  {
+    "page": "/projects/",
+    "viewport": "desktop-1920x1080",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\projects--desktop-1920x1080.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\projects--desktop-1920x1080.png"
+  },
+  {
+    "page": "/about/",
+    "viewport": "desktop-1920x1080",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\about--desktop-1920x1080.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\about--desktop-1920x1080.png"
+  },
+  {
+    "page": "/",
     "viewport": "desktop-1440x1200",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\home--desktop-1440x1200.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\home--desktop-1440x1200.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\home--desktop-1440x1200.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\home--desktop-1440x1200.png"
   },
   {
     "page": "/om-oss/",
     "viewport": "desktop-1440x1200",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\om-oss--desktop-1440x1200.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\om-oss--desktop-1440x1200.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\om-oss--desktop-1440x1200.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\om-oss--desktop-1440x1200.png"
   },
   {
     "page": "/projects/",
     "viewport": "desktop-1440x1200",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\projects--desktop-1440x1200.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\projects--desktop-1440x1200.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\projects--desktop-1440x1200.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\projects--desktop-1440x1200.png"
   },
   {
     "page": "/about/",
     "viewport": "desktop-1440x1200",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\about--desktop-1440x1200.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\about--desktop-1440x1200.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\about--desktop-1440x1200.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\about--desktop-1440x1200.png"
   },
   {
     "page": "/",
     "viewport": "desktop-1280x1000",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\home--desktop-1280x1000.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\home--desktop-1280x1000.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\home--desktop-1280x1000.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\home--desktop-1280x1000.png"
   },
   {
     "page": "/om-oss/",
     "viewport": "desktop-1280x1000",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\om-oss--desktop-1280x1000.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\om-oss--desktop-1280x1000.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\om-oss--desktop-1280x1000.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\om-oss--desktop-1280x1000.png"
   },
   {
     "page": "/projects/",
     "viewport": "desktop-1280x1000",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\projects--desktop-1280x1000.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\projects--desktop-1280x1000.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\projects--desktop-1280x1000.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\projects--desktop-1280x1000.png"
   },
   {
     "page": "/about/",
     "viewport": "desktop-1280x1000",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\about--desktop-1280x1000.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\about--desktop-1280x1000.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\about--desktop-1280x1000.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\about--desktop-1280x1000.png"
   },
   {
     "page": "/",
     "viewport": "desktop-1024x900",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\home--desktop-1024x900.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\home--desktop-1024x900.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\home--desktop-1024x900.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\home--desktop-1024x900.png"
   },
   {
     "page": "/om-oss/",
     "viewport": "desktop-1024x900",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\om-oss--desktop-1024x900.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\om-oss--desktop-1024x900.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\om-oss--desktop-1024x900.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\om-oss--desktop-1024x900.png"
   },
   {
     "page": "/projects/",
     "viewport": "desktop-1024x900",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\projects--desktop-1024x900.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\projects--desktop-1024x900.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\projects--desktop-1024x900.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\projects--desktop-1024x900.png"
   },
   {
     "page": "/about/",
     "viewport": "desktop-1024x900",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\about--desktop-1024x900.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\about--desktop-1024x900.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\about--desktop-1024x900.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\about--desktop-1024x900.png"
+  },
+  {
+    "page": "/",
+    "viewport": "tablet-820x1180",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\home--tablet-820x1180.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\home--tablet-820x1180.png"
+  },
+  {
+    "page": "/om-oss/",
+    "viewport": "tablet-820x1180",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\om-oss--tablet-820x1180.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\om-oss--tablet-820x1180.png"
+  },
+  {
+    "page": "/projects/",
+    "viewport": "tablet-820x1180",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\projects--tablet-820x1180.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\projects--tablet-820x1180.png"
+  },
+  {
+    "page": "/about/",
+    "viewport": "tablet-820x1180",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\about--tablet-820x1180.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\about--tablet-820x1180.png"
+  },
+  {
+    "page": "/",
+    "viewport": "tablet-768x1024",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\home--tablet-768x1024.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\home--tablet-768x1024.png"
+  },
+  {
+    "page": "/om-oss/",
+    "viewport": "tablet-768x1024",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\om-oss--tablet-768x1024.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\om-oss--tablet-768x1024.png"
+  },
+  {
+    "page": "/projects/",
+    "viewport": "tablet-768x1024",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\projects--tablet-768x1024.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\projects--tablet-768x1024.png"
+  },
+  {
+    "page": "/about/",
+    "viewport": "tablet-768x1024",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\about--tablet-768x1024.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\about--tablet-768x1024.png"
   },
   {
     "page": "/",
     "viewport": "mobile-430x932",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\home--mobile-430x932.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\home--mobile-430x932.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\home--mobile-430x932.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\home--mobile-430x932.png"
   },
   {
     "page": "/om-oss/",
     "viewport": "mobile-430x932",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\om-oss--mobile-430x932.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\om-oss--mobile-430x932.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\om-oss--mobile-430x932.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\om-oss--mobile-430x932.png"
   },
   {
     "page": "/projects/",
     "viewport": "mobile-430x932",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\projects--mobile-430x932.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\projects--mobile-430x932.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\projects--mobile-430x932.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\projects--mobile-430x932.png"
   },
   {
     "page": "/about/",
     "viewport": "mobile-430x932",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\about--mobile-430x932.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\about--mobile-430x932.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\about--mobile-430x932.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\about--mobile-430x932.png"
   },
   {
     "page": "/",
     "viewport": "mobile-390x844",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\home--mobile-390x844.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\home--mobile-390x844.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\home--mobile-390x844.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\home--mobile-390x844.png"
   },
   {
     "page": "/om-oss/",
     "viewport": "mobile-390x844",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\om-oss--mobile-390x844.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\om-oss--mobile-390x844.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\om-oss--mobile-390x844.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\om-oss--mobile-390x844.png"
   },
   {
     "page": "/projects/",
     "viewport": "mobile-390x844",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\projects--mobile-390x844.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\projects--mobile-390x844.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\projects--mobile-390x844.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\projects--mobile-390x844.png"
   },
   {
     "page": "/about/",
     "viewport": "mobile-390x844",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\about--mobile-390x844.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\about--mobile-390x844.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\about--mobile-390x844.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\about--mobile-390x844.png"
   },
   {
     "page": "/",
     "viewport": "mobile-375x812",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\home--mobile-375x812.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\home--mobile-375x812.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\home--mobile-375x812.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\home--mobile-375x812.png"
   },
   {
     "page": "/om-oss/",
     "viewport": "mobile-375x812",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\om-oss--mobile-375x812.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\om-oss--mobile-375x812.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\om-oss--mobile-375x812.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\om-oss--mobile-375x812.png"
   },
   {
     "page": "/projects/",
     "viewport": "mobile-375x812",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\projects--mobile-375x812.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\projects--mobile-375x812.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\projects--mobile-375x812.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\projects--mobile-375x812.png"
   },
   {
     "page": "/about/",
     "viewport": "mobile-375x812",
-    "live": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\live\\about--mobile-375x812.png",
-    "local": "C:\\Users\\andreas.hiller\\Desktop\\Lucas Lvid solutions\\Esencial\\screenshots\\local\\about--mobile-375x812.png"
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\about--mobile-375x812.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\about--mobile-375x812.png"
+  },
+  {
+    "page": "/",
+    "viewport": "mobile-360x800",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\home--mobile-360x800.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\home--mobile-360x800.png"
+  },
+  {
+    "page": "/om-oss/",
+    "viewport": "mobile-360x800",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\om-oss--mobile-360x800.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\om-oss--mobile-360x800.png"
+  },
+  {
+    "page": "/projects/",
+    "viewport": "mobile-360x800",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\projects--mobile-360x800.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\projects--mobile-360x800.png"
+  },
+  {
+    "page": "/about/",
+    "viewport": "mobile-360x800",
+    "live": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\live\\about--mobile-360x800.png",
+    "local": "C:\\Users\\lucas\\Documents\\Codex\\2026-08-21\\sta\\work\\Esencial\\screenshots\\local\\about--mobile-360x800.png"
   }
 ]

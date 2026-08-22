@@ -3,9 +3,14 @@ const path = require("path");
 const { BASE_URL, PUBLIC_DIR, ROOT, ensureDir } = require("./recovery-utils");
 
 const SITE_NAME = "Esencial";
+const IMAGE_MANIFEST_FILE = path.join(ROOT, "content", "image-variants.json");
 const LANGUAGE_CONFIG = {
   sv: { source: "index.html", overview: "/", directory: "projekt", lang: "sv", overviewLabel: "Projekt", about: "/om-oss/", aboutLabel: "Om oss" },
   en: { source: path.join("projects", "index.html"), overview: "/projects/", directory: "projects", lang: "en", overviewLabel: "Projects", about: "/about/", aboutLabel: "About" }
+};
+const FACT_LABELS = {
+  sv: { location: "Plats", year: "År", typology: "Typologi", client: "Beställare", team: "Arkitekt/team", services: "Uppdrag" },
+  en: { location: "Location", year: "Year", typology: "Typology", client: "Client", team: "Architects / team", services: "Scope" }
 };
 
 function readFile(file) {
@@ -59,16 +64,79 @@ function absoluteUrl(value) {
   return /^https?:\/\//i.test(value) ? value : `${BASE_URL}${value}`;
 }
 
+function imageMetadata(image) {
+  if (!fs.existsSync(IMAGE_MANIFEST_FILE)) return null;
+  const manifest = JSON.parse(readFile(IMAGE_MANIFEST_FILE));
+  return manifest.entries?.[image.src] || null;
+}
+
+function responsiveImageAttributes(image, index) {
+  const metadata = imageMetadata(image);
+  const width = image.width || metadata?.width || (index === 0 ? 1600 : 1200);
+  const height = image.height || metadata?.height || (index === 0 ? 1000 : 800);
+  const variants = metadata?.variants || [];
+  const srcset = variants.length ? ` srcset="${[...variants, { src: image.src, width }].map(item => `${escapeHtml(item.src)} ${item.width}w`).join(", ")}" sizes="${index === 0 ? "(min-width: 1280px) 1280px, 100vw" : "(min-width: 700px) 50vw, 100vw"}"` : "";
+  return { width, height, srcset };
+}
+
+function projectDescription(project, language) {
+  if (project.seoDescription) return project.seoDescription;
+  if (!project.descriptionLanguage || project.descriptionLanguage === language) return project.description;
+  const location = project.location ? ` ${language === "sv" ? "i" : "in"} ${project.location}` : "";
+  return `${project.title} ${language === "sv" ? "är ett arkitekturprojekt av Esencial" : "is an architecture project by Esencial"}${location}.`;
+}
+
+function textValue(value) {
+  if (typeof value === "string") return value.trim();
+  if (Array.isArray(value)) return value.map(textValue).filter(Boolean).join(", ");
+  return "";
+}
+
+function bodyParagraphs(body) {
+  if (typeof body === "string") return body.split(/\n\s*\n/).map(paragraph => paragraph.trim()).filter(Boolean);
+  if (!Array.isArray(body)) return [];
+  return body.map(block => {
+    if (typeof block === "string") return block.trim();
+    if (block?._type === "block" && Array.isArray(block.children)) return block.children.map(child => child?.text || "").join("").trim();
+    return "";
+  }).filter(Boolean);
+}
+
+function factEntries(project, language) {
+  const labels = FACT_LABELS[language];
+  return [
+    [labels.location, textValue(project.location)],
+    [labels.year, Number.isInteger(project.year) ? String(project.year) : ""],
+    [labels.typology, textValue(project.typology)],
+    [labels.client, textValue(project.client)],
+    [labels.team, textValue(project.team)],
+    [labels.services, textValue(project.services)]
+  ].filter(([, value]) => value);
+}
+
+function relatedProjectsMarkup(project, language, projectsById) {
+  const relatedIds = (project.relatedProjectIds || project.relatedProjects || []).map(entry => typeof entry === "string" ? entry : entry?.id).filter(Boolean);
+  const related = [...new Set(relatedIds)].filter(id => id !== project.id).map(id => projectsById.get(id)).filter(Boolean).slice(0, 3);
+  if (!related.length) return "";
+  const label = language === "sv" ? "Relaterade projekt" : "Related projects";
+  return `
+    <section class="project-related" aria-labelledby="related-projects-title">
+      <h2 id="related-projects-title">${label}</h2>
+      <ul>${related.map(item => `<li><a href="${projectUrl(language, item)}">${escapeHtml(item.title)}</a>${item.location ? `<span> — ${escapeHtml(item.location)}</span>` : ""}</li>`).join("")}</ul>
+    </section>`;
+}
+
 function languageLinks(project, language, translations) {
   const current = projectUrl(language, project);
   const otherLanguage = language === "sv" ? "en" : "sv";
   const translated = translations[otherLanguage].get(project.id);
   const other = translated ? projectUrl(otherLanguage, translated) : current;
+  const swedish = language === "sv" ? current : (translations.sv.get(project.id) ? projectUrl("sv", translations.sv.get(project.id)) : current);
   return [
     `<link rel="canonical" href="${BASE_URL}${current}">`,
     `<link rel="alternate" hreflang="${language}" href="${BASE_URL}${current}">`,
     `<link rel="alternate" hreflang="${otherLanguage}" href="${BASE_URL}${other}">`,
-    `<link rel="alternate" hreflang="x-default" href="${BASE_URL}${current}">`
+    `<link rel="alternate" hreflang="x-default" href="${BASE_URL}${swedish}">`
   ].join("\n");
 }
 
@@ -80,7 +148,7 @@ function projectSchema(project, language, translations) {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
     name: project.title,
-    description: project.description,
+    description: projectDescription(project, language),
     url: currentUrl,
     image: project.images.map(image => absoluteUrl(image.src)),
     inLanguage: language,
@@ -91,21 +159,33 @@ function projectSchema(project, language, translations) {
   return JSON.stringify(schema, null, 2);
 }
 
-function pageHtml(project, language, translations) {
+function pageHtml(project, language, translations, projectsById) {
   const config = LANGUAGE_CONFIG[language];
   const title = project.seoTitle || `${project.title} | ${SITE_NAME}`;
-  const description = project.seoDescription || project.description;
-  const imageMarkup = project.images.map((image, index) => `
+  const description = projectDescription(project, language);
+  const visibleDescriptionLanguage = project.descriptionLanguage && project.descriptionLanguage !== language ? ` lang="${escapeHtml(project.descriptionLanguage)}"` : "";
+  const imageMarkup = project.images.map((image, index) => {
+    const responsive = responsiveImageAttributes(image, index);
+    return `
         <figure class="project-gallery__item${index === 0 ? " project-gallery__item--primary" : ""}">
-          <img src="${escapeHtml(image.src)}" alt="${escapeHtml(image.alt)}" width="${escapeHtml(String(image.width || (index === 0 ? 1600 : 1200)))}" height="${escapeHtml(String(image.height || (index === 0 ? 1000 : 800)))}" loading="${index === 0 ? "eager" : "lazy"}"${index === 0 ? " fetchpriority=\"high\"" : ""} decoding="async">
-        </figure>`).join("");
+          <img src="${escapeHtml(image.src)}"${responsive.srcset} alt="${escapeHtml(image.alt)}" width="${escapeHtml(String(responsive.width))}" height="${escapeHtml(String(responsive.height))}" loading="${index === 0 ? "eager" : "lazy"}"${index === 0 ? " fetchpriority=\"high\"" : ""} decoding="async">
+        </figure>`;
+  }).join("");
   const floorPlanMarkup = (project.floorPlans || []).filter((plan) => plan.image?.src).map((plan) => `
         <figure class="project-gallery__item project-floor-plan">
           <img src="${escapeHtml(plan.image.src)}" alt="${escapeHtml(plan.image.alt || plan.name || "")}" width="${escapeHtml(String(plan.image.width || 1200))}" height="${escapeHtml(String(plan.image.height || 800))}" loading="lazy" decoding="async">
           <figcaption>${escapeHtml([plan.name, plan.area, plan.description].filter(Boolean).join(" — "))}</figcaption>
         </figure>`).join("");
   const floorPlansSection = floorPlanMarkup ? `<section class="project-floor-plans" aria-labelledby="floor-plans-title"><h2 id="floor-plans-title">${language === "sv" ? "Planritningar" : "Floor plans"}</h2><div class="project-gallery">${floorPlanMarkup}</div></section>` : "";
-  const facts = project.location ? `<dl class="project-facts"><div><dt>${language === "sv" ? "Plats" : "Location"}</dt><dd>${escapeHtml(project.location)}</dd></div></dl>` : "";
+  const factEntriesForProject = factEntries(project, language);
+  const facts = factEntriesForProject.length ? `<dl class="project-facts">${factEntriesForProject.map(([label, value]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}</dl>` : "";
+  const paragraphs = bodyParagraphs(project.body);
+  const narrative = paragraphs.length ? `
+    <section class="project-narrative" aria-labelledby="project-narrative-title">
+      <h2 id="project-narrative-title">${language === "sv" ? "Om projektet" : "About the project"}</h2>
+      ${paragraphs.map(paragraph => `<p>${escapeHtml(paragraph)}</p>`).join("\n      ")}
+    </section>` : "";
+  const relatedProjects = relatedProjectsMarkup(project, language, projectsById);
   return `<!doctype html>
 <html lang="${config.lang}">
 <head>
@@ -121,6 +201,7 @@ function pageHtml(project, language, translations) {
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="${escapeHtml(title)}">
   <meta name="twitter:description" content="${escapeHtml(description)}">
+  <meta name="twitter:image" content="${escapeHtml(absoluteUrl(project.images[0].src))}">
   <title>${escapeHtml(title)}</title>
   ${languageLinks(project, language, translations)}
   <link rel="stylesheet" href="/wp-content/themes/esencial/css/tachyons.css">
@@ -146,10 +227,10 @@ ${projectSchema(project, language, translations)}
       <p class="project-intro__label">${language === "sv" ? "Projekt" : "Project"}</p>
       <h1 id="project-title">${escapeHtml(project.title)}</h1>${facts ? `
       ${facts}` : ""}
-      <p class="project-intro__description">${escapeHtml(description)}</p>
+      <p class="project-intro__description"${visibleDescriptionLanguage}>${escapeHtml(project.description)}</p>
     </section>
     <section class="project-gallery" aria-label="${language === "sv" ? "Bilder från" : "Images from"} ${escapeHtml(project.title)}">${imageMarkup}
-    </section>${floorPlansSection}
+    </section>${floorPlansSection}${narrative}${relatedProjects}
     <nav class="project-return" aria-label="${language === "sv" ? "Projektlänkar" : "Project links"}"><a href="${config.overview}">${language === "sv" ? "Se alla projekt" : "View all projects"}</a></nav>
   </main>
   <footer class="project-footer"><a href="${config.about}">${SITE_NAME}</a></footer>
@@ -213,15 +294,17 @@ function buildSitemap(translations) {
 function main() {
   const translations = {};
   const translationMaps = {};
+  const languageProjectMaps = {};
   for (const [language, config] of Object.entries(LANGUAGE_CONFIG)) {
     translations[language] = loadProjects(language, config);
     translationMaps[language] = new Map(translations[language].map(project => [project.id, project]));
+    languageProjectMaps[language] = new Map(translations[language].map(project => [project.id, project]));
   }
 
   for (const [language, projects] of Object.entries(translations)) {
     for (const project of projects) {
       const output = path.join(PUBLIC_DIR, LANGUAGE_CONFIG[language].directory, project.slug, "index.html");
-      write(output, pageHtml(project, language, translationMaps));
+      write(output, pageHtml(project, language, translationMaps, languageProjectMaps[language]));
     }
     const overviewFile = path.join(PUBLIC_DIR, LANGUAGE_CONFIG[language].source);
     write(overviewFile, updateOverview(readFile(overviewFile), language, projects));
@@ -231,4 +314,6 @@ function main() {
   console.log(`Built ${translations.sv.length + translations.en.length} project pages and sitemap.xml.`);
 }
 
-main();
+if (require.main === module) main();
+
+module.exports = { bodyParagraphs, factEntries, pageHtml, projectUrl };

@@ -21,6 +21,7 @@
     "slug": "hamnbadet",
     "title": "Hamnbadet",
     "location": "Gothenburg",
+    "descriptionLanguage": "sv",
     "description": "Hamnbadet i Göteborg är kulmen på en lång period av urban transformation i ett centralt område, som gått från övergiven hamn till en blågrön stadspark.",
     "images": [
       {
@@ -72,6 +73,7 @@
     "slug": "visioner-i-norr-rum-for-egenmakt-ett-mikrosystem-for-manga-mojliga-framtider",
     "title": "Visioner i Norr – Rum för egenmakt",
     "location": "Boden",
+    "descriptionLanguage": "sv",
     "description": "Rum för egenmakt. Ett mikrosystem för många möjliga framtider",
     "images": [
       {
@@ -89,6 +91,7 @@
     "slug": "kusttradgarden",
     "title": "Kustträdgården",
     "location": "Karantänen, Helsingborg",
+    "descriptionLanguage": "sv",
     "description": "På denna plats har medborgarnas önskemål styrt utformningen",
     "images": [
       {
@@ -106,6 +109,7 @@
     "slug": "norra-kanalomradets-utomhusscen",
     "title": "Norra Kanalområdets utomhusscen",
     "location": "Karlsborg",
+    "descriptionLanguage": "sv",
     "description": "Den nya scenbyggnaden placeras centralt i Norra Kanalområdet och hjälper att organisera flöden i den framtida parken",
     "images": [
       {
@@ -157,6 +161,7 @@
     "slug": "ny-verkstadsbyggnad-museene-i-akterhus",
     "title": "Ny verkstadsbyggnad Museene i Akterhus",
     "location": "Drøbak, Norway",
+    "descriptionLanguage": "sv",
     "description": "Verksamheten äger rum kring en samlande Verkstadsgata.",
     "images": [
       {
@@ -310,6 +315,7 @@
     "slug": "plaza-del-almacen",
     "title": "Plaza del Almacén",
     "location": "Lanzarote",
+    "descriptionLanguage": "es",
     "description": "La plaza del almacén – Plaza",
     "images": [
       {

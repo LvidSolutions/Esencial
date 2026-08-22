@@ -14,7 +14,11 @@ Every project has one Swedish and one English record in `content/projects/`.
 - `slug`: the permanent part of the web address. Change it only with a redirect plan.
 - `title`: the published project name.
 - `location`: publish only the approved level of detail, for example city rather than a sensitive street address.
+- `year`, `typology`, `client`, `team`, and `services` (optional): publish each only after the project facts, names, confidentiality, and language version are approved. These are factual fields, not search-keyword fields.
 - `description`: the visible project introduction and the basis for the search description. Use a short factual paragraph, not keyword lists.
+- `body` (optional): an approved longer project story. Add only material that tells visitors something the images and short introduction cannot; there is no target word count.
+- `relatedProjectIds` / `relatedProjects` (optional): manually chosen editorial relationships. Do not add links merely because two projects share a generic keyword.
+- `descriptionLanguage` (optional): set this only when an approved visible excerpt is intentionally in a language other than the page. The build tags that excerpt with the correct `lang` value and creates a conservative page-language metadata fallback until an approved translation is available.
 - `images`: every image needs a `src` path and an accurate `alt` description. Keep the file only when image rights are confirmed.
 
 ## Adding a project
@@ -22,11 +26,12 @@ Every project has one Swedish and one English record in `content/projects/`.
 1. Add approved image files under `public/wp-content/uploads/` or the future CMS media library.
 2. Add the Swedish record to `content/projects/sv.json` and the matching English record to `content/projects/en.json`.
 3. Use the same `id` and `slug` in both languages.
-4. Write original introductions in each language. Do not use automatic translation without review.
+4. Write original introductions in each language. Do not use automatic translation without review. If a legacy excerpt must temporarily remain in another language, record its real language with `descriptionLanguage`; this is not a substitute for translation approval.
 5. Add concise image descriptions. Describe what the image shows; do not repeat a list of search phrases.
 6. Run `npm run build`.
-7. Open the generated Swedish and English project pages, then check mobile and desktop presentation.
-8. Request review before publishing the repository build.
+7. Run `npm run audit:project-content` to review missing approved facts and generic/short introductions. This is an editorial queue, not permission to invent content.
+8. Open the generated Swedish and English project pages, then check mobile and desktop presentation.
+9. Request review before publishing the repository build.
 
 ## Updating a project
 
