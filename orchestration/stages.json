@@ -141,15 +141,15 @@
       "title": "Structured data and entity graph",
       "ownerLane": "Worker B",
       "dependencies": ["S3", "S4", "S6"],
-      "state": "RUNNING",
-      "stateReason": "Dispatched to W2 in isolated branch codex/worker-b-s8 from orchestration commit 77935aa.",
+      "state": "DONE",
+      "stateReason": "Integrated commit 55d07f3 validates one factual entity graph across all 56 indexable pages, including 52 CreativeWork entities and visible project breadcrumbs.",
       "model": "GPT-5.6 Sol",
       "effort": "xhigh",
       "ownedPaths": ["scripts/check-structured-data.js", "scripts/lib/schema/**", "audit/seo-final/10-structured-data-entity-seo.md"],
       "sharedHotspots": ["scripts/build-project-pages.js", "public/**", "package.json"],
       "acceptanceCommands": ["corepack pnpm run check-structured-data", "corepack pnpm run build"],
       "reportPaths": ["audit/seo-final/10-structured-data-entity-seo.md"],
-      "evidence": [],
+      "evidence": ["scripts/check-structured-data.js", "scripts/lib/schema/entity-graph.js"],
       "manualBlockers": ["Unsupported organization or project facts must not be added without client confirmation."]
     },
     {
