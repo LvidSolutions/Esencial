@@ -173,15 +173,15 @@
       "title": "Accessibility",
       "ownerLane": "Worker A",
       "dependencies": ["S1", "S5"],
-      "state": "RUNNING",
-      "stateReason": "Dispatched to W1 in isolated branch codex/worker-a-s10 from orchestration commit 77935aa.",
+      "state": "DONE",
+      "stateReason": "Integrated commit a7e2e61 adds keyboard, focus, zoom, motion, naming and reflow safeguards with zero mismatch across 40 live/local viewport pairs.",
       "model": "GPT-5.6 Terra",
       "effort": "high",
       "ownedPaths": ["scripts/check-accessibility.js", "audit/accessibility/**", "audit/seo-final/12-accessibility-seo.md"],
       "sharedHotspots": ["public/index.html", "public/about/index.html", "public/om-oss/index.html", "public/projects/index.html", "public/wp-content/themes/esencial/css/styles.css", "scripts/build-project-pages.js", "package.json"],
       "acceptanceCommands": ["corepack pnpm run check-accessibility", "corepack pnpm run check-reference-parity", "corepack pnpm run build"],
       "reportPaths": ["audit/seo-final/12-accessibility-seo.md"],
-      "evidence": [],
+      "evidence": ["scripts/check-accessibility.js", "audit/accessibility/s10-accessibility-evidence.json"],
       "manualBlockers": []
     },
     {
