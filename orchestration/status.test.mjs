@@ -79,6 +79,8 @@ test('DONE without evidence is rejected', () => {
 
 test('overlapping active ownership is rejected', () => {
   const registry = clone(sourceRegistry);
+  registry.stages.find((stage) => stage.id === 'S8').state = 'RUNNING';
+  registry.stages.find((stage) => stage.id === 'S9').state = 'RUNNING';
   registry.stages.find((stage) => stage.id === 'S8').ownedPaths = ['scripts/shared/**'];
   registry.stages.find((stage) => stage.id === 'S9').ownedPaths = ['scripts/shared/file.js'];
   assert.match(validate(registry).errors.join('\n'), /Ownership conflict: S8/);
