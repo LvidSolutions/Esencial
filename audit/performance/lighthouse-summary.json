@@ -1,0 +1,533 @@
+{
+  "methodology": {
+    "lighthouse": "12.8.2",
+    "browser": "Chrome 151.0.7922.170",
+    "throttling": "Lighthouse simulated throttling",
+    "repetitions": "Baseline two runs per case; final two runs per case and three runs for home.",
+    "inp": "Not measured: Lighthouse navigation lab runs do not produce valid field INP."
+  },
+  "assetTotals": {
+    "baseline": {
+      "files": 196,
+      "bytes": 32735598
+    },
+    "final": {
+      "files": 255,
+      "bytes": 40721775
+    }
+  },
+  "baseline": {
+    "about-desktop": {
+      "runs": 2,
+      "median": {
+        "score": 90,
+        "fcpMs": 605.1596,
+        "lcpMs": 2085.1596,
+        "cls": 0,
+        "tbtMs": 0,
+        "speedIndexMs": 605.1596,
+        "transferBytes": 2094039,
+        "requests": 12
+      },
+      "raw": [
+        {
+          "file": "about-desktop-run1.json",
+          "score": 90,
+          "fcpMs": 605.0892,
+          "lcpMs": 2085.0892000000003,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 605.0892,
+          "transferBytes": 2094039,
+          "requests": 12
+        },
+        {
+          "file": "about-desktop-run2.json",
+          "score": 90,
+          "fcpMs": 605.23,
+          "lcpMs": 2085.23,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 605.23,
+          "transferBytes": 2094039,
+          "requests": 12
+        }
+      ]
+    },
+    "about-mobile": {
+      "runs": 2,
+      "median": {
+        "score": 69,
+        "fcpMs": 3079.9156000000003,
+        "lcpMs": 12004.9156,
+        "cls": 0,
+        "tbtMs": 0,
+        "speedIndexMs": 3079.9156000000003,
+        "transferBytes": 2094039,
+        "requests": 12
+      },
+      "raw": [
+        {
+          "file": "about-mobile-run1.json",
+          "score": 69,
+          "fcpMs": 3004.1156,
+          "lcpMs": 12004.1156,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 3004.1156,
+          "transferBytes": 2094039,
+          "requests": 12
+        },
+        {
+          "file": "about-mobile-run2.json",
+          "score": 69,
+          "fcpMs": 3155.7156000000004,
+          "lcpMs": 12005.7156,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 3155.7156000000004,
+          "transferBytes": 2094039,
+          "requests": 12
+        }
+      ]
+    },
+    "home-desktop": {
+      "runs": 2,
+      "median": {
+        "score": 75,
+        "fcpMs": 716.9360036266952,
+        "lcpMs": 8609.071257253392,
+        "cls": 0,
+        "tbtMs": 0,
+        "speedIndexMs": 716.9360036266952,
+        "transferBytes": 17012614,
+        "requests": 65
+      },
+      "raw": [
+        {
+          "file": "home-desktop-run1.json",
+          "score": 75,
+          "fcpMs": 733.0750072533904,
+          "lcpMs": 11006.150014506784,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 733.0750072533904,
+          "transferBytes": 17012614,
+          "requests": 65
+        },
+        {
+          "file": "home-desktop-run2.json",
+          "score": 75,
+          "fcpMs": 700.797,
+          "lcpMs": 6211.9925,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 700.797,
+          "transferBytes": 17012614,
+          "requests": 65
+        }
+      ]
+    },
+    "home-mobile": {
+      "runs": 2,
+      "median": {
+        "score": 66,
+        "fcpMs": 3764.6884211213664,
+        "lcpMs": 25439.688421121366,
+        "cls": 0,
+        "tbtMs": 0,
+        "speedIndexMs": 3764.6884211213664,
+        "transferBytes": 17012614,
+        "requests": 65
+      },
+      "raw": [
+        {
+          "file": "home-mobile-run1.json",
+          "score": 67,
+          "fcpMs": 3463.9202,
+          "lcpMs": 25438.920199999997,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 3463.9202,
+          "transferBytes": 17012614,
+          "requests": 65
+        },
+        {
+          "file": "home-mobile-run2.json",
+          "score": 65,
+          "fcpMs": 4065.4566422427324,
+          "lcpMs": 25440.456642242734,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 4065.4566422427324,
+          "transferBytes": 17012614,
+          "requests": 65
+        }
+      ]
+    },
+    "project-desktop": {
+      "runs": 2,
+      "median": {
+        "score": 100,
+        "fcpMs": 406.6781,
+        "lcpMs": 526.6781,
+        "cls": 0,
+        "tbtMs": 0,
+        "speedIndexMs": 406.6781,
+        "transferBytes": 367176,
+        "requests": 7
+      },
+      "raw": [
+        {
+          "file": "project-desktop-run1.json",
+          "score": 100,
+          "fcpMs": 406.772,
+          "lcpMs": 526.7719999999999,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 406.772,
+          "transferBytes": 367176,
+          "requests": 7
+        },
+        {
+          "file": "project-desktop-run2.json",
+          "score": 100,
+          "fcpMs": 406.5842,
+          "lcpMs": 526.5842,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 406.5842,
+          "transferBytes": 367176,
+          "requests": 7
+        }
+      ]
+    },
+    "project-mobile": {
+      "runs": 2,
+      "median": {
+        "score": 96,
+        "fcpMs": 1656.1127999999999,
+        "lcpMs": 2556.1128,
+        "cls": 0,
+        "tbtMs": 0,
+        "speedIndexMs": 1656.1127999999999,
+        "transferBytes": 367254.5,
+        "requests": 7.5
+      },
+      "raw": [
+        {
+          "file": "project-mobile-run1.json",
+          "score": 96,
+          "fcpMs": 1657.1585,
+          "lcpMs": 2557.1585,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 1657.1585,
+          "transferBytes": 367333,
+          "requests": 8
+        },
+        {
+          "file": "project-mobile-run2.json",
+          "score": 96,
+          "fcpMs": 1655.0671,
+          "lcpMs": 2555.0671,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 1655.0671,
+          "transferBytes": 367176,
+          "requests": 7
+        }
+      ]
+    }
+  },
+  "final": {
+    "about-desktop": {
+      "runs": 2,
+      "median": {
+        "score": 98,
+        "fcpMs": 605.2326499999999,
+        "lcpMs": 1045.23265,
+        "cls": 0,
+        "tbtMs": 0,
+        "speedIndexMs": 605.2326499999999,
+        "transferBytes": 904291,
+        "requests": 13
+      },
+      "raw": [
+        {
+          "file": "about-desktop-run1.json",
+          "score": 98,
+          "fcpMs": 605.2144999999999,
+          "lcpMs": 1045.2145,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 605.2144999999999,
+          "transferBytes": 904291,
+          "requests": 13
+        },
+        {
+          "file": "about-desktop-run2.json",
+          "score": 98,
+          "fcpMs": 605.2508,
+          "lcpMs": 1045.2508,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 605.2508,
+          "transferBytes": 904291,
+          "requests": 13
+        }
+      ]
+    },
+    "about-mobile": {
+      "runs": 2,
+      "median": {
+        "score": 81,
+        "fcpMs": 3083.0759,
+        "lcpMs": 4095.7275625,
+        "cls": 0,
+        "tbtMs": 14,
+        "speedIndexMs": 3083.0759,
+        "transferBytes": 536215,
+        "requests": 13
+      },
+      "raw": [
+        {
+          "file": "about-mobile-run1.json",
+          "score": 81,
+          "fcpMs": 3158.9384999999997,
+          "lcpMs": 4058.9385,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 3158.9384999999997,
+          "transferBytes": 536215,
+          "requests": 13
+        },
+        {
+          "file": "about-mobile-run2.json",
+          "score": 81,
+          "fcpMs": 3007.2133000000003,
+          "lcpMs": 4132.516625,
+          "cls": 0,
+          "tbtMs": 28,
+          "speedIndexMs": 3007.2133000000003,
+          "transferBytes": 536215,
+          "requests": 13
+        }
+      ]
+    },
+    "home-desktop": {
+      "runs": 3,
+      "median": {
+        "score": 98,
+        "fcpMs": 775.0506,
+        "lcpMs": 1030.1012,
+        "cls": 0,
+        "tbtMs": 0,
+        "speedIndexMs": 775.0506,
+        "transferBytes": 3431889,
+        "requests": 27
+      },
+      "raw": [
+        {
+          "file": "home-desktop-run1.json",
+          "score": 98,
+          "fcpMs": 783.4725000000001,
+          "lcpMs": 1046.9450000000002,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 783.4725000000001,
+          "transferBytes": 3431889,
+          "requests": 27
+        },
+        {
+          "file": "home-desktop-run2.json",
+          "score": 98,
+          "fcpMs": 773.2061000000001,
+          "lcpMs": 1026.4122,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 773.2061000000001,
+          "transferBytes": 3431889,
+          "requests": 27
+        },
+        {
+          "file": "home-desktop-run3.json",
+          "score": 98,
+          "fcpMs": 775.0506,
+          "lcpMs": 1030.1012,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 775.0506,
+          "transferBytes": 3431889,
+          "requests": 27
+        }
+      ]
+    },
+    "home-mobile": {
+      "runs": 3,
+      "median": {
+        "score": 70,
+        "fcpMs": 4057.9232,
+        "lcpMs": 5571.008007634195,
+        "cls": 0,
+        "tbtMs": 0.5,
+        "speedIndexMs": 4057.9232,
+        "transferBytes": 3147801,
+        "requests": 23
+      },
+      "raw": [
+        {
+          "file": "home-mobile-run1.json",
+          "score": 70,
+          "fcpMs": 4060.5040038170973,
+          "lcpMs": 5571.008007634195,
+          "cls": 0,
+          "tbtMs": 4.5,
+          "speedIndexMs": 4060.5040038170973,
+          "transferBytes": 3147801,
+          "requests": 23
+        },
+        {
+          "file": "home-mobile-run2.json",
+          "score": 71,
+          "fcpMs": 3612.1393814581543,
+          "lcpMs": 5574.278762916309,
+          "cls": 0,
+          "tbtMs": 0.5,
+          "speedIndexMs": 3612.1393814581543,
+          "transferBytes": 3147801,
+          "requests": 23
+        },
+        {
+          "file": "home-mobile-run3.json",
+          "score": 70,
+          "fcpMs": 4057.9232,
+          "lcpMs": 5565.846399999999,
+          "cls": 0,
+          "tbtMs": 0.5,
+          "speedIndexMs": 4057.9232,
+          "transferBytes": 3147801,
+          "requests": 23
+        }
+      ]
+    },
+    "project-desktop": {
+      "runs": 2,
+      "median": {
+        "score": 100,
+        "fcpMs": 407.692,
+        "lcpMs": 527.692,
+        "cls": 0,
+        "tbtMs": 0,
+        "speedIndexMs": 407.692,
+        "transferBytes": 367398,
+        "requests": 7
+      },
+      "raw": [
+        {
+          "file": "project-desktop-run1.json",
+          "score": 100,
+          "fcpMs": 405.969,
+          "lcpMs": 525.969,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 405.969,
+          "transferBytes": 367398,
+          "requests": 7
+        },
+        {
+          "file": "project-desktop-run2.json",
+          "score": 100,
+          "fcpMs": 409.415,
+          "lcpMs": 529.415,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 409.415,
+          "transferBytes": 367398,
+          "requests": 7
+        }
+      ]
+    },
+    "project-mobile": {
+      "runs": 2,
+      "median": {
+        "score": 96,
+        "fcpMs": 1806.92155,
+        "lcpMs": 2556.92155,
+        "cls": 0,
+        "tbtMs": 0,
+        "speedIndexMs": 1806.92155,
+        "transferBytes": 367398,
+        "requests": 7
+      },
+      "raw": [
+        {
+          "file": "project-mobile-run1.json",
+          "score": 96,
+          "fcpMs": 1805.8451,
+          "lcpMs": 2555.8451,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 1805.8451,
+          "transferBytes": 367398,
+          "requests": 7
+        },
+        {
+          "file": "project-mobile-run2.json",
+          "score": 96,
+          "fcpMs": 1807.998,
+          "lcpMs": 2557.998,
+          "cls": 0,
+          "tbtMs": 0,
+          "speedIndexMs": 1807.998,
+          "transferBytes": 367398,
+          "requests": 7
+        }
+      ]
+    }
+  },
+  "comparisons": {
+    "about-desktop": {
+      "lcpMs": -1039.92695,
+      "cls": 0,
+      "transferBytes": -1189748,
+      "requests": 1,
+      "score": 8
+    },
+    "about-mobile": {
+      "lcpMs": -7909.1880375,
+      "cls": 0,
+      "transferBytes": -1557824,
+      "requests": 1,
+      "score": 12
+    },
+    "home-desktop": {
+      "lcpMs": -7578.970057253392,
+      "cls": 0,
+      "transferBytes": -13580725,
+      "requests": -38,
+      "score": 23
+    },
+    "home-mobile": {
+      "lcpMs": -19868.68041348717,
+      "cls": 0,
+      "transferBytes": -13864813,
+      "requests": -42,
+      "score": 4
+    },
+    "project-desktop": {
+      "lcpMs": 1.013900000000035,
+      "cls": 0,
+      "transferBytes": 222,
+      "requests": 0,
+      "score": 0
+    },
+    "project-mobile": {
+      "lcpMs": 0.8087500000001455,
+      "cls": 0,
+      "transferBytes": 143.5,
+      "requests": -0.5,
+      "score": 0
+    }
+  }
+}

@@ -27,6 +27,8 @@
     "build:structured-data": "node scripts/lib/schema/generate-structured-data.js",
     "check-structured-data": "node scripts/check-structured-data.js",
     "check-analytics": "node scripts/check-analytics.js",
+    "build:performance-assets": "node scripts/build-performance-assets.js",
+    "check-performance": "node scripts/check-performance.js",
     "check-http-seo": "node scripts/check-local-url-behavior.js",
     "audit:technical-seo": "node scripts/check-seo.js --evidence audit/seo-final/stage-3-technical-evidence.json && node scripts/check-local-url-behavior.js --evidence audit/seo-final/stage-3-http-evidence.json",
     "check-links": "node scripts/check-internal-links.js",

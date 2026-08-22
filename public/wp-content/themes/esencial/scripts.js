@@ -1,5 +1,8 @@
 (function($){
 
+deferOffscreenGridImages();
+optimizeFeaturedImages();
+
 $( document ).ready(function() {
 
   checkSize();
@@ -217,6 +220,88 @@ function findProject(object,query) {
       return object[i];
     }
   }
+}
+
+function deferOffscreenGridImages() {
+  if (!("IntersectionObserver" in window)) return;
+
+  var firstCard = document.querySelector(".css_grid_card_container");
+  var images = document.querySelectorAll('.css_grid_photo_item > img[data-seo-image="grid"][loading="lazy"]');
+  if (!images.length) return;
+  var variants = loadPerformanceVariants();
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (!entry.isIntersecting) return;
+
+      var image = entry.target;
+      var source = image.getAttribute("data-performance-src");
+      observer.unobserve(image);
+      variants.then(function(available) {
+        var selected = available[source] && available[source].src ? available[source].src : source;
+        image.addEventListener("load", function() {
+          image.classList.remove("css_performance_deferred_image");
+        }, { once: true });
+        if (selected) image.setAttribute("src", selected);
+        image.removeAttribute("data-performance-src");
+        image.removeAttribute("data-performance-srcset");
+      });
+    });
+  }, { rootMargin: "300px 0px" });
+
+  images.forEach(function(image) {
+    if (image.closest(".css_grid_card_container") === firstCard) {
+      image.loading = "eager";
+      image.fetchPriority = "high";
+      return;
+    }
+
+    image.setAttribute("data-performance-src", image.getAttribute("src"));
+    if (image.hasAttribute("srcset")) {
+      image.setAttribute("data-performance-srcset", image.getAttribute("srcset"));
+      image.removeAttribute("srcset");
+    }
+    image.removeAttribute("src");
+    image.classList.add("css_performance_deferred_image");
+    observer.observe(image);
+  });
+}
+
+var performanceVariants;
+function loadPerformanceVariants() {
+  if (!performanceVariants) {
+    performanceVariants = fetch("/assets/images/grid/manifest.json")
+      .then(function(response) { return response.ok ? response.json() : { entries: {} }; })
+      .then(function(manifest) { return manifest.entries || {}; })
+      .catch(function() { return {}; });
+  }
+  return performanceVariants;
+}
+
+function preferredVariant(entry) {
+  if (!entry || !entry.variants || !entry.variants.length) return entry && entry.src;
+  var target = window.innerWidth < 700 ? 640 : 1280;
+  return (entry.variants.find(function(variant) { return variant.width >= target; }) || entry.variants[entry.variants.length - 1]).src;
+}
+
+function optimizeFeaturedImages() {
+  var images = document.querySelectorAll('img[data-seo-image="featured"]');
+  if (!images.length) return;
+
+  var variants = loadPerformanceVariants();
+  images.forEach(function(image, index) {
+    var source = image.getAttribute("src");
+    image.classList.add("css_performance_deferred_image");
+    image.removeAttribute("src");
+    variants.then(function(available) {
+      var selected = preferredVariant(available[source]) || source;
+      image.addEventListener("load", function() {
+        image.classList.remove("css_performance_deferred_image");
+      }, { once: true });
+      image.loading = index === 0 ? "eager" : "lazy";
+      image.fetchPriority = index === 0 ? "high" : "low";
+      image.setAttribute("src", selected);
+    });
+  });
 }
 
 

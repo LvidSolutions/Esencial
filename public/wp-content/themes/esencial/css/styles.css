@@ -1779,6 +1779,15 @@ h2.css_about_info_label {
 }
 
 /* Semantic grid images must reproduce the recovered background-image crop. */
+.css_grid_photo_item:has(> img[data-seo-image="grid"]),
+.css_about_featured_image_item:has(> img[data-seo-image="featured"]) {
+  background-image: none !important;
+}
+
+.css_performance_deferred_image {
+  visibility: hidden;
+}
+
 .css_grid_photo_item > img[data-seo-image="grid"] {
   object-fit: contain !important;
 }
