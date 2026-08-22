@@ -260,8 +260,8 @@
       "title": "Sanity access and safe CMS sandbox gate",
       "ownerLane": "Coordinator",
       "dependencies": ["S14"],
-      "state": "BLOCKED_HUMAN",
-      "stateReason": "S14 is DONE and the ignored local token authenticates, but Sanity Access API reports zero permissions for project g6xm8j7l; a human must assign Viewer/content-read access for production before the read-only gate can pass.",
+      "state": "DONE",
+      "stateReason": "The replacement ignored local token passed authenticated read-only access for project g6xm8j7l/production (66 visible documents, 52 published projects, zero drafts), and all 30 Studio workspace safeguards passed without an external mutation.",
       "model": "GPT-5.6 Sol",
       "effort": "high",
       "ownedPaths": ["scripts/check-sanity-access.js", ".env.example", "docs/SANITY_ACCESS.md", "audit/cms/s15-access.md"],
@@ -269,7 +269,7 @@
       "acceptanceCommands": ["node scripts/check-sanity-access.js --read-only", "corepack pnpm run check-studio-workspace"],
       "reportPaths": ["audit/cms/s15-access.md"],
       "evidence": ["audit/cms/s15-access.md"],
-      "manualBlockers": ["Human assigns the project robot token Viewer/content-read access for dataset production, or replaces it with a token that has that role; never paste it into chat or Git.", "No production document mutation, Studio deployment, dataset migration, or role change occurs in this gate."]
+      "manualBlockers": ["No production document mutation, Studio deployment, dataset migration, role change, push, PR, or DNS change is authorized by this read-only gate."]
     },
     {
       "id": "S16",

@@ -42,12 +42,13 @@ test('READY is derived only when every dependency is DONE', () => {
   const registry = clone(sourceRegistry);
   registry.stages.find((stage) => stage.id === 'S13').state = 'PENDING';
   registry.stages.find((stage) => stage.id === 'S14').state = 'PENDING';
+  registry.stages.find((stage) => stage.id === 'S15').state = 'PENDING';
   registry.stages.find((stage) => stage.id === 'S8').state = 'PENDING';
   const states = deriveEffectiveStates(registry);
   assert.equal(states.get('S8'), 'READY');
   assert.equal(states.get('S13'), 'PENDING');
   assert.equal(states.get('S14'), 'PENDING');
-  assert.equal(states.get('S15'), 'BLOCKED_HUMAN');
+  assert.equal(states.get('S15'), 'PENDING');
   assert.equal(states.get('S16'), 'PENDING');
   assert.equal(states.get('S22'), 'PENDING');
 });
