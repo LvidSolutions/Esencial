@@ -205,15 +205,15 @@
       "title": "CMS and Sanity SEO safeguards",
       "ownerLane": "Worker D",
       "dependencies": ["S0", "S6", "S7"],
-      "state": "RUNNING",
-      "stateReason": "Dispatched to W4 in clean branch codex/worker-d-s12 from integrated commit 935d789; Sanity production writes remain prohibited.",
+      "state": "DONE",
+      "stateReason": "Integrated commit b003657 enforces draft-only Studio writes, bilingual publication and media-rights safeguards, complete-snapshot export validation, and deterministic clean Studio/root builds without external Sanity writes.",
       "model": "GPT-5.6 Sol",
       "effort": "xhigh",
       "ownedPaths": ["cms/**", "scripts/check-cms-content.js", "scripts/check-studio-workspace.js"],
       "sharedHotspots": ["scripts/fetch-sanity-content.js", "scripts/build-project-pages.js", "package.json", ".github/workflows/cms-build.yml"],
       "acceptanceCommands": ["corepack pnpm run check-content", "corepack pnpm run check-studio-workspace", "corepack pnpm run build"],
       "reportPaths": ["audit/seo-final/06-content-semantic-seo.md", "docs/CMS_USER_GUIDE.md"],
-      "evidence": [],
+      "evidence": ["audit/parallel/stage-12-cms-safeguards.md", "scripts/check-cms-content.js", "scripts/check-studio-workspace.js", "scripts/fetch-sanity-content.js"],
       "manualBlockers": ["No Sanity production writes or role/account changes without separate authorization."]
     },
     {
