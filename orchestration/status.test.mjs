@@ -88,6 +88,7 @@ test('overlapping active ownership is rejected', () => {
 
 test('four distinct worker lanes can run simultaneously', () => {
   const registry = clone(sourceRegistry);
+  registry.stages.find((stage) => stage.id === 'S12').state = 'PENDING';
   for (const id of ['S8', 'S9', 'S10', 'S11']) registry.stages.find((stage) => stage.id === id).state = 'RUNNING';
   const result = validate(registry);
   assert.equal(result.errors.some((error) => error.includes('active workers exceed')), false);
