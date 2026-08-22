@@ -43,7 +43,7 @@ test('READY is derived only when every dependency is DONE', () => {
   registry.stages.find((stage) => stage.id === 'S13').state = 'PENDING';
   registry.stages.find((stage) => stage.id === 'S14').state = 'PENDING';
   registry.stages.find((stage) => stage.id === 'S15').state = 'PENDING';
-  registry.stages.find((stage) => stage.id === 'S16').state = 'PENDING';
+  for (const stage of registry.stages.filter(({id}) => Number(id.slice(1)) >= 16)) stage.state = 'PENDING';
   registry.stages.find((stage) => stage.id === 'S8').state = 'PENDING';
   const states = deriveEffectiveStates(registry);
   assert.equal(states.get('S8'), 'READY');
@@ -64,7 +64,7 @@ test('CMS work unlocks only after S14 and verified Sanity access', () => {
   const registry = clone(sourceRegistry);
   registry.stages.find((stage) => stage.id === 'S14').state = 'DONE';
   registry.stages.find((stage) => stage.id === 'S15').state = 'PENDING';
-  registry.stages.find((stage) => stage.id === 'S16').state = 'PENDING';
+  for (const stage of registry.stages.filter(({id}) => Number(id.slice(1)) >= 16)) stage.state = 'PENDING';
   let states = deriveEffectiveStates(registry);
   assert.equal(states.get('S15'), 'READY');
   assert.equal(states.get('S16'), 'PENDING');
@@ -95,7 +95,7 @@ test('four distinct worker lanes can run simultaneously', () => {
   const registry = clone(sourceRegistry);
   registry.stages.find((stage) => stage.id === 'S12').state = 'PENDING';
   registry.stages.find((stage) => stage.id === 'S13').state = 'PENDING';
-  registry.stages.find((stage) => stage.id === 'S16').state = 'PENDING';
+  for (const stage of registry.stages.filter(({id}) => Number(id.slice(1)) >= 16)) stage.state = 'PENDING';
   for (const id of ['S8', 'S9', 'S10', 'S11']) registry.stages.find((stage) => stage.id === id).state = 'RUNNING';
   const result = validate(registry);
   assert.equal(result.errors.some((error) => error.includes('active workers exceed')), false);
