@@ -5,16 +5,119 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: seo-quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          node-version: 22
-      - uses: pnpm/action-setup@v4
+          persist-credentials: false
+      - name: Set up pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
-          version: 9
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run build
+          version: 9.15.9
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22.19.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install root dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Studio dependencies
+        run: npm ci --prefix cms/studio --ignore-scripts
+      - name: Validate CI workflow contract
+        id: ci_contract
+        run: pnpm run check-ci-gates
+      - name: Validate CMS content
+        id: cms_content
+        run: pnpm run check-content
+      - name: Build release candidate
+        id: root_build
+        run: pnpm run build
+      - name: Verify generated release is committed
+        id: generated_diff
+        run: git diff --exit-code
+      - name: Validate local HTTP SEO
+        id: http_seo
+        run: pnpm run check-http-seo
+      - name: Audit project content
+        id: project_content
+        run: pnpm run audit:project-content
+      - name: Validate Studio safeguards
+        id: studio_safeguards
+        run: pnpm run check-studio-workspace
+      - name: Build Studio
+        id: studio_build
+        run: npm --prefix cms/studio run build
+      - name: Install Playwright Chromium
+        id: playwright_install
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Check functionality
+        id: functionality
+        run: pnpm run check-functionality
+      - name: Check performance
+        id: performance
+        run: pnpm run check-performance
+      - name: Check accessibility
+        id: accessibility
+        run: pnpm run check-accessibility
+      - name: Check reference parity
+        id: reference_parity
+        run: pnpm run check-reference-parity
+      - name: Write gate summary
+        if: always()
+        shell: bash
+        run: |
+          gates=(
+            "CI workflow contract:${{ steps.ci_contract.outcome }}"
+            "CMS content:${{ steps.cms_content.outcome }}"
+            "Root build:${{ steps.root_build.outcome }}"
+            "Generated release diff:${{ steps.generated_diff.outcome }}"
+            "Local HTTP SEO:${{ steps.http_seo.outcome }}"
+            "Project content:${{ steps.project_content.outcome }}"
+            "Studio safeguards:${{ steps.studio_safeguards.outcome }}"
+            "Studio build:${{ steps.studio_build.outcome }}"
+            "Playwright install:${{ steps.playwright_install.outcome }}"
+            "Functionality:${{ steps.functionality.outcome }}"
+            "Performance:${{ steps.performance.outcome }}"
+            "Accessibility:${{ steps.accessibility.outcome }}"
+            "Reference parity:${{ steps.reference_parity.outcome }}"
+          )
+          {
+            echo "## SEO quality gate"
+            first_failure=""
+            for gate in "${gates[@]}"; do
+              name="${gate%%:*}"
+              outcome="${gate##*:}"
+              echo "- ${name}: ${outcome}"
+              if [[ -z "$first_failure" && "$outcome" != "success" ]]; then
+                first_failure="$name"
+              fi
+            done
+            if [[ -n "$first_failure" ]]; then
+              echo ""
+              echo "First actionable failure: **${first_failure}**. Open that step and fix its first reported error. Later skipped gates were not evaluated."
+            else
+              echo ""
+              echo "All automated release gates passed. This does not authorize deployment."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload gate evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: seo-quality-evidence-${{ github.run_id }}
+          path: audit/
+          if-no-files-found: error
+          retention-days: 14

@@ -6,50 +6,134 @@ on:
     types: [sanity-published]
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: cms-staging-build
   cancel-in-progress: false
 
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    timeout-minutes: 30
+    outputs:
+      source_sha: ${{ steps.source_revision.outputs.sha }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          node-version: 22
-      - uses: pnpm/action-setup@v4
+          persist-credentials: false
+      - name: Record validated source revision
+        id: source_revision
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Set up pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
         with:
-          version: 9
-      - run: pnpm install --frozen-lockfile
-      - name: Build published CMS content
+          version: 9.15.9
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22.19.0
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install root dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Validate CI workflow contract
+        id: ci_contract
+        run: pnpm run check-ci-gates
+      - name: Build and validate published CMS content
         id: cms_build
         run: pnpm run build:cms
         env:
           SANITY_API_TOKEN: ${{ secrets.SANITY_API_TOKEN }}
           SANITY_PROJECT_ID: g6xm8j7l
           SANITY_DATASET: production
-      - name: Commit generated website
+      - name: Verify CMS build scope
+        id: cms_scope
+        run: git diff --exit-code -- . ":(exclude)public/**"
+      - name: Package validated website
+        id: package_site
+        run: tar -czf "$RUNNER_TEMP/public.tgz" public
+      - name: Upload validated website
+        id: upload_site
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: validated-cms-public-${{ github.run_id }}
+          path: ${{ runner.temp }}/public.tgz
+          if-no-files-found: error
+          retention-days: 1
+      - name: Write validation summary
+        if: always()
+        shell: bash
+        run: |
+          gates=(
+            "CI workflow contract:${{ steps.ci_contract.outcome }}"
+            "CMS content build:${{ steps.cms_build.outcome }}"
+            "CMS build scope:${{ steps.cms_scope.outcome }}"
+            "Website package:${{ steps.package_site.outcome }}"
+            "Artifact upload:${{ steps.upload_site.outcome }}"
+          )
+          {
+            echo "## CMS staging validation"
+            first_failure=""
+            for gate in "${gates[@]}"; do
+              name="${gate%%:*}"
+              outcome="${gate##*:}"
+              echo "- ${name}: ${outcome}"
+              if [[ -z "$first_failure" && "$outcome" != "success" ]]; then
+                first_failure="$name"
+              fi
+            done
+            if [[ -z "$first_failure" ]]; then
+              echo ""
+              echo "Published CMS content passed the local content, SEO and link gates. The write-capable publish job can use only the validated website artifact; it receives no Sanity secret."
+            else
+              echo ""
+              echo "First actionable failure: **${first_failure}**. Open that step and fix its first reported error. No website artifact was eligible for publication."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  publish:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout main for publication
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ needs.validate.outputs.source_sha }}
+          fetch-depth: 0
+      - name: Download validated website
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: validated-cms-public-${{ github.run_id }}
+          path: ${{ runner.temp }}/validated-cms-public
+      - name: Replace website from validated artifact
+        run: |
+          test -f "$RUNNER_TEMP/validated-cms-public/public.tgz"
+          rm -rf public
+          tar -xzf "$RUNNER_TEMP/validated-cms-public/public.tgz" -C .
+          test -f public/index.html
+      - name: Commit validated website
         run: |
           git config user.name "Esencial CMS build"
           git config user.email "cms-build@users.noreply.github.com"
-          git add -- public
-          git diff --cached --quiet || git commit -m "Build website from published Sanity content"
-          git push
-      - name: Write editor-friendly result
+          git add --all -- public
+          if git diff --cached --quiet; then
+            echo "Validated CMS content produced no website changes."
+          else
+            git commit -m "Build website from validated published Sanity content"
+            git push origin HEAD:main
+          fi
+      - name: Write publication summary
         if: always()
         run: |
           {
-            echo "## CMS staging build"
-            if [ "${{ steps.cms_build.outcome }}" = "success" ]; then
-              echo "✅ Published CMS content passed validation and the generated site was pushed to \`main\`. Vercel staging will deploy that commit."
-              echo ""
-              echo "If staging does not change, open the Vercel deployment for this commit."
-            else
-              echo "❌ No website files were pushed. The prior staging deployment remains in place."
-              echo ""
-              echo "Open **Build published CMS content** above: its first validation error tells you which project, translation, SEO field or image needs attention."
-            fi
+            echo "## CMS staging publication"
+            echo "Only the website artifact from the completed validation job was eligible for commit."
+            echo "No Sanity token was available to this write-capable job."
           } >> "$GITHUB_STEP_SUMMARY"
