@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://www.esencial.se/internal/orchestration/stages.schema.json",
+  "title": "Esencial orchestration stage registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "project",
+    "repositoryPath",
+    "baselineSha",
+    "integrationRef",
+    "totalContexts",
+    "maxWorkers",
+    "updatedAt",
+    "stages"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "project": { "type": "string", "minLength": 1 },
+    "repositoryPath": { "type": "string", "minLength": 1 },
+    "baselineSha": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "integrationRef": { "type": "string", "minLength": 1 },
+    "totalContexts": { "type": "integer", "const": 5 },
+    "maxWorkers": { "type": "integer", "const": 4 },
+    "updatedAt": { "type": "string", "minLength": 10 },
+    "stages": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "items": { "$ref": "#/$defs/stage" }
+    }
+  },
+  "$defs": {
+    "stringArray": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "ownerLane",
+        "dependencies",
+        "state",
+        "stateReason",
+        "model",
+        "effort",
+        "ownedPaths",
+        "sharedHotspots",
+        "acceptanceCommands",
+        "reportPaths",
+        "evidence",
+        "manualBlockers"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^S(?:[0-9]|1[0-4])$" },
+        "title": { "type": "string", "minLength": 1 },
+        "ownerLane": { "enum": ["Coordinator", "Worker A", "Worker B", "Worker C", "Worker D"] },
+        "dependencies": { "$ref": "#/$defs/stringArray" },
+        "state": { "enum": ["PENDING", "READY", "RUNNING", "TESTING", "DONE", "FAILED", "RETRY", "BLOCKED_HUMAN"] },
+        "stateReason": { "type": "string", "minLength": 1 },
+        "model": { "enum": ["GPT-5.6 Sol", "GPT-5.6 Terra"] },
+        "effort": { "enum": ["medium", "high", "xhigh"] },
+        "ownedPaths": { "$ref": "#/$defs/stringArray" },
+        "sharedHotspots": { "$ref": "#/$defs/stringArray" },
+        "acceptanceCommands": { "$ref": "#/$defs/stringArray" },
+        "reportPaths": { "$ref": "#/$defs/stringArray" },
+        "evidence": { "$ref": "#/$defs/stringArray" },
+        "manualBlockers": { "$ref": "#/$defs/stringArray" }
+      }
+    }
+  }
+}
