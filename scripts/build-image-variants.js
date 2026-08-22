@@ -7,6 +7,8 @@ const { ROOT, PUBLIC_DIR, ensureDir } = require("./recovery-utils");
 const outputDirectory = path.join(PUBLIC_DIR, "assets", "images", "project");
 const manifestFile = path.join(ROOT, "content", "image-variants.json");
 const widths = [640, 1280];
+const photoQualityLevels = [90, 92, 94, 96];
+const maxPhotoSsimDistortion = 0.025;
 const images = new Map();
 
 for (const language of ["sv", "en"]) {
@@ -24,6 +26,21 @@ function isDrawing(image) {
   return /\b(drawing|ritning|planritning|dwg)\b/i.test(image.alt || "") || /(?:^|[_-])DWG(?:[_-]|$)/i.test(image.src || "");
 }
 
+function ssimDistortion(sourceFile, destination, width) {
+  const output = execFileSync("magick", [sourceFile, "-resize", `${width}x>`, destination, "-metric", "SSIM", "-compare", "-format", "%[distortion]", "info:"], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
+  const value = Number(output);
+  if (!Number.isFinite(value)) throw new Error(`Could not measure image quality for ${destination}.`);
+  return value;
+}
+
+function buildPhotoVariant(sourceFile, destination, width) {
+  for (const quality of photoQualityLevels) {
+    execFileSync("magick", [sourceFile, "-resize", `${width}x>`, "-strip", "-quality", String(quality), destination]);
+    if (ssimDistortion(sourceFile, destination, width) <= maxPhotoSsimDistortion) return quality;
+  }
+  throw new Error(`Could not preserve the required SSIM quality for ${destination}.`);
+}
+
 ensureDir(outputDirectory);
 const entries = {};
 for (const [source, image] of images) {
@@ -37,11 +54,11 @@ for (const [source, image] of images) {
     for (const width of widths.filter(candidate => candidate < dimensions.width)) {
       const filename = `${stem}-${hash}-${width}.webp`;
       const destination = path.join(outputDirectory, filename);
-      execFileSync("magick", [sourceFile, "-resize", `${width}x>`, "-strip", "-quality", "90", destination]);
-      variants.push({ src: `/assets/images/project/${filename}`, width });
+      const quality = buildPhotoVariant(sourceFile, destination, width);
+      variants.push({ src: `/assets/images/project/${filename}`, width, quality });
     }
   }
   entries[source] = { ...dimensions, kind: isDrawing(image) ? "drawing" : "photo", variants };
 }
-fs.writeFileSync(manifestFile, `${JSON.stringify({ generatedAt: new Date().toISOString(), entries }, null, 2)}\n`);
+fs.writeFileSync(manifestFile, `${JSON.stringify({ schemaVersion: 1, entries }, null, 2)}\n`);
 console.log(`Image variant build complete: ${Object.keys(entries).length} source images, ${Object.values(entries).reduce((count, entry) => count + entry.variants.length, 0)} WebP variants.`);

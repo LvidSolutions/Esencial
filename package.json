@@ -28,6 +28,7 @@
     "audit:project-content": "node scripts/audit-project-content.js",
     "build:image-variants": "node scripts/build-image-variants.js",
     "check-image-seo": "node scripts/check-image-seo.js",
+    "check-image-quality": "node scripts/check-image-quality.js",
     "build:structured-data": "node scripts/lib/schema/generate-structured-data.js",
     "check-structured-data": "node scripts/check-structured-data.js",
     "check-analytics": "node scripts/check-analytics.js",
@@ -42,7 +43,7 @@
     "check-ci-gates": "node scripts/check-ci-gates.js",
     "fetch-sanity-content": "node scripts/fetch-sanity-content.js",
     "build-content": "node scripts/build-project-pages.js",
-    "build": "node scripts/clean-legacy-export.js && node scripts/build-project-pages.js && node scripts/normalize-core-semantics.js && node scripts/lib/schema/generate-structured-data.js && node scripts/inject-vercel-analytics.js && node scripts/check-analytics.js && node scripts/check-seo.js && node scripts/check-international-seo.js && node scripts/check-structured-data.js && npm run check-semantics && node scripts/check-project-page-seo.js && node scripts/check-image-seo.js && node scripts/test-project-page-architecture.js && node scripts/check-internal-links.js",
+    "build": "node scripts/clean-legacy-export.js && node scripts/build-project-pages.js && node scripts/normalize-core-semantics.js && node scripts/lib/schema/generate-structured-data.js && node scripts/inject-vercel-analytics.js && node scripts/check-analytics.js && node scripts/check-seo.js && node scripts/check-international-seo.js && node scripts/check-structured-data.js && npm run check-semantics && node scripts/check-project-page-seo.js && node scripts/check-image-seo.js && node scripts/check-image-quality.js && node scripts/test-project-page-architecture.js && node scripts/check-internal-links.js",
     "build:cms": "node scripts/build-cms.js",
     "recover": "node scripts/crawl-site.js && node scripts/download-assets.js && node scripts/rewrite-paths.js"
   },

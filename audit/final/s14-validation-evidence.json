@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "stage": "S14",
+  "status": "PASS_LOCAL_NOT_RELEASE_AUTHORIZATION",
+  "startingCandidate": "218af03833645b0e75d9ada60e3fca374f14e304",
+  "orchestrationStart": "ef659337af618235dc35c283403ae9f25745c3ff",
+  "checks": {
+    "indexablePages": 56,
+    "sitemapUrls": 56,
+    "swedishPages": 28,
+    "englishPages": 28,
+    "projectPages": 52,
+    "creativeWorkEntities": 52,
+    "parityPageViewportPairs": 40,
+    "interactionScenarios": 4,
+    "accessibilityErrors": 0,
+    "runtimeCases": 6,
+    "runtimeBudgetFailures": 0,
+    "imageDerivatives": 78,
+    "photoDerivatives": 51,
+    "minimumPhotoSsimSimilarity": 0.9756,
+    "manualOriginalDerivativePairsPassed": 2,
+    "losslessDrawingDerivatives": 27,
+    "gridDerivativeBytes": 7987646,
+    "ciOrderedGates": 14,
+    "ciNegativeFixtures": 6,
+    "orchestrationTestsPassed": 11,
+    "studioAuditVulnerabilities": 0,
+    "publicFileCount": 255,
+    "publicTreeSha256": "7759FD921A7B8DEEE55E91A2F8872CFB7D1B164BB1EC2895F349264F3D8B73EE"
+  },
+  "externalActionsPerformed": {
+    "push": false,
+    "pullRequest": false,
+    "remoteCi": false,
+    "deployment": false,
+    "dns": false,
+    "sanityWrite": false,
+    "productionMutation": false
+  },
+  "releaseBlockers": [
+    "Authorized compressed/CDN preview and field CWV verification",
+    "Authenticated analytics access in S19",
+    "Cookie/privacy facts and legal sign-off",
+    "Separate production push/deployment/DNS authorization"
+  ]
+}

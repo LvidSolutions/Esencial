@@ -2,6 +2,12 @@ name: CMS staging build
 
 on:
   workflow_dispatch:
+    inputs:
+      authorize_publish:
+        description: Explicitly authorize committing the validated website to main
+        required: true
+        default: false
+        type: boolean
   repository_dispatch:
     types: [sanity-published]
 
@@ -16,7 +22,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    timeout-minutes: 30
+    timeout-minutes: 45
     outputs:
       source_sha: ${{ steps.source_revision.outputs.sha }}
     steps:
@@ -43,6 +49,9 @@ jobs:
       - name: Validate CI workflow contract
         id: ci_contract
         run: pnpm run check-ci-gates
+      - name: Prove CI contract fails closed
+        id: ci_contract_fixtures
+        run: pnpm run check-ci-gates -- --fixtures
       - name: Build and validate published CMS content
         id: cms_build
         run: pnpm run build:cms
@@ -50,6 +59,29 @@ jobs:
           SANITY_API_TOKEN: ${{ secrets.SANITY_API_TOKEN }}
           SANITY_PROJECT_ID: g6xm8j7l
           SANITY_DATASET: production
+      - name: Run complete integrated release gates on CMS content
+        id: integrated_build
+        run: pnpm run build
+        env:
+          CONTENT_SOURCE: sanity
+      - name: Validate CMS output over local HTTP
+        id: http_seo
+        run: pnpm run check-http-seo
+      - name: Audit CMS project content
+        id: project_content
+        run: pnpm run audit:project-content
+      - name: Install Playwright Chromium
+        id: playwright_install
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Check CMS functionality
+        id: functionality
+        run: pnpm run check-functionality
+      - name: Check CMS performance
+        id: performance
+        run: pnpm run check-performance
+      - name: Check CMS accessibility
+        id: accessibility
+        run: pnpm run check-accessibility
       - name: Verify CMS build scope
         id: cms_scope
         run: git diff --exit-code -- . ":(exclude)public/**"
@@ -70,7 +102,15 @@ jobs:
         run: |
           gates=(
             "CI workflow contract:${{ steps.ci_contract.outcome }}"
+            "CI fail-closed fixtures:${{ steps.ci_contract_fixtures.outcome }}"
             "CMS content build:${{ steps.cms_build.outcome }}"
+            "Integrated CMS release gates:${{ steps.integrated_build.outcome }}"
+            "CMS HTTP SEO:${{ steps.http_seo.outcome }}"
+            "CMS project audit:${{ steps.project_content.outcome }}"
+            "Playwright install:${{ steps.playwright_install.outcome }}"
+            "CMS functionality:${{ steps.functionality.outcome }}"
+            "CMS performance:${{ steps.performance.outcome }}"
+            "CMS accessibility:${{ steps.accessibility.outcome }}"
             "CMS build scope:${{ steps.cms_scope.outcome }}"
             "Website package:${{ steps.package_site.outcome }}"
             "Artifact upload:${{ steps.upload_site.outcome }}"
@@ -88,7 +128,7 @@ jobs:
             done
             if [[ -z "$first_failure" ]]; then
               echo ""
-              echo "Published CMS content passed the local content, SEO and link gates. The write-capable publish job can use only the validated website artifact; it receives no Sanity secret."
+              echo "Published CMS content passed the complete release gate. Repository-dispatch runs stop here; a separate manual run with authorize_publish=true is required before any push."
             else
               echo ""
               echo "First actionable failure: **${first_failure}**. Open that step and fix its first reported error. No website artifact was eligible for publication."
@@ -97,6 +137,7 @@ jobs:
 
   publish:
     needs: validate
+    if: github.event_name == 'workflow_dispatch' && inputs.authorize_publish == true && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

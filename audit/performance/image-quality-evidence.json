@@ -1,0 +1,747 @@
+{
+  "methodology": {
+    "tool": "ImageMagick SSIM against an identically resized original",
+    "maxPhotoSsimDistortion": 0.025,
+    "framing": "Derivative width and aspect ratio must match the uncropped original resize.",
+    "drawings": "Grid drawing derivatives must report lossless WebP quality 100; project drawings retain originals."
+  },
+  "summary": {
+    "derivatives": 78,
+    "photoDerivatives": 51,
+    "losslessDrawingDerivatives": 27,
+    "worstPhoto": {
+      "variant": "/assets/images/grid/mia-photo-01-30753f1915-640.webp",
+      "ssimDistortion": 0.0243745,
+      "ssimSimilarity": 0.9756255
+    }
+  },
+  "results": [
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/1_domkyrkoforum_draw_01.png",
+      "variant": "/assets/images/grid/1-domkyrkoforum-draw-01-6703b25ced-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 513
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/1_domkyrkoforum_photo_01.jpg",
+      "variant": "/assets/images/grid/1-domkyrkoforum-photo-01-b20eea102c-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 430,
+      "ssimDistortion": 0.013536,
+      "ssimSimilarity": 0.986464
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2018/12/1_domkyrkoforum_photo_01.jpg",
+      "variant": "/assets/images/project/1-domkyrkoforum-photo-01-b20eea102c-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 430,
+      "ssimDistortion": 0.013536,
+      "ssimSimilarity": 0.986464
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/1_theforestofvenice_photo_01.jpg",
+      "variant": "/assets/images/grid/1-theforestofvenice-photo-01-f27e4728fe-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 800,
+      "ssimDistortion": 0.00380024,
+      "ssimSimilarity": 0.99619976
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/2_theforestofvenice_draw_01.png",
+      "variant": "/assets/images/grid/2-theforestofvenice-draw-01-be093cad5e-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 640
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/3_spahoor_draw_01.png",
+      "variant": "/assets/images/grid/3-spahoor-draw-01-e29f8bab16-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 640
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/3_spahoor_photo_03.jpg",
+      "variant": "/assets/images/grid/3-spahoor-photo-03-65e0115fdd-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 800,
+      "ssimDistortion": 0.0161128,
+      "ssimSimilarity": 0.9838872
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/4_highriseinwood_draw_01.png",
+      "variant": "/assets/images/grid/4-highriseinwood-draw-01-b1a6929906-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 640
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/4_highriseinwood_photo_01.jpg",
+      "variant": "/assets/images/grid/4-highriseinwood-photo-01-c9cc0b12c4-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 800,
+      "ssimDistortion": 0.00408762,
+      "ssimSimilarity": 0.99591238
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/5_essingedwellings_draw_01.png",
+      "variant": "/assets/images/grid/5-essingedwellings-draw-01-4ab0368750-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 640
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/5_essingedwellings_photo_01a.jpg",
+      "variant": "/assets/images/grid/5-essingedwellings-photo-01a-33a827d8b4-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 512,
+      "ssimDistortion": 0.0142301,
+      "ssimSimilarity": 0.9857699
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2018/12/5_essingedwellings_photo_01a.jpg",
+      "variant": "/assets/images/project/5-essingedwellings-photo-01a-33a827d8b4-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 512,
+      "ssimDistortion": 0.0142301,
+      "ssimSimilarity": 0.9857699
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/6_maritimmuseum_draw_01.png",
+      "variant": "/assets/images/grid/6-maritimmuseum-draw-01-22a0541a61-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 640
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/6_maritimmuseum_photo_01.jpg",
+      "variant": "/assets/images/grid/6-maritimmuseum-photo-01-50e1a19299-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 512,
+      "ssimDistortion": 0.00731744,
+      "ssimSimilarity": 0.99268256
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2018/12/6_maritimmuseum_photo_01.jpg",
+      "variant": "/assets/images/project/6-maritimmuseum-photo-01-50e1a19299-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 512,
+      "ssimDistortion": 0.00731744,
+      "ssimSimilarity": 0.99268256
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/7_kulturhuset_draw_01.png",
+      "variant": "/assets/images/grid/7-kulturhuset-draw-01-59858126d7-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 640
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/7_kulturhuset_photo_01.jpg",
+      "variant": "/assets/images/grid/7-kulturhuset-photo-01-846d431446-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 512,
+      "ssimDistortion": 0.00495048,
+      "ssimSimilarity": 0.99504952
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2018/12/7_kulturhuset_photo_01.jpg",
+      "variant": "/assets/images/project/7-kulturhuset-photo-01-846d431446-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 512,
+      "ssimDistortion": 0.00495048,
+      "ssimSimilarity": 0.99504952
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/8_massivewoodhouse_draw_01.png",
+      "variant": "/assets/images/grid/8-massivewoodhouse-draw-01-f7360f4664-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 640
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/8_massivewoodhouse_photo_01.jpg",
+      "variant": "/assets/images/grid/8-massivewoodhouse-photo-01-9e9a1218c4-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 512,
+      "ssimDistortion": 0.0116762,
+      "ssimSimilarity": 0.9883238
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2018/12/8_massivewoodhouse_photo_01.jpg",
+      "variant": "/assets/images/project/8-massivewoodhouse-photo-01-9e9a1218c4-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 512,
+      "ssimDistortion": 0.0116762,
+      "ssimSimilarity": 0.9883238
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/9_sidöparken_draw_01.png",
+      "variant": "/assets/images/grid/9-sido-parken-draw-01-2c0ad5f696-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 640
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/9_sidöparken_photo_01.jpg",
+      "variant": "/assets/images/grid/9-sido-parken-photo-01-683ff64e63-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 741,
+      "ssimDistortion": 0.0238115,
+      "ssimSimilarity": 0.9761885
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/arstafaltet_dwg_00.png",
+      "variant": "/assets/images/grid/arstafaltet-dwg-00-8ac1b535fd-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 731
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/Arstafaltet_PHOTO_01.jpg",
+      "variant": "/assets/images/grid/arstafaltet-photo-01-57eba3b412-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 960,
+      "ssimDistortion": 0.0103514,
+      "ssimSimilarity": 0.9896486
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2018/12/Arstafaltet_PHOTO_01.jpg",
+      "variant": "/assets/images/project/arstafaltet-photo-01-57eba3b412-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 960,
+      "ssimDistortion": 0.0103514,
+      "ssimSimilarity": 0.9896486
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/Ekhagen_photo_01-1.jpg",
+      "variant": "/assets/images/grid/ekhagen-photo-01-1-5fdf6bad76-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 434,
+      "ssimDistortion": 0.0137239,
+      "ssimSimilarity": 0.9862761
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2018/12/Ekhagen_photo_01-1.jpg",
+      "variant": "/assets/images/project/ekhagen-photo-01-1-5fdf6bad76-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 434,
+      "ssimDistortion": 0.0137239,
+      "ssimSimilarity": 0.9862761
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/hubba_dwg_01.png",
+      "variant": "/assets/images/grid/hubba-dwg-01-4d4e4df768-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 641
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/hubba_photo_01.jpg",
+      "variant": "/assets/images/grid/hubba-photo-01-00e4017248-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 426,
+      "ssimDistortion": 0.0151649,
+      "ssimSimilarity": 0.9848351
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2018/12/hubba_photo_01.jpg",
+      "variant": "/assets/images/project/hubba-photo-01-00e4017248-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 426,
+      "ssimDistortion": 0.0151649,
+      "ssimSimilarity": 0.9848351
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/jonkoping_dwg_02.png",
+      "variant": "/assets/images/grid/jonkoping-dwg-02-5ca69c01a6-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 453
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/Pasen_DWG_01_b.png",
+      "variant": "/assets/images/grid/pasen-dwg-01-b-ec12fc65fe-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 502
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/Pasen_PHOTO_01-1.jpg",
+      "variant": "/assets/images/grid/pasen-photo-01-1-ee996b3c99-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 448,
+      "ssimDistortion": 0.0091655,
+      "ssimSimilarity": 0.9908345
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2018/12/Pasen_PHOTO_01-1.jpg",
+      "variant": "/assets/images/project/pasen-photo-01-1-ee996b3c99-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 448,
+      "ssimDistortion": 0.0091655,
+      "ssimSimilarity": 0.9908345
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/sodertalje_dwg_06.png",
+      "variant": "/assets/images/grid/sodertalje-dwg-06-ccf678a20b-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 437
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2018/12/sodertalje_photo_01.jpg",
+      "variant": "/assets/images/grid/sodertalje-photo-01-eed4ca91a0-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 256,
+      "ssimDistortion": 0.00928046,
+      "ssimSimilarity": 0.99071954
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2018/12/sodertalje_photo_01.jpg",
+      "variant": "/assets/images/project/sodertalje-photo-01-eed4ca91a0-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 256,
+      "ssimDistortion": 0.00928046,
+      "ssimSimilarity": 0.99071954
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2020/07/Domkyrkoberget_DWG_01.jpg",
+      "variant": "/assets/images/grid/domkyrkoberget-dwg-01-1e713ff1b8-576.webp",
+      "kind": "drawing-lossless",
+      "width": 576,
+      "height": 572
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2020/07/Domkyrkoberget_PHOTO_01.jpg",
+      "variant": "/assets/images/grid/domkyrkoberget-photo-01-303263d2c4-591.webp",
+      "kind": "photo",
+      "width": 591,
+      "height": 800,
+      "ssimDistortion": 0.00607631,
+      "ssimSimilarity": 0.99392369
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2020/07/Duved_DWG_01.png",
+      "variant": "/assets/images/grid/duved-dwg-01-8283439e4f-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 753
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2020/07/Duved_PHOTO_01.jpg",
+      "variant": "/assets/images/grid/duved-photo-01-6b19b4b83e-533.webp",
+      "kind": "photo",
+      "width": 533,
+      "height": 646,
+      "ssimDistortion": 0.00981029,
+      "ssimSimilarity": 0.99018971
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2020/07/Getafe_DWG_02.png",
+      "variant": "/assets/images/grid/getafe-dwg-02-41df89822e-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 640
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2020/07/Getafe_PHOTO_01.jpg",
+      "variant": "/assets/images/grid/getafe-photo-01-a0c795d152-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 512,
+      "ssimDistortion": 0.0118799,
+      "ssimSimilarity": 0.9881201
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2020/07/Getafe_PHOTO_01.jpg",
+      "variant": "/assets/images/project/getafe-photo-01-a0c795d152-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 512,
+      "ssimDistortion": 0.0118799,
+      "ssimSimilarity": 0.9881201
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2020/07/Kallbadhus_DWG_03.png",
+      "variant": "/assets/images/grid/kallbadhus-dwg-03-66ab9eebca-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 733
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2020/07/Kallbadhus_PHOTO_01.jpg",
+      "variant": "/assets/images/grid/kallbadhus-photo-01-6343d79e33-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 512,
+      "ssimDistortion": 0.00652373,
+      "ssimSimilarity": 0.99347627
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2020/07/Kallbadhus_PHOTO_01.jpg",
+      "variant": "/assets/images/project/kallbadhus-photo-01-6343d79e33-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 512,
+      "ssimDistortion": 0.00652373,
+      "ssimSimilarity": 0.99347627
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2020/07/Kemeri_DWG_01.png",
+      "variant": "/assets/images/grid/kemeri-dwg-01-03507b526b-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 884
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2020/07/Kemeri_PHOTO_01.jpg",
+      "variant": "/assets/images/grid/kemeri-photo-01-b95b7cc6a9-560.webp",
+      "kind": "photo",
+      "width": 560,
+      "height": 800,
+      "ssimDistortion": 0.00771041,
+      "ssimSimilarity": 0.99228959
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2020/07/Lanzarote_DWG_01.png",
+      "variant": "/assets/images/grid/lanzarote-dwg-01-68642f7c16-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 591
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2020/07/Lanzarote_PHOTO_01.jpg",
+      "variant": "/assets/images/grid/lanzarote-photo-01-2d628d5cd6-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 640,
+      "ssimDistortion": 0.0107843,
+      "ssimSimilarity": 0.9892157
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2020/07/Lanzarote_PHOTO_01.jpg",
+      "variant": "/assets/images/project/lanzarote-photo-01-2d628d5cd6-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 640,
+      "ssimDistortion": 0.0107843,
+      "ssimSimilarity": 0.9892157
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/BLAPARKEN_DWG_01-1.png",
+      "variant": "/assets/images/grid/blaparken-dwg-01-1-fd7944912e-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 447
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/Blaparken_photo_01-1.jpg",
+      "variant": "/assets/images/grid/blaparken-photo-01-1-021e1859b7-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 909,
+      "ssimDistortion": 0.0125999,
+      "ssimSimilarity": 0.9874001
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2023/11/Blaparken_photo_01-1.jpg",
+      "variant": "/assets/images/project/blaparken-photo-01-1-021e1859b7-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 909,
+      "ssimDistortion": 0.0125999,
+      "ssimSimilarity": 0.9874001
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/DSCF5085-scaled.jpg",
+      "variant": "/assets/images/grid/dscf5085-scaled-3cda21b8bb-1280.webp",
+      "kind": "photo",
+      "width": 1280,
+      "height": 854,
+      "ssimDistortion": 0.0144209,
+      "ssimSimilarity": 0.9855791
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/DSCF5085-scaled.jpg",
+      "variant": "/assets/images/grid/dscf5085-scaled-3cda21b8bb-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 427,
+      "ssimDistortion": 0.0165145,
+      "ssimSimilarity": 0.9834855
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/DSCF5716alt-2-scaled.jpg",
+      "variant": "/assets/images/grid/dscf5716alt-2-scaled-c7d0013a07-1280.webp",
+      "kind": "photo",
+      "width": 1280,
+      "height": 777,
+      "ssimDistortion": 0.0124539,
+      "ssimSimilarity": 0.9875461
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/DSCF5716alt-2-scaled.jpg",
+      "variant": "/assets/images/grid/dscf5716alt-2-scaled-c7d0013a07-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 388,
+      "ssimDistortion": 0.018058,
+      "ssimSimilarity": 0.981942
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/Hilden_DWG_01.png",
+      "variant": "/assets/images/grid/hilden-dwg-01-b108caaca2-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 836
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/Hilden_photo_02.jpg",
+      "variant": "/assets/images/grid/hilden-photo-02-a4f16fca28-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 433,
+      "ssimDistortion": 0.00878678,
+      "ssimSimilarity": 0.99121322
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2023/11/Hilden_photo_02.jpg",
+      "variant": "/assets/images/project/hilden-photo-02-a4f16fca28-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 433,
+      "ssimDistortion": 0.00878678,
+      "ssimSimilarity": 0.99121322
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/KARANTANEN_DWG_01.png",
+      "variant": "/assets/images/grid/karantanen-dwg-01-d30894b9d8-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 699
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/KARANTANEN_PHOTO_03.jpg",
+      "variant": "/assets/images/grid/karantanen-photo-03-c9dcf74ade-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 418,
+      "ssimDistortion": 0.0112256,
+      "ssimSimilarity": 0.9887744
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2023/11/KARANTANEN_PHOTO_03.jpg",
+      "variant": "/assets/images/project/karantanen-photo-03-c9dcf74ade-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 418,
+      "ssimDistortion": 0.0112256,
+      "ssimSimilarity": 0.9887744
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/Karlsborg_DWG_01.png",
+      "variant": "/assets/images/grid/karlsborg-dwg-01-b1919614d2-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 434
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/Karlsborg_photo_01.jpg",
+      "variant": "/assets/images/grid/karlsborg-photo-01-bb4aaf73b8-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 550,
+      "ssimDistortion": 0.00895213,
+      "ssimSimilarity": 0.99104787
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2023/11/Karlsborg_photo_01.jpg",
+      "variant": "/assets/images/project/karlsborg-photo-01-bb4aaf73b8-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 550,
+      "ssimDistortion": 0.00895213,
+      "ssimSimilarity": 0.99104787
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/LSS_DWG_01.png",
+      "variant": "/assets/images/grid/lss-dwg-01-bf5e645ce9-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 533
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/LSS_PHOTO_01.jpg",
+      "variant": "/assets/images/grid/lss-photo-01-1b03166c11-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 347,
+      "ssimDistortion": 0.00691891,
+      "ssimSimilarity": 0.99308109
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2023/11/LSS_PHOTO_01.jpg",
+      "variant": "/assets/images/project/lss-photo-01-1b03166c11-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 347,
+      "ssimDistortion": 0.00691891,
+      "ssimSimilarity": 0.99308109
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/Mia_DWG_01.png",
+      "variant": "/assets/images/grid/mia-dwg-01-3f4b388f76-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 582
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/Mia_photo_01.jpg",
+      "variant": "/assets/images/grid/mia-photo-01-30753f1915-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 360,
+      "ssimDistortion": 0.0243745,
+      "ssimSimilarity": 0.9756255
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2023/11/Mia_photo_01.jpg",
+      "variant": "/assets/images/project/mia-photo-01-30753f1915-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 360,
+      "ssimDistortion": 0.0243745,
+      "ssimSimilarity": 0.9756255
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/Visionerinorr_DWG_01.png",
+      "variant": "/assets/images/grid/visionerinorr-dwg-01-aadd36f727-640.webp",
+      "kind": "drawing-lossless",
+      "width": 640,
+      "height": 1248
+    },
+    {
+      "collection": "grid",
+      "source": "/wp-content/uploads/2023/11/Visionerinorr_PHOTO_03.jpg",
+      "variant": "/assets/images/grid/visionerinorr-photo-03-91824bcc2f-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 801,
+      "ssimDistortion": 0.0133139,
+      "ssimSimilarity": 0.9866861
+    },
+    {
+      "collection": "project",
+      "source": "/wp-content/uploads/2023/11/Visionerinorr_PHOTO_03.jpg",
+      "variant": "/assets/images/project/visionerinorr-photo-03-91824bcc2f-640.webp",
+      "kind": "photo",
+      "width": 640,
+      "height": 801,
+      "ssimDistortion": 0.0133139,
+      "ssimSimilarity": 0.9866861
+    }
+  ],
+  "errors": []
+}

@@ -1,6 +1,6 @@
 # Stage 6 — Project-content approval queue
 
-Generated: 2026-08-21T22:58:12.513Z
+Generated: 2026-08-22T16:08:10.204Z
 
 This is an editorial queue, not a build failure. Missing facts are intentionally omitted from public pages until Esencial confirms that they are factual and publishable.
 

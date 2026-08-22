@@ -7,6 +7,7 @@ const SHA_PIN = /^[a-z0-9_.-]+\/[a-z0-9_.-]+@[0-9a-f]{40}(?:\s+#\s+.+)?$/i
 
 const SEO_GATE_STEPS = [
   ['Validate CI workflow contract', 'pnpm run check-ci-gates'],
+  ['Prove CI contract fails closed', 'pnpm run check-ci-gates -- --fixtures'],
   ['Validate CMS content', 'pnpm run check-content'],
   ['Build release candidate', 'pnpm run build'],
   ['Verify generated release is committed', 'git diff --exit-code'],
@@ -20,6 +21,24 @@ const SEO_GATE_STEPS = [
   ['Check accessibility', 'pnpm run check-accessibility'],
   ['Check reference parity', 'pnpm run check-reference-parity'],
 ]
+
+const ROOT_BUILD_COMMAND = [
+  'node scripts/clean-legacy-export.js',
+  'node scripts/build-project-pages.js',
+  'node scripts/normalize-core-semantics.js',
+  'node scripts/lib/schema/generate-structured-data.js',
+  'node scripts/inject-vercel-analytics.js',
+  'node scripts/check-analytics.js',
+  'node scripts/check-seo.js',
+  'node scripts/check-international-seo.js',
+  'node scripts/check-structured-data.js',
+  'npm run check-semantics',
+  'node scripts/check-project-page-seo.js',
+  'node scripts/check-image-seo.js',
+  'node scripts/check-image-quality.js',
+  'node scripts/test-project-page-architecture.js',
+  'node scripts/check-internal-links.js',
+].join(' && ')
 
 function read(relativePath) {
   return fs.readFileSync(path.join(ROOT, relativePath), 'utf8').replace(/\r\n/g, '\n')
@@ -127,16 +146,33 @@ function validateCmsWorkflow(source) {
   errorIf(!validate, errors, `${filename}: jobs.validate is required`)
   errorIf(!publish, errors, `${filename}: jobs.publish is required`)
   if (!validate || !publish) return errors
-  errorIf(!/^    timeout-minutes: 30$/m.test(validate), errors, `${filename}: validate job must have a 30-minute timeout`)
+  errorIf(!/^  workflow_dispatch:\n    inputs:\n      authorize_publish:/m.test(source), errors, `${filename}: manual publication authorization input is required`)
+  errorIf(!/authorize_publish:[\s\S]*?required: true[\s\S]*?default: false[\s\S]*?type: boolean/.test(source), errors, `${filename}: publication authorization must be an explicit false-by-default boolean`)
+  errorIf(!/^    timeout-minutes: 45$/m.test(validate), errors, `${filename}: validate job must have a 45-minute timeout`)
   errorIf(!/^    if: github\.ref == 'refs\/heads\/main'$/m.test(validate), errors, `${filename}: CMS validation must fail closed outside main`)
   errorIf(!/^    outputs:\n      source_sha: \$\{\{ steps\.source_revision\.outputs\.sha \}\}$/m.test(validate), errors, `${filename}: validated source SHA must be handed to publish`)
   errorIf(/contents:\s*write/.test(validate), errors, `${filename}: secret-bearing validation job must not have write permission`)
   errorIf(!/persist-credentials:\s*false/.test(validate), errors, `${filename}: validation checkout must not retain write credentials`)
   errorIf((validate.match(/secrets\.SANITY_API_TOKEN/g) || []).length !== 1, errors, `${filename}: Sanity token must appear exactly once in validation`)
   errorIf(!/name: Build and validate published CMS content[\s\S]*?run: pnpm run build:cms[\s\S]*?SANITY_API_TOKEN: \$\{\{ secrets\.SANITY_API_TOKEN \}\}/.test(validate), errors, `${filename}: Sanity token must be scoped to the CMS build step`)
+  const cmsGates = [
+    ['Prove CI contract fails closed', 'pnpm run check-ci-gates -- --fixtures'],
+    ['Build and validate published CMS content', 'pnpm run build:cms'],
+    ['Run complete integrated release gates on CMS content', 'pnpm run build'],
+    ['Validate CMS output over local HTTP', 'pnpm run check-http-seo'],
+    ['Audit CMS project content', 'pnpm run audit:project-content'],
+    ['Install Playwright Chromium', 'pnpm exec playwright install --with-deps chromium'],
+    ['Check CMS functionality', 'pnpm run check-functionality'],
+    ['Check CMS performance', 'pnpm run check-performance'],
+    ['Check CMS accessibility', 'pnpm run check-accessibility'],
+    ['Verify CMS build scope', 'git diff --exit-code'],
+  ]
+  errors.push(...validateNamedSteps(validate, cmsGates, filename))
+  errorIf(!/name: Run complete integrated release gates on CMS content[\s\S]*?run: pnpm run build[\s\S]*?CONTENT_SOURCE: sanity/.test(validate), errors, `${filename}: complete release gates must run against the fetched Sanity snapshot`)
   errorIf(!/name: Verify CMS build scope[\s\S]*?git diff --exit-code/.test(validate), errors, `${filename}: CMS build scope check is required before publication`)
   errorIf(!/name: Upload validated website/.test(validate), errors, `${filename}: validated website artifact upload is required`)
   errorIf(!/^    needs: validate$/m.test(publish), errors, `${filename}: publish job must require completed validation`)
+  errorIf(!/^    if: github\.event_name == 'workflow_dispatch' && inputs\.authorize_publish == true && github\.ref == 'refs\/heads\/main'$/m.test(publish), errors, `${filename}: publish must require a separate manual authorization on main`)
   errorIf(!/^    permissions:\n      contents: write$/m.test(publish), errors, `${filename}: write permission must be isolated to publish`)
   errorIf(/secrets\./.test(publish), errors, `${filename}: write-capable publish job must not receive repository secrets`)
   errorIf(!/name: Download validated website/.test(publish), errors, `${filename}: publish job must consume the validated artifact`)
@@ -148,12 +184,13 @@ function validateCmsWorkflow(source) {
   return errors
 }
 
-function validatePackage() {
+function validatePackage(source = read('package.json')) {
   const errors = []
-  const packageJson = JSON.parse(read('package.json'))
+  const packageJson = JSON.parse(source)
   errorIf(packageJson.packageManager !== 'pnpm@9.15.9', errors, 'package.json: packageManager must pin pnpm@9.15.9')
   errorIf(packageJson.engines?.node !== '22.x', errors, 'package.json: engines.node must pin the Node.js 22 runtime line')
   errorIf(packageJson.scripts?.['check-ci-gates'] !== 'node scripts/check-ci-gates.js', errors, 'package.json: check-ci-gates script is missing or changed')
+  errorIf(packageJson.scripts?.build !== ROOT_BUILD_COMMAND, errors, 'package.json: build must retain the exact ordered fail-fast integrated release chain')
   errorIf(!fs.existsSync(path.join(ROOT, 'pnpm-lock.yaml')), errors, 'pnpm-lock.yaml is required for frozen installs')
   errorIf(!fs.existsSync(path.join(ROOT, 'cms', 'studio', 'package-lock.json')), errors, 'cms/studio/package-lock.json is required for frozen Studio installs')
   return errors
@@ -186,7 +223,7 @@ function swapSteps(source, firstName, secondName) {
   return source.replace(firstBlock, marker).replace(secondBlock, firstBlock).replace(marker, secondBlock)
 }
 
-function runFixtures(seoSource) {
+function runFixtures(seoSource, cmsSource, packageSource) {
   const fixtures = [
     ['missing gate', removeStep(seoSource, 'Check accessibility'), 'required gate is missing'],
     ['skipped gate', skipStep(seoSource, 'Check performance'), 'may not be conditional or skipped'],
@@ -196,7 +233,19 @@ function runFixtures(seoSource) {
     const errors = validateSeoWorkflow(source)
     if (!errors.some((error) => error.includes(expected))) throw new Error(`Negative fixture ${label} did not fail closed with ${expected}`)
   }
-  console.log(`CI gate negative fixtures passed (${fixtures.length} missing, skipped or reordered contracts rejected).`)
+  const cmsFixtures = [
+    ['missing CMS integrated build', removeStep(cmsSource, 'Run complete integrated release gates on CMS content'), 'required gate is missing'],
+    ['automatic CMS publication', cmsSource.replace("    if: github.event_name == 'workflow_dispatch' && inputs.authorize_publish == true && github.ref == 'refs/heads/main'", "    if: github.ref == 'refs/heads/main'"), 'separate manual authorization'],
+  ]
+  for (const [label, source, expected] of cmsFixtures) {
+    const errors = validateCmsWorkflow(source)
+    if (!errors.some((error) => error.includes(expected))) throw new Error(`Negative fixture ${label} did not fail closed with ${expected}`)
+  }
+  const parsedPackage = JSON.parse(packageSource)
+  const unsafePackage = JSON.stringify({...parsedPackage, scripts: {...parsedPackage.scripts, build: 'node -e "process.exit(0)"'}}, null, 2)
+  const packageErrors = validatePackage(unsafePackage)
+  if (!packageErrors.some((error) => error.includes('exact ordered fail-fast'))) throw new Error('Negative fixture no-op root build did not fail closed')
+  console.log(`CI gate negative fixtures passed (${fixtures.length + cmsFixtures.length + 1} missing, skipped, reordered, automatic-publication or no-op contracts rejected).`)
 }
 
 function main() {
@@ -208,16 +257,17 @@ function main() {
 
   const seoSource = read(path.join('.github', 'workflows', 'seo.yml'))
   const cmsSource = read(path.join('.github', 'workflows', 'cms-build.yml'))
-  errors.push(...validatePackage(), ...validateSeoWorkflow(seoSource), ...validateCmsWorkflow(cmsSource))
+  const packageSource = read('package.json')
+  errors.push(...validatePackage(packageSource), ...validateSeoWorkflow(seoSource), ...validateCmsWorkflow(cmsSource))
   const uniqueErrors = [...new Set(errors)]
   if (uniqueErrors.length) {
     console.error(`CI gate contract failed (${uniqueErrors.length} error(s)):\n- ${uniqueErrors.join('\n- ')}`)
     process.exit(1)
   }
-  if (process.argv.includes('--fixtures')) runFixtures(seoSource)
+  if (process.argv.includes('--fixtures')) runFixtures(seoSource, cmsSource, packageSource)
   console.log(`CI gate contract passed (${workflowFiles.length} workflows; ${SEO_GATE_STEPS.length} ordered release gates; immutable actions, frozen installs, permissions, timeouts, concurrency, summaries, artifacts and secret isolation enforced).`)
 }
 
 if (require.main === module) main()
 
-module.exports = {runFixtures, validateCmsWorkflow, validateSeoWorkflow}
+module.exports = {runFixtures, validateCmsWorkflow, validatePackage, validateSeoWorkflow}

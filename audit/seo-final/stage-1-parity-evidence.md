@@ -1,6 +1,6 @@
 # Stage 1 Reference-Parity Evidence
 
-Generated: 2026-08-22T13:46:34.605Z
+Generated: 2026-08-22T16:11:14.917Z
 
 - Page/viewport pairs: 40
 - Pairs with bounding-box, computed-style, or structural differences: 0

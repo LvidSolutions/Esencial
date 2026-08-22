@@ -39,6 +39,9 @@ jobs:
       - name: Validate CI workflow contract
         id: ci_contract
         run: pnpm run check-ci-gates
+      - name: Prove CI contract fails closed
+        id: ci_contract_fixtures
+        run: pnpm run check-ci-gates -- --fixtures
       - name: Validate CMS content
         id: cms_content
         run: pnpm run check-content
@@ -81,6 +84,7 @@ jobs:
         run: |
           gates=(
             "CI workflow contract:${{ steps.ci_contract.outcome }}"
+            "CI fail-closed fixtures:${{ steps.ci_contract_fixtures.outcome }}"
             "CMS content:${{ steps.cms_content.outcome }}"
             "Root build:${{ steps.root_build.outcome }}"
             "Generated release diff:${{ steps.generated_diff.outcome }}"
