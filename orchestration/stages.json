@@ -221,15 +221,15 @@
       "title": "CI and automated SEO release gates",
       "ownerLane": "Worker D",
       "dependencies": ["S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "S11", "S12"],
-      "state": "RUNNING",
-      "stateReason": "Dispatched to W4 in isolated branch codex/worker-d-s13 from clean integrated commit af4bc6e; remote CI, push and deployment remain prohibited.",
+      "state": "DONE",
+      "stateReason": "Integrated commit aa6bef1 enforces 13 ordered fail-closed release gates, immutable actions, frozen installs, least-privilege trust separation, deterministic generation, evidence summaries and three negative contract fixtures; no remote CI or deployment ran.",
       "model": "GPT-5.6 Sol",
       "effort": "high",
       "ownedPaths": [".github/workflows/**", "scripts/check-ci-gates.js", "audit/seo-final/17-automated-seo-quality-gates.md"],
       "sharedHotspots": ["package.json", "pnpm-lock.yaml", "vercel.json"],
       "acceptanceCommands": ["corepack pnpm run check-ci-gates", "corepack pnpm run build"],
       "reportPaths": ["audit/seo-final/17-automated-seo-quality-gates.md"],
-      "evidence": [],
+      "evidence": ["audit/seo-final/17-automated-seo-quality-gates.md", "scripts/check-ci-gates.js", ".github/workflows/seo.yml", ".github/workflows/cms-build.yml"],
       "manualBlockers": ["Remote CI execution requires a later authorized push; local workflow validation remains allowed."]
     },
     {
