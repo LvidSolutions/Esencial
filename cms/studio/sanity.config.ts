@@ -17,8 +17,8 @@ export default defineConfig({
       widgets: [
         documentListWidget({title: 'Klar att publicera', query: '*[_type == "project" && status == "review"] | order(_updatedAt desc)[0...6]', showCreateButton: false, layout: {width: 'large'}}),
         documentListWidget({title: 'Senast andrat', types: ['project'], order: '_updatedAt desc', limit: 6, createButtonText: 'Skapa projekt', layout: {width: 'large'}}),
-        documentListWidget({title: 'Saknar SEO eller bilder', query: '*[_type == "project" && status in ["draft", "review"] && (!defined(seoTitle) || !defined(seoDescription) || (!defined(images) || count(images) == 0))] | order(_updatedAt desc)[0...12]', showCreateButton: false, layout: {width: 'large'}}),
-        documentListWidget({title: 'Oversattning att slutfora', query: '*[_type == "project" && translationStatus != "approved"] | order(_updatedAt desc)[0...12]', showCreateButton: false, layout: {width: 'large'}}),
+        documentListWidget({title: 'Saknar SEO eller huvudbild', query: '*[_type == "project" && status in ["draft", "review"] && (!defined(seoTitle) || !defined(seoDescription) || (!defined(heroImage.asset) && count(coalesce(images, [])) == 0 && count(coalesce(legacyImages, [])) == 0))] | order(_updatedAt desc)[0...12]', showCreateButton: false, layout: {width: 'large'}}),
+        documentListWidget({title: 'Översättning att slutföra', query: '*[_type == "project" && (!defined(translationKey) || translationStatus != "approved")] | order(_updatedAt desc)[0...12]', showCreateButton: false, layout: {width: 'large'}}),
         projectInfoWidget({layout: {width: 'small'}}),
         projectUsersWidget({layout: {width: 'small'}}),
       ],

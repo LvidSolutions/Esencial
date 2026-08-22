@@ -9,7 +9,7 @@
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
     "dev": "sanity dev",
-    "import:esencial": "node scripts/create-import.mjs && sanity datasets import -p g6xm8j7l -d production --replace import/esencial.ndjson",
+    "prepare:import": "node scripts/create-import.mjs",
     "start": "sanity start"
   },
   "keywords": [

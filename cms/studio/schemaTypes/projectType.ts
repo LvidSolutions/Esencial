@@ -1,11 +1,69 @@
-import {defineField, defineType} from 'sanity'
+import {defineField, defineType, type SanityDocument, type ValidationContext} from 'sanity'
 
-const isPublished = (context: {parent?: {status?: string}}) => context.parent?.status === 'published'
+type ProjectParent = {status?: string; images?: unknown[]; legacyImages?: unknown[]; heroImage?: unknown}
+
+const parentOf = (context: {parent?: unknown}) => (context.parent || {}) as ProjectParent
+const isPublished = (context: {parent?: unknown}) => parentOf(context).status === 'published'
+const isReviewOrPublished = (context: {parent?: unknown}) => ['review', 'published'].includes(parentOf(context).status || '')
+const hasModernImages = (document: unknown) => {
+  const project = (document || {}) as {heroImage?: unknown; galleryImages?: unknown[]}
+  return Boolean(project.heroImage || project.galleryImages?.length)
+}
+const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+const translationKeyPattern = /^[a-z0-9]+(?:_[a-z0-9]+)*$/
+const apiVersion = '2025-02-19'
+
+type ProjectPairCandidate = {
+  _id: string
+  language?: string
+  slug?: string
+  status?: string
+  translationStatus?: string
+  seoTitle?: string
+  seoDescription?: string
+}
+
+function canonicalId(id: string) {
+  return id.replace(/^drafts\./, '')
+}
+
+async function validateTranslationPair(document: SanityDocument | undefined, context: ValidationContext) {
+  const status = document?.status as string | undefined
+  if (!document || !['review', 'published'].includes(status || '')) return true
+  const translationKey = document.translationKey as string | undefined
+  const language = document.language as string | undefined
+  const slug = (document.slug as {current?: string} | undefined)?.current
+  if (!translationKey || !language || !slug) return true
+
+  const currentId = canonicalId((document._id as string | undefined) || '')
+  const matches = await context.getClient({apiVersion}).withConfig({perspective: 'raw'}).fetch<ProjectPairCandidate[]>(
+    `*[_type == "project" && translationKey == $translationKey && !(_id in [$publishedId, $draftId])] {
+      _id, language, "slug": slug.current, status, translationStatus, seoTitle, seoDescription
+    }`,
+    {translationKey, publishedId: currentId, draftId: `drafts.${currentId}`},
+  )
+  const deduplicated = new Map<string, ProjectPairCandidate>()
+  for (const candidate of matches) {
+    const id = canonicalId(candidate._id)
+    if (!deduplicated.has(id) || candidate._id.startsWith('drafts.')) deduplicated.set(id, candidate)
+  }
+  const candidates = [...deduplicated.values()]
+  if (candidates.some((candidate) => candidate.language === language)) {
+    return `Språkkopplingen ${translationKey} används redan av ett annat ${language === 'sv' ? 'svenskt' : 'engelskt'} projekt. Varje språk får bara finnas en gång.`
+  }
+  const counterpart = candidates.find((candidate) => candidate.language && candidate.language !== language)
+  if (!counterpart) return `Skapa och koppla den ${language === 'sv' ? 'engelska' : 'svenska'} versionen med samma språkkoppling innan projektet lämnar Under arbete.`
+  if (counterpart.slug !== slug) return `Den kopplade språkversionen använder webbadressen “${counterpart.slug || 'saknas'}”. Båda språken måste använda samma permanenta webbadress.`
+  if (status === 'published' && counterpart.translationStatus !== 'approved') return 'Den kopplade språkversionen måste ha översättningsstatus Godkänd före publicering.'
+  if (status === 'published' && (!counterpart.seoTitle || counterpart.seoTitle.length > 60 || !counterpart.seoDescription || counterpart.seoDescription.length > 160)) return 'Den kopplade språkversionen måste ha en giltig Google-titel och Google-beskrivning före publicering.'
+  return true
+}
 
 export const projectType = defineType({
   name: 'project',
   title: 'Projekt / Project',
   type: 'document',
+  validation: (Rule) => Rule.custom(validateTranslationPair),
   groups: [
     {name: 'basics', title: '1. Grunduppgifter'},
     {name: 'content', title: '2. Innehall'},
@@ -14,10 +72,13 @@ export const projectType = defineType({
   ],
   fields: [
     defineField({name: 'title', title: 'Projektnamn', type: 'string', group: 'basics', validation: (Rule) => Rule.required()}),
-    defineField({name: 'slug', title: 'Webbadress', type: 'slug', group: 'basics', description: 'Andra bara efter att en omdirigering har planerats.', options: {source: 'title'}, validation: (Rule) => Rule.required()}),
+    defineField({name: 'slug', title: 'Permanent webbadress', type: 'slug', group: 'basics', description: 'Samma värde ska användas på svenska och engelska. Ett publicerat värde låses; en ändring kräver först status Under arbete/Klar att publicera och en separat omdirigeringsplan.', options: {source: 'title'}, readOnly: ({document}) => document?.status === 'published', validation: (Rule) => Rule.required().custom((value) => !value?.current || slugPattern.test(value.current) ? true : 'Använd endast små bokstäver, siffror och enkla bindestreck, till exempel “mitt-projekt”.')}),
     defineField({name: 'language', title: 'Sprak', type: 'string', group: 'basics', options: {list: [{title: 'Svenska', value: 'sv'}, {title: 'English', value: 'en'}]}, validation: (Rule) => Rule.required()}),
-    defineField({name: 'translationKey', title: 'Sprakkoppling', type: 'string', group: 'basics', description: 'Intern koppling mellan svensk och engelsk version. Andra inte.', readOnly: true}),
-    defineField({name: 'translationStatus', title: 'Oversattningsstatus', type: 'string', group: 'basics', options: {list: [{title: 'Ej paborjad', value: 'not-started'}, {title: 'Under arbete', value: 'in-progress'}, {title: 'Klar for granskning', value: 'ready-for-review'}, {title: 'Godkand', value: 'approved'}]}, initialValue: 'not-started'}),
+    defineField({name: 'translationKey', title: 'Språkkoppling', type: 'string', group: 'basics', description: 'Kopiera exakt samma stabila nyckel till svensk och engelsk version, till exempel “mitt_projekt”. Ett publicerat värde är låst.', readOnly: ({document}) => document?.status === 'published', validation: (Rule) => Rule.custom((value, context) => {
+      if (isReviewOrPublished(context) && !value) return 'Ange en språkkoppling innan projektet lämnar Under arbete.'
+      return !value || translationKeyPattern.test(value) ? true : 'Använd endast små bokstäver, siffror och enkla understreck, till exempel “mitt_projekt”.'
+    })}),
+    defineField({name: 'translationStatus', title: 'Översättningsstatus', type: 'string', group: 'basics', options: {list: [{title: 'Ej påbörjad', value: 'not-started'}, {title: 'Under arbete', value: 'in-progress'}, {title: 'Klar för granskning', value: 'ready-for-review'}, {title: 'Godkänd', value: 'approved'}]}, initialValue: 'not-started', validation: (Rule) => Rule.custom((value, context) => !isPublished(context) || value === 'approved' ? true : 'Välj Godkänd när båda språkversionerna har kontrollerats före publicering.')}),
     defineField({name: 'location', title: 'Publicerad plats', type: 'string', group: 'basics'}),
     defineField({name: 'year', title: 'Ar', type: 'number', group: 'basics', validation: (Rule) => Rule.integer().min(1900).max(2100)}),
     defineField({name: 'typology', title: 'Typologi', type: 'string', group: 'basics', description: 'Exempel: bostäder, kultur, landskap eller stadsutveckling. Publicera bara en bekräftad benämning.'}),
@@ -28,12 +89,15 @@ export const projectType = defineType({
     defineField({name: 'summary', title: 'Kort projektintroduktion', type: 'text', group: 'content', rows: 5, validation: (Rule) => Rule.required().min(40).max(700)}),
     defineField({name: 'body', title: 'Langre projektberattelse', type: 'array', group: 'content', of: [{type: 'block'}]}),
     defineField({name: 'relatedProjects', title: 'Relaterade projekt', type: 'array', group: 'content', description: 'Valfritt och redaktionellt. Koppla bara projekt med en verklig, förklarbar relation.', of: [{type: 'reference', to: [{type: 'project'}]}]}),
-    defineField({name: 'heroImage', title: 'Huvudbild', type: 'projectHeroImage', group: 'images', description: 'Visas överst på projektsidan och används för projektkort där en huvudbild behövs. Lägg inte planritningar här.', validation: (Rule) => Rule.custom((value, context) => !isPublished(context) || value || context.parent?.images?.length || context.parent?.legacyImages?.length ? true : 'Ett publicerat projekt behöver en huvudbild. Migrerade äldre projekt får tillfälligt använda tidigare bilder.')}),
+    defineField({name: 'heroImage', title: 'Huvudbild', type: 'projectHeroImage', group: 'images', description: 'Visas överst på projektsidan och används för projektkort där en huvudbild behövs. Lägg inte planritningar här.', validation: (Rule) => Rule.custom((value, context) => !isPublished(context) || value || parentOf(context).images?.length || parentOf(context).legacyImages?.length ? true : 'Ett publicerat projekt behöver en huvudbild. Migrerade äldre projekt får tillfälligt använda tidigare bilder.')}),
     defineField({name: 'galleryImages', title: 'Projektgalleri', type: 'array', group: 'images', description: 'Vanliga bilder på projektsidan. Dra och släpp för ordning: första visas först, sista sist. Lägg aldrig planritningar här.', of: [{type: 'projectGalleryImage'}]}),
     defineField({name: 'floorPlans', title: 'Planritningar', type: 'array', group: 'images', description: 'Endast planritningar. Dessa visas separat från projektgalleriet och kan inte blandas med vanliga bilder.', of: [{type: 'floorPlan'}]}),
-    defineField({name: 'images', title: 'Tidigare publicerade bilder', type: 'array', group: 'images', description: 'Äldre bildfält för redan migrerat innehåll. Använd Huvudbild och Projektgalleri för nya eller uppdaterade projekt.', hidden: ({document}) => Boolean(document?.heroImage || document?.galleryImages?.length), validation: (Rule) => Rule.custom((value, context) => !isPublished(context) || value?.length || context.parent?.heroImage || context.parent?.legacyImages?.length ? true : 'Ett publicerat projekt behöver minst en bild.'), of: [{type: 'image', options: {hotspot: true}, fields: [defineField({name: 'alt', title: 'Bildbeskrivning', type: 'string', validation: (Rule) => Rule.required()}), defineField({name: 'credit', title: 'Fotograf eller källa', type: 'string'})]}]}),
+    defineField({name: 'images', title: 'Tidigare publicerade bilder', type: 'array', group: 'images', description: 'Äldre bildfält för redan migrerat innehåll. Använd Huvudbild och Projektgalleri för nya eller uppdaterade projekt.', hidden: ({document}) => hasModernImages(document), validation: (Rule) => Rule.custom((value, context) => !isPublished(context) || (Array.isArray(value) && value.length > 0) || parentOf(context).heroImage || parentOf(context).legacyImages?.length ? true : 'Ett publicerat projekt behöver minst en bild.'), of: [{type: 'image', options: {hotspot: true}, fields: [defineField({name: 'alt', title: 'Bildbeskrivning', type: 'string', validation: (Rule) => Rule.required()}), defineField({name: 'credit', title: 'Fotograf eller källa', type: 'string', validation: (Rule) => Rule.required().error('Ange fotograf eller källa före publicering.')})]}]}),
     defineField({name: 'imageRightsConfirmed', title: 'Bildrattigheter bekraftade', type: 'boolean', group: 'images', description: 'Bekrafta att alla bilder far publiceras.', validation: (Rule) => Rule.custom((value, context) => !isPublished(context) || value === true ? true : 'Bildrattigheter maste bekraftas fore publicering.')}),
-    defineField({name: 'legacyImages', title: 'Bilder fran tidigare webbplats', type: 'array', group: 'images', description: 'Referenslista tills varje bild ar migrerad till Sanity.', readOnly: true, of: [{type: 'object', fields: [defineField({name: 'url', title: 'Befintlig bildadress', type: 'url'}), defineField({name: 'alt', title: 'Befintlig bildbeskrivning', type: 'string'})]}]}),
+    defineField({name: 'legacyImages', title: 'Bilder från tidigare webbplats', type: 'array', group: 'images', description: 'Skrivskyddad referenslista. Migrera varje bild till Huvudbild/Projektgalleri med kredit och rättighetskontroll före publicering; CMS-exporten stoppar ofullständig äldre media.', readOnly: true, validation: (Rule) => Rule.custom((value, context) => !isPublished(context) || !Array.isArray(value) || value.every((image) => {
+      const legacy = image as {url?: string; alt?: string; credit?: string}
+      return Boolean(legacy.url && legacy.alt && legacy.credit)
+    }) ? true : 'Migrera alla äldre bilder till Huvudbild/Projektgalleri och ange alt-text, kredit och rättigheter före publicering.'), of: [{type: 'object', fields: [defineField({name: 'url', title: 'Befintlig bildadress', type: 'url'}), defineField({name: 'alt', title: 'Befintlig bildbeskrivning', type: 'string'}), defineField({name: 'credit', title: 'Befintlig kredit', type: 'string'})]}]}),
     defineField({name: 'seoTitle', title: 'Titel i Google', type: 'string', group: 'seo', validation: (Rule) => Rule.max(60).custom((value, context) => !isPublished(context) || value ? true : 'Ett publicerat projekt behover en titel i Google.')}),
     defineField({name: 'seoDescription', title: 'Beskrivning i Google', type: 'text', group: 'seo', rows: 3, validation: (Rule) => Rule.max(160).custom((value, context) => !isPublished(context) || value ? true : 'Ett publicerat projekt behover en beskrivning i Google.')}),
     defineField({name: 'reviewOwner', title: 'Tidigare granskningsansvarig', type: 'string', group: 'seo', hidden: true}),

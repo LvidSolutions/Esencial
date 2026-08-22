@@ -1,7 +1,5 @@
-# Planned Sanity CMS Integration
+# Sanity schema compatibility path
 
-This repository now uses JSON content files as a safe interim content layer. The next CMS delivery can import the same fields into Sanity without changing project URLs or page templates.
+The authoritative content model is `cms/studio/schemaTypes/`. `schema.ts` re-exports that project type so older references cannot drift into a second, weaker schema.
 
-Sanity is not activated by this repository alone because it requires a separate Sanity project, editor accounts, authentication configuration, and a hosting/deployment decision. `schema.ts` is the implementation-ready content model for that setup.
-
-Until then, edit only the documented JSON content files and run `npm run build`.
+The repository does not activate Sanity, change a dataset, or write production content. See `docs/CMS_USER_GUIDE.md` for the guarded local and editorial workflow.

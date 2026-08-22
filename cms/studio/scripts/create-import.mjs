@@ -1,3 +1,4 @@
+/* global console */
 import fs from 'node:fs'
 import path from 'node:path'
 import {fileURLToPath} from 'node:url'
@@ -10,7 +11,7 @@ const baseUrl = 'https://www.esencial.se'
 const projects = ['sv', 'en'].flatMap((language) => {
   const source = path.join(root, 'content', 'projects', `${language}.json`)
   return JSON.parse(fs.readFileSync(source, 'utf8')).map((project) => ({
-    _id: `project-${language}-${project.id}`,
+    _id: `drafts.project-${language}-${project.id}`,
     _type: 'project',
     title: project.title,
     slug: {_type: 'slug', current: project.slug},
@@ -18,7 +19,8 @@ const projects = ['sv', 'en'].flatMap((language) => {
     translationKey: project.id,
     summary: project.description,
     location: project.location || undefined,
-    status: 'published',
+    translationStatus: 'in-progress',
+    status: 'draft',
     seoTitle: `${project.title} | Esencial`,
     seoDescription: project.description,
     legacyImages: project.images.map((image, index) => ({_key: `${project.id}-${index}`, url: `${baseUrl}${image.src}`, alt: image.alt})),
@@ -26,7 +28,7 @@ const projects = ['sv', 'en'].flatMap((language) => {
 })
 
 const settings = {
-  _id: 'siteSettings',
+  _id: 'drafts.siteSettings',
   _type: 'siteSettings',
   siteName: 'Esencial',
   legalName: 'Esencial AB',
@@ -39,4 +41,4 @@ const settings = {
 
 fs.mkdirSync(path.dirname(output), {recursive: true})
 fs.writeFileSync(output, [...projects, settings].map((document) => JSON.stringify(document)).join('\n') + '\n')
-console.log(`Created ${projects.length + 1} Sanity import documents at ${output}`)
+console.log(`Created ${projects.length + 1} local import documents at ${output}. All documents are drafts; this command does not contact Sanity.`)

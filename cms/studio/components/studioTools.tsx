@@ -1,19 +1,79 @@
 import {useEffect, useMemo, useRef, useState} from 'react'
 import {Box, Button, Card, Checkbox, Container, Flex, Grid, Heading, Inline, Label, Select, Stack, Text, TextArea, TextInput} from '@sanity/ui'
-import {useClient, useDocumentOperation} from 'sanity'
+import {useClient} from 'sanity'
 
 type ImageData = {_key?: string; _type?: string; assetRef?: string; url?: string; alt?: string; credit?: string; caption?: string; rightsConfirmed?: boolean; hideFromWebsite?: boolean; width?: number; height?: number}
-type Project = {_id: string; _updatedAt?: string; title?: string; slug?: string; location?: string; year?: number; language?: string; status?: string; summary?: string; seoTitle?: string; seoDescription?: string; imageRightsConfirmed?: boolean; heroImage?: ImageData; galleryImages?: ImageData[]; floorPlans?: Array<{_key?: string; name?: string; planType?: string; area?: string; description?: string; image?: ImageData}>}
+type PublishChecklist = {factsConfirmed?: boolean; languageChecked?: boolean; seoChecked?: boolean; imagesChecked?: boolean}
+type Project = {_id: string; _originalId?: string; _updatedAt?: string; title?: string; slug?: string; location?: string; year?: number; language?: string; translationKey?: string; translationStatus?: string; status?: string; summary?: string; seoTitle?: string; seoDescription?: string; imageRightsConfirmed?: boolean; legacyImageCount?: number; publishChecklist?: PublishChecklist; heroImage?: ImageData; galleryImages?: ImageData[]; floorPlans?: Array<{_key?: string; name?: string; planType?: string; area?: string; description?: string; image?: ImageData}>}
 type HomeEntry = {_key?: string; displayStyle?: string; project?: Project; projectRef?: string}
+type StudioClient = ReturnType<typeof useClient>
 
 const apiVersion = '2025-02-19'
-const analyticsEndpoint = import.meta.env.SANITY_STUDIO_ANALYTICS_ENDPOINT || '/api/analytics'
+const studioEnvironment = (import.meta as ImportMeta & {env?: Record<string, string | undefined>}).env
+const analyticsEndpoint = studioEnvironment?.SANITY_STUDIO_ANALYTICS_ENDPOINT || '/api/analytics'
 const imageProjection = `{_key, _type, "assetRef": asset._ref, "url": asset->url, alt, credit, caption, rightsConfirmed, hideFromWebsite, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height}`
-const projectsQuery = `*[_type == "project"] | order(title asc) {_id, _updatedAt, title, "slug": slug.current, location, year, language, status, summary, seoTitle, seoDescription, imageRightsConfirmed, "heroImage": heroImage${imageProjection}, "galleryImages": galleryImages[]${imageProjection}, "floorPlans": floorPlans[]{_key, name, planType, area, description, "image": image${imageProjection}}}`
-const homeQuery = `*[_type == "homePage"][0]{"featuredProjects": featuredProjects[]{_key, displayStyle, "projectRef": project._ref, "project": project-> {_id, title, location, language, status, seoTitle, seoDescription, "heroImage": heroImage${imageProjection}}}}`
+const projectsQuery = `*[_type == "project"] | order(title asc) {_id, _originalId, _updatedAt, title, "slug": slug.current, location, year, language, translationKey, translationStatus, status, summary, seoTitle, seoDescription, imageRightsConfirmed, "legacyImageCount": count(coalesce(images, [])) + count(coalesce(legacyImages, [])), publishChecklist, "heroImage": heroImage${imageProjection}, "galleryImages": galleryImages[]${imageProjection}, "floorPlans": floorPlans[]{_key, name, planType, area, description, "image": image${imageProjection}}}`
+const homeQuery = `*[_type == "homePage"][0]{_id, _originalId, "featuredProjects": featuredProjects[]{_key, displayStyle, "projectRef": project._ref, "project": project-> {_id, _originalId, title, location, language, status, seoTitle, seoDescription, "heroImage": heroImage${imageProjection}}}}`
+const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+const translationKeyPattern = /^[a-z0-9]+(?:_[a-z0-9]+)*$/
+
+function previewClient(client: StudioClient) {
+  return client.withConfig({perspective: 'drafts', useCdn: false})
+}
+
+function canonicalId(id: string) {
+  return id.replace(/^drafts\./, '')
+}
+
+async function patchDraft(client: StudioClient, id: string, type: string, patch: Record<string, unknown>) {
+  const publishedId = canonicalId(id)
+  const draftId = `drafts.${publishedId}`
+  const existingDraft = await client.getDocument(draftId)
+  if (!existingDraft) {
+    const published = await client.getDocument<Record<string, unknown>>(publishedId)
+    const draft: Record<string, unknown> = {_id: draftId, _type: type}
+    for (const [key, value] of Object.entries(published || {})) {
+      if (!key.startsWith('_')) draft[key] = value
+    }
+    await client.createIfNotExists(draft as {_id: string; _type: string})
+  }
+  await client.patch(draftId).set(patch).commit({autoGenerateArrayKeys: true})
+  return draftId
+}
+
+function errorMessage(action: string) {
+  return `${action} misslyckades. Ingen publicerad version ändrades. Kontrollera anslutningen och öppna dokumentvyn för detaljer.`
+}
+
+function publicationIssues(project: Project, projects: Project[]) {
+  const issues: string[] = []
+  if (!project.title?.trim()) issues.push('Projektnamn saknas.')
+  if (!project.slug || !slugPattern.test(project.slug)) issues.push('Den permanenta webbadressen saknas eller har fel format.')
+  if (!['sv', 'en'].includes(project.language || '')) issues.push('Välj svenska eller engelska.')
+  if (!project.translationKey || !translationKeyPattern.test(project.translationKey)) issues.push('Språkkopplingen saknas eller har fel format.')
+  const counterpart = projects.find((candidate) => candidate._id !== project._id && candidate.translationKey === project.translationKey && candidate.language !== project.language)
+  if (!counterpart) issues.push('Den kopplade svenska/engelska versionen saknas.')
+  else {
+    if (counterpart.slug !== project.slug) issues.push('Språkversionerna måste ha samma permanenta webbadress.')
+    if (counterpart.translationStatus !== 'approved') issues.push('Den kopplade språkversionens översättning är inte godkänd.')
+    if (!counterpart.seoTitle || counterpart.seoTitle.length > 60 || !counterpart.seoDescription || counterpart.seoDescription.length > 160) issues.push('Den kopplade språkversionens Google-titel eller Google-beskrivning är ofullständig.')
+  }
+  if (project.translationStatus !== 'approved') issues.push('Översättningsstatus måste vara Godkänd.')
+  if (!project.summary || project.summary.trim().length < 40) issues.push('Projektintroduktionen måste vara minst 40 tecken.')
+  if (!project.seoTitle || project.seoTitle.length > 60) issues.push('Google-titeln saknas eller är längre än 60 tecken.')
+  if (!project.seoDescription || project.seoDescription.length > 160) issues.push('Google-beskrivningen saknas eller är längre än 160 tecken.')
+  if (!project.heroImage?.assetRef && !project.legacyImageCount) issues.push('Huvudbild saknas.')
+  if (project.heroImage && (!project.heroImage.alt || !project.heroImage.credit || !project.heroImage.rightsConfirmed)) issues.push('Huvudbilden behöver alt-text, kredit och bekräftade rättigheter.')
+  for (const [index, image] of (project.galleryImages || []).entries()) if (!image.hideFromWebsite && (!image.assetRef || !image.alt || !image.credit || !image.rightsConfirmed)) issues.push(`Galleribild ${index + 1} behöver bild, alt-text, kredit och bekräftade rättigheter.`)
+  for (const [index, plan] of (project.floorPlans || []).entries()) if (!plan.name || !plan.planType || !plan.image?.assetRef || !plan.image.alt || !plan.image.credit || !plan.image.rightsConfirmed) issues.push(`Planritning ${index + 1} behöver namn, typ, bild, alt-text, kredit och bekräftade rättigheter.`)
+  if (!project.imageRightsConfirmed) issues.push('Bekräfta projektets samlade bildrättigheter.')
+  const checklist = project.publishChecklist
+  if (!checklist?.factsConfirmed || !checklist.languageChecked || !checklist.seoChecked || !checklist.imagesChecked) issues.push('Slutför alla fyra punkter i publiceringschecklistan.')
+  return issues
+}
 
 function goToDocument(id: string, path?: string) {
-  window.location.hash = `#/intent/edit/id=${encodeURIComponent(id)};type=project${path ? `;path=${encodeURIComponent(path)}` : ''}`
+  window.location.hash = `#/intent/edit/id=${encodeURIComponent(canonicalId(id))};type=project${path ? `;path=${encodeURIComponent(path)}` : ''}`
 }
 
 function img(image?: ImageData, alt = '') {
@@ -25,16 +85,19 @@ function Issue({children}: {children: React.ReactNode}) {
 }
 
 export function PagePreviewTool() {
-  const client = useClient({apiVersion})
+  const baseClient = useClient({apiVersion})
+  const client = useMemo(() => previewClient(baseClient), [baseClient])
   const [projects, setProjects] = useState<Project[]>([])
   const [home, setHome] = useState<HomeEntry[]>([])
   const [mode, setMode] = useState<'home' | 'list' | 'project'>('home')
   const [selectedId, setSelectedId] = useState('')
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
 
   useEffect(() => {
     Promise.all([client.fetch<Project[]>(projectsQuery), client.fetch<{featuredProjects?: HomeEntry[]} | null>(homeQuery)])
       .then(([nextProjects, nextHome]) => { setProjects(nextProjects); setHome(nextHome?.featuredProjects || []); setSelectedId(nextProjects[0]?._id || '') })
+      .catch(() => setLoadError(true))
       .finally(() => setLoading(false))
   }, [client])
 
@@ -55,7 +118,7 @@ export function PagePreviewTool() {
         </Stack>
       </Card>
       <Card padding={4} radius={2} border className="esencial-canvas">
-        {loading ? <Text>Laddar innehåll…</Text> : <PreviewCanvas mode={mode} projects={shownProjects} selected={selected} />}
+        {loading ? <Text>Laddar innehåll…</Text> : loadError ? <Issue>Förhandsvisningen kunde inte läsa kladdarna. Ladda om Studio och kontrollera anslutningen.</Issue> : <Stack space={3}><Text size={1} muted>Skyddad kladdförhandsvisning · aldrig en publik länk</Text><PreviewCanvas mode={mode} projects={shownProjects} selected={selected} /></Stack>}
       </Card>
     </Grid>
   </ToolShell>
@@ -67,39 +130,43 @@ export function PagePreviewTool() {
  * the debounced draft mutation reaches Sanity. Publishing is still a separate choice.
  */
 export function VisualWorkspaceTool() {
-  const client = useClient({apiVersion})
+  const baseClient = useClient({apiVersion})
+  const client = useMemo(() => previewClient(baseClient), [baseClient])
   const [projects, setProjects] = useState<Project[]>([])
   const [home, setHome] = useState<HomeEntry[]>([])
   const [selectedId, setSelectedId] = useState('')
   const [surface, setSurface] = useState<'project' | 'home'>('project')
   const [viewport, setViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
   const [saveState, setSaveState] = useState<'loading' | 'saved' | 'saving' | 'error'>('loading')
+  const [saveError, setSaveError] = useState('')
   const pendingPatches = useRef<Record<string, Record<string, unknown>>>({})
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const saveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({})
 
-  const load = () => Promise.all([client.fetch<Project[]>(projectsQuery), client.fetch<{featuredProjects?: HomeEntry[]} | null>(homeQuery)])
-    .then(([nextProjects, nextHome]) => {
-      setProjects(nextProjects)
-      setHome(nextHome?.featuredProjects || [])
-      setSelectedId((current) => current || nextProjects[0]?._id || '')
-      setSaveState('saved')
-    })
-    .catch(() => setSaveState('error'))
-
-  useEffect(() => { void load() }, [client])
-  useEffect(() => () => { if (saveTimer.current) clearTimeout(saveTimer.current) }, [])
+  useEffect(() => {
+    void Promise.all([client.fetch<Project[]>(projectsQuery), client.fetch<{featuredProjects?: HomeEntry[]} | null>(homeQuery)])
+      .then(([nextProjects, nextHome]) => {
+        setProjects(nextProjects)
+        setHome(nextHome?.featuredProjects || [])
+        setSelectedId((current) => current || nextProjects[0]?._id || '')
+        setSaveState('saved')
+      })
+      .catch(() => { setSaveState('error'); setSaveError(errorMessage('Laddningen')) })
+  }, [client])
+  useEffect(() => () => { Object.values(saveTimers.current).forEach(clearTimeout) }, [])
 
   const selected = projects.find((project) => project._id === selectedId)
   const queueProjectPatch = (id: string, patch: Record<string, unknown>) => {
     pendingPatches.current[id] = {...pendingPatches.current[id], ...patch}
-    if (saveTimer.current) clearTimeout(saveTimer.current)
+    if (saveTimers.current[id]) clearTimeout(saveTimers.current[id])
     setSaveState('saving')
-    saveTimer.current = setTimeout(() => {
+    setSaveError('')
+    saveTimers.current[id] = setTimeout(() => {
       const changes = pendingPatches.current[id]
       delete pendingPatches.current[id]
-      void client.patch(id).set(changes).commit({autoGenerateArrayKeys: true})
+      delete saveTimers.current[id]
+      void patchDraft(client, id, 'project', documentPatch(changes as Partial<Project>))
         .then(() => setSaveState('saved'))
-        .catch(() => setSaveState('error'))
+        .catch(() => { setSaveState('error'); setSaveError(errorMessage('Autosparningen')) })
     }, 450)
   }
   const updateProject = (patch: Partial<Project>) => {
@@ -109,13 +176,20 @@ export function VisualWorkspaceTool() {
   }
   const saveProjectNow = async (patch: Partial<Project>) => {
     if (!selected) return
-    setProjects((current) => current.map((project) => project._id === selected._id ? {...project, ...patch} : project))
+    const id = selected._id
+    const changes = {...pendingPatches.current[id], ...patch}
+    delete pendingPatches.current[id]
+    if (saveTimers.current[id]) clearTimeout(saveTimers.current[id])
+    delete saveTimers.current[id]
+    setProjects((current) => current.map((project) => project._id === id ? {...project, ...changes} : project))
     setSaveState('saving')
+    setSaveError('')
     try {
-      await client.patch(selected._id).set(documentPatch(patch)).commit({autoGenerateArrayKeys: true})
+      await patchDraft(client, id, 'project', documentPatch(changes))
       setSaveState('saved')
     } catch {
       setSaveState('error')
+      setSaveError(errorMessage('Sparningen'))
     }
   }
   const upload = async (placement: 'hero' | 'gallery' | 'floorPlan', file?: File) => {
@@ -136,17 +210,18 @@ export function VisualWorkspaceTool() {
       }
     } catch {
       setSaveState('error')
+      setSaveError(errorMessage('Bilduppladdningen'))
     }
   }
   const saveHome = async (nextHome: HomeEntry[]) => {
     setHome(nextHome)
     setSaveState('saving')
     try {
-      await client.createIfNotExists({_id: 'homePage', _type: 'homePage'})
-      await client.patch('homePage').set({featuredProjects: nextHome.map(cleanHomeEntry)}).commit({autoGenerateArrayKeys: true})
+      await patchDraft(client, 'homePage', 'homePage', {featuredProjects: nextHome.map(cleanHomeEntry)})
       setSaveState('saved')
     } catch {
       setSaveState('error')
+      setSaveError(errorMessage('Sparningen av startsidan'))
     }
   }
 
@@ -159,6 +234,7 @@ export function VisualWorkspaceTool() {
       </Inline>
       <Text size={1} muted>{saveState === 'loading' ? 'Laddar…' : saveState === 'saving' ? 'Sparar kladd…' : saveState === 'saved' ? 'Kladd sparat' : 'Kunde inte spara – kontrollera anslutningen'}</Text>
     </Flex>
+    {saveError && <Card padding={3} radius={2} border tone="critical"><Text size={1}>{saveError}</Text></Card>}
     <Grid columns={[1, 1, 2]} gap={4} className="esencial-workspace">
       <Card padding={[3, 4]} radius={2} border className="esencial-editor-pane">
         {surface === 'project' ? <ProjectWorkspace projects={projects} selected={selected} selectedId={selectedId} onSelect={setSelectedId} onChange={updateProject} onSaveNow={saveProjectNow} onUpload={upload} /> : <HomeWorkspace projects={projects} entries={home} onChange={saveHome} />}
@@ -214,20 +290,12 @@ function WorkspaceLower({projects, home}: {projects: Project[]; home: HomeEntry[
 function ProjectWorkspace({projects, selected, selectedId, onSelect, onChange, onSaveNow, onUpload}: {projects: Project[]; selected?: Project; selectedId: string; onSelect: (id: string) => void; onChange: (patch: Partial<Project>) => void; onSaveNow: (patch: Partial<Project>) => Promise<void>; onUpload: (placement: 'hero' | 'gallery' | 'floorPlan', file?: File) => Promise<void>}) {
   const [draggedGallery, setDraggedGallery] = useState<number | undefined>()
   const [draggedPlan, setDraggedPlan] = useState<number | undefined>()
-  const {publish} = useDocumentOperation(selected?._id || 'project-not-selected', 'project')
   if (!selected) return <Stack space={3}><Heading as="h2" size={3}>Inget projekt ännu</Heading><Text>Skapa ett projekt i dokumentvyn för att börja arbeta visuellt.</Text></Stack>
-  const publishReady = Boolean(selected.title && selected.summary && selected.seoTitle && selected.seoDescription && selected.heroImage?.assetRef && selected.heroImage.alt && selected.heroImage.credit && selected.heroImage.rightsConfirmed && selected.imageRightsConfirmed)
-  const setStatus = (status: string) => {
-    if (status === 'published' && !publishReady) return
-    onChange({status})
-  }
+  const publishProblems = publicationIssues(selected, projects)
+  const setStatus = (status: string) => onChange({status})
   const setGallery = (galleryImages: ImageData[]) => onSaveNow({galleryImages})
   const setPlans = (floorPlans: NonNullable<Project['floorPlans']>) => onSaveNow({floorPlans})
-  const publishToSanity = async () => {
-    if (!publishReady || !publish.enabled) return
-    await onSaveNow({status: 'published'})
-    publish.execute()
-  }
+  const setChecklist = (key: keyof PublishChecklist, value: boolean) => onChange({publishChecklist: {...selected.publishChecklist, [key]: value}})
   return <Stack space={5}>
     <Box>
       <Label size={1}>Projekt att redigera</Label>
@@ -235,6 +303,8 @@ function ProjectWorkspace({projects, selected, selectedId, onSelect, onChange, o
     </Box>
     <EditorSection title="Text och projektfakta" hint="Detta syns i rubrik, introduktion och Google-resultat.">
       <Field label="Projektnamn"><TextInput value={selected.title || ''} onChange={(event) => onChange({title: event.currentTarget.value})} /></Field>
+      <Grid columns={[1, 2]} gap={3}><Field label="Permanent webbadress"><TextInput value={selected.slug || ''} readOnly={selected.status === 'published'} onChange={(event) => onChange({slug: event.currentTarget.value})} /></Field><Field label="Språk"><Select value={selected.language || ''} onChange={(event) => onChange({language: event.currentTarget.value})}><option value="">Välj språk</option><option value="sv">Svenska</option><option value="en">English</option></Select></Field></Grid>
+      <Grid columns={[1, 2]} gap={3}><Field label="Språkkoppling"><TextInput value={selected.translationKey || ''} readOnly={selected.status === 'published'} placeholder="mitt_projekt" onChange={(event) => onChange({translationKey: event.currentTarget.value})} /></Field><Field label="Översättningsstatus"><Select value={selected.translationStatus || 'not-started'} onChange={(event) => onChange({translationStatus: event.currentTarget.value})}><option value="not-started">Ej påbörjad</option><option value="in-progress">Under arbete</option><option value="ready-for-review">Klar för granskning</option><option value="approved">Godkänd</option></Select></Field></Grid>
       <Grid columns={[1, 2]} gap={3}><Field label="Plats"><TextInput value={selected.location || ''} onChange={(event) => onChange({location: event.currentTarget.value})} /></Field><Field label="År"><TextInput type="number" value={selected.year || ''} onChange={(event) => onChange({year: event.currentTarget.value ? Number(event.currentTarget.value) : undefined})} /></Field></Grid>
       <Field label="Kort projektintroduktion"><TextArea value={selected.summary || ''} rows={5} onChange={(event) => onChange({summary: event.currentTarget.value})} /></Field>
       <Grid columns={[1, 2]} gap={3}><Field label="Titel i Google"><TextInput value={selected.seoTitle || ''} onChange={(event) => onChange({seoTitle: event.currentTarget.value})} /></Field><Field label="Beskrivning i Google"><TextArea value={selected.seoDescription || ''} rows={3} onChange={(event) => onChange({seoDescription: event.currentTarget.value})} /></Field></Grid>
@@ -251,12 +321,13 @@ function ProjectWorkspace({projects, selected, selectedId, onSelect, onChange, o
       <DropZone label="Lägg till planritning" onFile={(file) => onUpload('floorPlan', file)} />
       <Stack space={3}>{(selected.floorPlans || []).map((plan, index, all) => <FloorPlanCard key={plan._key || plan.image?.assetRef || index} plan={plan} label={`Planritning ${index + 1}`} draggable onDragStart={() => setDraggedPlan(index)} onDrop={() => { if (draggedPlan !== undefined && draggedPlan !== index) setPlans(moveItem(all, draggedPlan, index)); setDraggedPlan(undefined) }} onChange={(next) => setPlans(all.map((value, itemIndex) => itemIndex === index ? next : value))} onRemove={() => setPlans(all.filter((_, itemIndex) => itemIndex !== index))} />)}</Stack>
     </EditorSection>
-    <EditorSection title="Publicera till staging" hint="Publicerad betyder att nästa godkända CMS-bygg får använda innehållet. Det ändrar inte den nuvarande live-domänen.">
+    <EditorSection title="Egenkontroll och publicering" hint="Arbetsytan sparar bara kladd. Den fullständiga dokumentvyn gör den slutliga valideringen och publiceringen till Sanity; därefter får nästa godkända CMS-bygg använda innehållet på staging.">
       <Flex gap={2} align="center"><Checkbox checked={Boolean(selected.imageRightsConfirmed)} onChange={(event) => onChange({imageRightsConfirmed: event.currentTarget.checked})} /><Text size={1}>Jag har bekräftat rättigheterna för alla bilder i projektet.</Text></Flex>
-      <Box marginTop={3}><Select value={selected.status || 'draft'} onChange={(event) => setStatus(event.currentTarget.value)}><option value="draft">Under arbete</option><option value="review">Klar att publicera</option><option value="published" disabled={!publishReady}>Publicerad{publishReady ? '' : ' – komplettera fälten ovan först'}</option><option value="archived">Arkiverad</option></Select></Box>
-      {!publishReady && <Box marginTop={2}><Text size={1} muted>För publicering krävs rubrik, introduktion, SEO, en komplett huvudbild och bekräftade bildrättigheter. Öppna dokumentvyn för den fullständiga egenkontrollen.</Text></Box>}
-      <Box marginTop={3}><Button tone="positive" text="Publicera i Sanity och starta stagingbygge" disabled={!publishReady || !publish.enabled} onClick={() => void publishToSanity()} /></Box>
-      <Text size={1} muted>När Sanity-webhooken är ansluten startar detta den säkra CMS-byggprocessen. Ett underkänt bygge lämnar tidigare staging oförändrad.</Text>
+      <Stack space={2}><Flex gap={2} align="center"><Checkbox checked={Boolean(selected.publishChecklist?.factsConfirmed)} onChange={(event) => setChecklist('factsConfirmed', event.currentTarget.checked)} /><Text size={1}>Projektfakta är godkända.</Text></Flex><Flex gap={2} align="center"><Checkbox checked={Boolean(selected.publishChecklist?.languageChecked)} onChange={(event) => setChecklist('languageChecked', event.currentTarget.checked)} /><Text size={1}>Språkversionerna är kontrollerade.</Text></Flex><Flex gap={2} align="center"><Checkbox checked={Boolean(selected.publishChecklist?.seoChecked)} onChange={(event) => setChecklist('seoChecked', event.currentTarget.checked)} /><Text size={1}>Google-titel och beskrivning är kontrollerade.</Text></Flex><Flex gap={2} align="center"><Checkbox checked={Boolean(selected.publishChecklist?.imagesChecked)} onChange={(event) => setChecklist('imagesChecked', event.currentTarget.checked)} /><Text size={1}>Bildbeskrivningar, krediter och rättigheter är kontrollerade.</Text></Flex></Stack>
+      <Box marginTop={3}><Select value={selected.status || 'draft'} onChange={(event) => setStatus(event.currentTarget.value)}><option value="draft">Under arbete</option><option value="review">Klar att publicera</option>{selected.status === 'published' && <option value="published" disabled>Publicerad · hanteras i dokumentvyn</option>}<option value="archived">Arkiverad</option></Select></Box>
+      {publishProblems.length ? <Card marginTop={2} padding={3} radius={2} border tone="critical"><Stack space={2}><Text size={1} weight="semibold">Åtgärda före publicering:</Text>{publishProblems.map((problem) => <Text key={problem} size={1}>• {problem}</Text>)}</Stack></Card> : <Card marginTop={2} padding={3} radius={2} border tone="positive"><Text size={1}>Egenkontrollen är komplett. Öppna dokumentvyn för Sanitys slutliga validering.</Text></Card>}
+      <Box marginTop={3}><Button tone="positive" text="Öppna slutlig kontroll och publicering" disabled={publishProblems.length > 0} onClick={() => goToDocument(selected._id)} /></Box>
+      <Text size={1} muted>Ett underkänt CMS-bygge lämnar tidigare staging oförändrad. Den nuvarande live-domänen ändras aldrig av denna arbetsyta.</Text>
     </EditorSection>
   </Stack>
 }
@@ -285,8 +356,8 @@ function FloorPlanCard({plan, label, draggable, onDragStart, onDrop, onChange, o
 function moveItem<T>(items: T[], from: number, to: number) { const next = [...items]; const [item] = next.splice(from, 1); next.splice(to, 0, item); return next }
 function cleanImage(image: ImageData) { const result: Record<string, unknown> = {_type: image._type || 'image'}; if (image._key) result._key = image._key; if (image.assetRef) result.asset = {_type: 'reference', _ref: image.assetRef}; for (const key of ['alt', 'credit', 'caption', 'rightsConfirmed', 'hideFromWebsite'] as const) if (image[key] !== undefined) result[key] = image[key]; return result }
 function cleanFloorPlan(plan: NonNullable<Project['floorPlans']>[number]) { const result: Record<string, unknown> = {_type: 'floorPlan', name: plan.name, planType: plan.planType, area: plan.area, description: plan.description}; if (plan._key) result._key = plan._key; if (plan.image) result.image = cleanImage(plan.image); return result }
-function cleanHomeEntry(entry: HomeEntry) { const result: Record<string, unknown> = {_type: 'object', displayStyle: entry.displayStyle || 'card', project: {_type: 'reference', _ref: entry.project?._id || entry.projectRef}}; if (entry._key) result._key = entry._key; return result }
-function documentPatch(patch: Partial<Project>) { const result: Record<string, unknown> = {...patch}; if (patch.heroImage) result.heroImage = cleanImage(patch.heroImage); if (patch.galleryImages) result.galleryImages = patch.galleryImages.map(cleanImage); if (patch.floorPlans) result.floorPlans = patch.floorPlans.map(cleanFloorPlan); return result }
+function cleanHomeEntry(entry: HomeEntry) { const result: Record<string, unknown> = {_type: 'object', displayStyle: entry.displayStyle || 'card', project: {_type: 'reference', _ref: canonicalId(entry.project?._id || entry.projectRef || '')}}; if (entry._key) result._key = entry._key; return result }
+function documentPatch(patch: Partial<Project>) { const result: Record<string, unknown> = {...patch}; delete result._id; delete result._originalId; delete result._updatedAt; delete result.legacyImageCount; if (typeof patch.slug === 'string') result.slug = {_type: 'slug', current: patch.slug}; if (patch.heroImage) result.heroImage = cleanImage(patch.heroImage); if (patch.galleryImages) result.galleryImages = patch.galleryImages.map(cleanImage); if (patch.floorPlans) result.floorPlans = patch.floorPlans.map(cleanFloorPlan); return result }
 
 function PreviewCanvas({mode, projects, selected}: {mode: 'home' | 'list' | 'project'; projects: Project[]; selected?: Project}) {
   if (mode === 'project' && selected) return <Stack space={5}>
@@ -316,7 +387,8 @@ function PreviewImage({image, label, project, path}: {image?: ImageData; label: 
 }
 
 export function ContentOverviewTool() {
-  const client = useClient({apiVersion})
+  const baseClient = useClient({apiVersion})
+  const client = useMemo(() => previewClient(baseClient), [baseClient])
   const [projects, setProjects] = useState<Project[]>([])
   useEffect(() => { client.fetch<Project[]>(projectsQuery).then(setProjects) }, [client])
   const queues = useMemo(() => ({
@@ -324,7 +396,7 @@ export function ContentOverviewTool() {
     review: projects.filter((project) => project.status === 'review'),
     images: projects.filter((project) => !project.heroImage?.url || !project.heroImage.alt || !project.heroImage.credit || !project.heroImage.rightsConfirmed),
     seo: projects.filter((project) => !project.seoTitle || project.seoTitle.length > 60 || !project.seoDescription || project.seoDescription.length > 160),
-    translations: projects.filter((project) => !project.language),
+    translations: projects.filter((project) => !project.language || !project.translationKey || project.translationStatus !== 'approved' || !projects.some((candidate) => candidate._id !== project._id && candidate.translationKey === project.translationKey && candidate.language !== project.language && candidate.slug === project.slug)),
   }), [projects])
   return <ToolShell title="Arbetsöversikt" subtitle="Din egen kö: status, nästa åtgärd och vad som måste vara klart före publicering.">
     <Inline space={2} className="esencial-actions"><Button text="Nytt projekt" onClick={() => { window.location.hash = '#/intent/create/template=project-sv' }} /><Button text="Granska bilder" onClick={() => { window.location.hash = '#/intent/edit/id=homePage;type=homePage' }} /><Button text="Granska SEO" onClick={() => { window.location.hash = '#/structure' }} /><Button text="Sidförhandsvisning" onClick={() => { window.location.hash = '#/sidforhandsvisning' }} /></Inline>

@@ -13,7 +13,7 @@ export const homePageType = defineType({
       of: [{
         type: 'object',
         fields: [
-          defineField({name: 'project', title: 'Projekt', type: 'reference', to: [{type: 'project'}], validation: (Rule) => Rule.required()}),
+          defineField({name: 'project', title: 'Projekt', type: 'reference', to: [{type: 'project'}], description: 'Endast projekt med publiceringsläge Publicerad kan väljas.', options: {filter: 'status == "published"'}, validation: (Rule) => Rule.required()}),
           defineField({name: 'displayStyle', title: 'Visning', type: 'string', options: {layout: 'radio', list: [{title: 'Huvudprojekt', value: 'featured'}, {title: 'Normalt kort', value: 'card'}]}, initialValue: 'card'}),
         ],
         preview: {select: {title: 'project.title', subtitle: 'displayStyle', media: 'project.heroImage'}, prepare: ({title, subtitle, media}) => ({title: title || 'Välj projekt', subtitle: subtitle === 'featured' ? 'Huvudprojekt' : 'Normalt kort', media})},

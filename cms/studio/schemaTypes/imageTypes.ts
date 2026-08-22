@@ -6,9 +6,12 @@ const imageFields = [
     title: 'Alt-text',
     type: 'string',
     description: 'Beskriv bilden för personer som inte kan se den och för sökmotorer.',
-    validation: (Rule) => Rule.required().min(8).warning('Skriv en tydligare beskrivning av motivet.'),
+    validation: (Rule) => [
+      Rule.required().error('Skriv en alt-text innan bilden kan publiceras.'),
+      Rule.min(8).warning('Skriv en tydligare beskrivning av motivet.'),
+    ],
   }),
-  defineField({name: 'credit', title: 'Fotograf / kredit', type: 'string', validation: (Rule) => Rule.required()}),
+  defineField({name: 'credit', title: 'Fotograf / kredit', type: 'string', validation: (Rule) => Rule.required().error('Ange fotograf eller källa innan bilden kan publiceras.')}),
   defineField({
     name: 'rightsConfirmed',
     title: 'Rättigheter bekräftade',
@@ -48,7 +51,7 @@ export const floorPlanType = defineType({
     defineField({name: 'name', title: 'Namn', type: 'string', validation: (Rule) => Rule.required()}),
     defineField({name: 'planType', title: 'Typ', type: 'string', options: {list: [{title: 'Planlösning', value: 'planlosning'}, {title: 'Situationsplan', value: 'situationsplan'}, {title: 'Sektion', value: 'sektion'}, {title: 'Fasad', value: 'fasad'}, {title: 'Annat', value: 'annat'}]}, validation: (Rule) => Rule.required()}),
     defineField({name: 'area', title: 'Våning / område', type: 'string'}),
-    defineField({name: 'image', title: 'Planritning', type: 'image', options: {hotspot: false}, validation: (Rule) => Rule.required(), fields: imageFields}),
+    defineField({name: 'image', title: 'Planritning', type: 'image', description: 'Planritningen stannar i denna separata sektion och används aldrig som huvudbild eller galleribild.', options: {hotspot: false}, validation: (Rule) => Rule.required(), fields: imageFields}),
     defineField({name: 'description', title: 'Kort beskrivning', type: 'text', rows: 2}),
   ],
   preview: {select: {title: 'name', subtitle: 'area', media: 'image'}, prepare: ({title, subtitle, media}) => ({title: title || 'Namnlös planritning', subtitle, media})},

@@ -1,9 +1,12 @@
-# Sanity Clean Content Studio
+# Esencial Sanity Studio
 
-Congratulations, you have now installed the Sanity Content Studio, an open-source real-time content editing environment connected to the Sanity backend.
+This Studio provides a protected draft workspace for the Esencial website. The browser receives no provider token, workspace mutations target Sanity drafts, and native document validation remains the only publication path.
 
-Now you can do the following things:
+Local verification:
 
-- [Read “getting started” in the docs](https://www.sanity.io/docs/introduction/getting-started?utm_source=readme)
-- [Join the Sanity community](https://www.sanity.io/community/join?utm_source=readme)
-- [Extend and build plugins](https://www.sanity.io/docs/content-studio/extending?utm_source=readme)
+```text
+npm ci
+npm run build
+```
+
+`npm run prepare:import` only regenerates `import/esencial.ndjson` with draft IDs. It does not contact Sanity. Dataset imports, roles, tokens, webhooks, Studio deployment, and production publication are manual owner gates documented in `docs/CMS_USER_GUIDE.md`.
