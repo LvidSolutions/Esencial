@@ -39,7 +39,9 @@ test('dependency cycles are rejected', () => {
 });
 
 test('READY is derived only when every dependency is DONE', () => {
-  const states = deriveEffectiveStates(sourceRegistry);
+  const registry = clone(sourceRegistry);
+  registry.stages.find((stage) => stage.id === 'S8').state = 'PENDING';
+  const states = deriveEffectiveStates(registry);
   assert.equal(states.get('S8'), 'READY');
   assert.equal(states.get('S13'), 'PENDING');
   assert.equal(states.get('S14'), 'PENDING');
