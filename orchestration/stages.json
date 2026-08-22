@@ -261,15 +261,15 @@
       "ownerLane": "Coordinator",
       "dependencies": ["S14"],
       "state": "BLOCKED_HUMAN",
-      "stateReason": "The CMS extension starts only after S14 and after a project-scoped Sanity robot token has been stored locally and verified without exposing it.",
+      "stateReason": "S14 is DONE and the ignored local token authenticates, but Sanity Access API reports zero permissions for project g6xm8j7l; a human must assign Viewer/content-read access for production before the read-only gate can pass.",
       "model": "GPT-5.6 Sol",
       "effort": "high",
       "ownedPaths": ["scripts/check-sanity-access.js", ".env.example", "docs/SANITY_ACCESS.md", "audit/cms/s15-access.md"],
       "sharedHotspots": ["cms/studio/sanity.config.ts", "cms/studio/sanity.cli.ts"],
       "acceptanceCommands": ["node scripts/check-sanity-access.js --read-only", "corepack pnpm run check-studio-workspace"],
       "reportPaths": ["audit/cms/s15-access.md"],
-      "evidence": [],
-      "manualBlockers": ["Human creates a project robot token with Editor access and stores it in ignored .env.local; never paste it into chat or Git.", "No production document mutation, Studio deployment, dataset migration, or role change occurs in this gate."]
+      "evidence": ["audit/cms/s15-access.md"],
+      "manualBlockers": ["Human assigns the project robot token Viewer/content-read access for dataset production, or replaces it with a token that has that role; never paste it into chat or Git.", "No production document mutation, Studio deployment, dataset migration, or role change occurs in this gate."]
     },
     {
       "id": "S16",
