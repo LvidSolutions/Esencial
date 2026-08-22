@@ -1,6 +1,6 @@
 # Esencial orchestration bootstrap
 
-This directory is the read-only control plane for five future Codex contexts: one coordinator and four workers.
+This directory is the read-only control plane for five Codex contexts: one coordinator and four workers. The SEO plan is S0–S14; the post-SEO Sanity extension is S15–S22 and is specified in `CMS_EXTENSION_PLAN.md`.
 
 ## Commands
 
@@ -16,14 +16,14 @@ The status command validates structure, dependencies, evidence, model settings, 
 
 ## Five-context allocation
 
-- Coordinator: shared files, integration, and S0/S14.
-- Worker A: parity, semantic HTML, accessibility.
-- Worker B: technical/international SEO and structured data.
-- Worker C: project/image SEO and performance after handoff.
-- Worker D: legacy cleanup, analytics, CMS, and CI.
+- Coordinator: shared files, integration, S0/S14, Sanity access gate S15 and final CMS validation S22.
+- Worker A: parity, semantics, accessibility, CMS visual system and editorial QA.
+- Worker B: technical/international SEO, structured data, projects and filter taxonomy.
+- Worker C: project/image SEO, performance and live frontend preview.
+- Worker D: cleanup, analytics/consent, CMS safeguards, CI and CMS integration.
 
 Only one stage may run in a worker lane at a time. More stages may be `READY` than there are worker slots; a later launcher must queue the excess. Shared hotspots remain coordinator-owned.
 
 ## Current boundary
 
-This bootstrap calculates status only. Worker creation and automated integration require a separate reviewed implementation. No branch is pushed and no deployment, PR, DNS, hosting, Sanity production-data, or external-account mutation is authorized.
+The status command calculates and validates state only. Task creation and integration remain coordinator actions. No branch is pushed and no deployment, PR, DNS, hosting, Sanity production-data, analytics-account, or other external mutation is authorized. S15 stays `BLOCKED_HUMAN` until the local robot-token gate is explicitly verified.

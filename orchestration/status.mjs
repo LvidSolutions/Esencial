@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const EXPECTED_STAGE_IDS = Array.from({ length: 15 }, (_, index) => `S${index}`);
+const EXPECTED_STAGE_IDS = Array.from({ length: 23 }, (_, index) => `S${index}`);
 const ACTIVE_OWNERSHIP_STATES = new Set(['READY', 'RUNNING', 'TESTING']);
 const ACTIVE_WORK_STATES = new Set(['RUNNING', 'TESTING']);
 const WORKER_LANES = new Set(['Worker A', 'Worker B', 'Worker C', 'Worker D']);
@@ -22,6 +22,25 @@ const MODEL_MATRIX = {
   S12: ['GPT-5.6 Sol', 'xhigh'],
   S13: ['GPT-5.6 Sol', 'high'],
   S14: ['GPT-5.6 Sol', 'xhigh'],
+  S15: ['GPT-5.6 Sol', 'high'],
+  S16: ['GPT-5.6 Sol', 'xhigh'],
+  S17: ['GPT-5.6 Sol', 'xhigh'],
+  S18: ['GPT-5.6 Sol', 'xhigh'],
+  S19: ['GPT-5.6 Sol', 'xhigh'],
+  S20: ['GPT-5.6 Sol', 'high'],
+  S21: ['GPT-5.6 Sol', 'high'],
+  S22: ['GPT-5.6 Sol', 'xhigh'],
+};
+
+const DEPENDENCY_GUARDS = {
+  S15: ['S14'],
+  S16: ['S15'],
+  S17: ['S16'],
+  S18: ['S16'],
+  S19: ['S11', 'S15', 'S16'],
+  S20: ['S17', 'S18', 'S19'],
+  S21: ['S20'],
+  S22: ['S21'],
 };
 
 function readJson(filePath) {
@@ -170,6 +189,13 @@ export function validateRegistry(registry, schema, rootDir) {
       for (const dependency of stage.dependencies ?? []) {
         if (stagesById.get(dependency)?.state !== 'DONE') errors.push(`${stage.id} is DONE while dependency ${dependency} is not DONE.`);
       }
+    }
+  }
+  for (const [stageId, requiredDependencies] of Object.entries(DEPENDENCY_GUARDS)) {
+    const stage = stagesById.get(stageId);
+    if (!stage) continue;
+    for (const dependency of requiredDependencies) {
+      if (!stage.dependencies.includes(dependency)) errors.push(`${stageId} must depend on ${dependency}.`);
     }
   }
   for (const cycle of findCycles(stagesById)) errors.push(`Dependency cycle detected: ${cycle}.`);

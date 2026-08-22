@@ -2,14 +2,14 @@
 
 ## Use
 
-Open **6 Codex context windows total**: `W0` coordinator/integrator plus `W1–W5` specialists. This is the best balance of speed, review depth, and merge risk. Give each window: **“Read this file fully; operate only as Wn.”**
+Open **5 Codex context windows total**: `W0` coordinator/integrator plus `W1–W4` workers. This is the best balance of speed, review depth, and merge risk. Give each window: **“Read this file fully; operate only as Wn.”**
 
-**Required setting for every window:** `GPT-5.6 Codex`, reasoning `xhigh`. In its first reply each window must state its window ID and required setting. If the selected model/effort differs or cannot be verified, it must tell the user to switch it manually and stop until confirmed. Never silently continue with a lower setting.
+**Required setting:** use the exact per-stage model and effort in `orchestration/stages.json`. In its first reply each window must state its window ID, stage, selected model and effort. If these differ or cannot be verified, it must tell the user to switch them manually and stop until confirmed. Never silently continue with another setting.
 
 ## Mission and fixed context
 
 - Repository: `https://github.com/LvidSolutions/Esencial`
-- Local primary checkout: `C:\Users\andreas.hiller\Desktop\Lucas Lvid solutions\Esencial`
+- Local integration worktree: `C:\Users\lucas\Documents\Codex\2026-08-21\sta\work\Esencial-orchestrator-bootstrap`
 - Live visual reference: `https://www.esencial.se/`
 - Goal: finish and validate technical, content, image, accessibility, performance, analytics, CMS, and quality-gate SEO work without changing Esencial's visual identity.
 - The recovered static frontend is the visual contract. No redesign, generic homepage SEO block, invented copy/facts, or avoidable layout/interaction change.
@@ -103,16 +103,15 @@ Finish with one local commit `SEO-SXX PASS: <outcome>` or `SEO-SXX BLOCKED: <rea
 
 | Window | Stages | Primary ownership |
 | --- | --- | --- |
-| **W0** | S0, integration, S14 | baseline, dependency/status decisions, merges, shared hotspots, final report |
-| **W1** | S1, S5, S10 | four shell pages, visual behavior, semantic HTML, accessibility, parity scripts/reports |
-| **W2** | S3, S4, S8 | technical SEO, head metadata, canonical/hreflang, schema, SEO validators and page-generation logic |
-| **W3** | S6, S7 | bilingual project source content, image metadata/rights inventory, project/image SEO audits |
-| **W4** | S2, S9 | legacy/dead-code evidence, asset/runtime performance and Core Web Vitals |
-| **W5** | S11, S12, S13 | analytics/API, Sanity/CMS, workflows, CI/test orchestration, package/lock/config/docs |
+| **W0** | S0, integration, S14, S15, S22 | baseline, status decisions, merges, access gates, shared hotspots, final reports |
+| **W1 / Worker A** | S1, S5, S10, S16, S21 | visual behavior, semantics, accessibility, CMS visual system and editorial QA |
+| **W2 / Worker B** | S3, S4, S8, S17 | technical/international SEO, schema, project editor and filter taxonomy |
+| **W3 / Worker C** | S6, S7, S9, S18 | project/image SEO, performance and frontend-connected preview |
+| **W4 / Worker D** | S2, S11, S12, S13, S19, S20 | cleanup, analytics/consent, CMS safeguards, CI and CMS integration |
 
 Shared hotspots owned by **W0** unless explicitly handed off in writing: `package.json`, lockfiles, `vercel.json`, workflow files, `scripts/build-project-pages.js`, `public/robots.txt`, `public/sitemap.xml`, generated project HTML, and any file needed by two active windows. A specialist may submit a precise recommendation or a new isolated helper/test; W0 performs/writes the shared integration.
 
-Ownership transfers only after the prior owner's PASS is integrated: W1 → W4 for performance edits to base CSS/JS/assets; W3 → W4 for image optimization; W2 → W5 for final CI enforcement. No two windows edit the same file concurrently.
+Ownership transfers only after the prior owner's PASS is integrated: W1 → W3 for performance edits to base CSS/JS/assets; W2 → W4 for final CI enforcement; W1 → W2/W3/W4 after the shared CMS shell is integrated. No two windows edit the same file concurrently.
 
 ## Dependency graph and work packages
 
@@ -129,22 +128,34 @@ Ownership transfers only after the prior owner's PASS is integrated: W1 → W4 f
 | **S8 Schema/entity** | W2 | S3 + S4 + S6 PASS | One consistent Esencial entity and page-specific JSON-LD reflecting visible approved facts; valid URLs/images/language; no unsupported claims, fake ratings, breadcrumbs, search, service, or local-business data. Validate parsability and official validators where available. |
 | **S9 Performance/CWV** | W4 | S1 + S7 PASS | Measure before editing; optimize images/fonts/CSS/JS/cache hints without visual drift; no layout shift from media/fonts; record desktop/mobile Lighthouse/Web Vitals and asset totals; no measured regression, with target good thresholds (LCP ≤2.5s, CLS ≤0.1, INP ≤200ms where measurable). |
 | **S10 Accessibility** | W1 | S1 + S5 PASS | Keyboard flow, visible focus, skip/landmarks, names, alt handling, heading order, `lang`, contrast, zoom/reflow, reduced motion, and automated axe/Playwright checks; WCAG 2.2 AA basics with zero serious/critical known violations; exact identity retained. |
-| **S11 Analytics cleanup** | W5 | S0 + S3 PASS | Preserve the current Vercel Web Analytics + Cookiebot decision; no duplicate/legacy tracking, secrets, fabricated metrics, or returning-visitor claim; consent/source/error states and strict CMS-origin API behavior verified. External activation/token work is reported, not performed. |
-| **S12 CMS/Sanity safeguards** | W5 | S0 PASS; align with S6/S7 | Validate schemas/workspace for required bilingual SEO, slugs, hero/gallery/floor plans, alt/credit/rights, publication states, preview safety, empty export, and editor-friendly errors. No Sanity production writes. |
-| **S13 CI/SEO quality gates** | W5 | S3–S12 PASS | CI runs deterministic install/build, CMS content, SEO, links, Studio, relevant Playwright/visual/a11y tests, and controlled failure fixtures; invalid content cannot replace a valid build; summaries identify the first actionable failure. No remote workflow run/push. |
+| **S11 Analytics cleanup** | W4 | S0 + S3 PASS | Preserve the current analytics + consent decision; no duplicate tracking, secrets, fabricated metrics, or unsupported returning-visitor claim; consent/source/error states and strict CMS-origin API behavior verified. External activation/token work is reported, not performed. |
+| **S12 CMS/Sanity safeguards** | W4 | S0 PASS; align with S6/S7 | Validate schemas/workspace for required bilingual SEO, slugs, hero/gallery/floor plans, alt/credit/rights, publication states, preview safety, empty export, and editor-friendly errors. No Sanity production writes. |
+| **S13 CI/SEO quality gates** | W4 | S3–S12 PASS | CI runs deterministic install/build, CMS content, SEO, links, Studio, relevant Playwright/visual/a11y tests, and controlled failure fixtures; invalid content cannot replace a valid build; summaries identify the first actionable failure. No remote workflow run/push. |
 | **S14 Final integrated validation** | W0 | S1–S13 PASS and all accepted | Freeze candidate; rebuild from clean install; run full tests/crawl/parity/performance/a11y/security review; independent read-only audits; correct findings; rerun to green; issue final evidence report and local commit map. No release action. |
+| **S15 Sanity access gate** | W0 | S14 PASS + local robot token | Verify project-scoped access read-only without displaying the token. Keep `.env.local` ignored. No Studio deploy, dataset migration, role change, or production content write. |
+| **S16 CMS visual system** | W1 | S15 PASS | Build one calm vertically scrolling `Arbetsyta` using Esencial typography, spacing, color and interaction language; modularize shared shell so later workers own separate feature folders. |
+| **S17 Projects + filters** | W2 | S16 PASS | Add safe project creation, bilingual headings, filter-category documents, explicit project membership and order/visibility controls; generate navbar/grid filters without invented classifications or broken permanent URLs. |
+| **S18 Live preview + layout guards** | W3 | S16 PASS | Connect protected draft preview to the real frontend renderer; desktop/tablet/mobile, draft/published views, click-to-edit where viable, and deterministic overflow/overlap/clipping diagnostics. Text that can disturb layout blocks review instead of being silently truncated. |
+| **S19 Statistics + consent** | W4 | S11 + S15 + S16 PASS | Place aggregated provider data in the same workspace; keep secrets server-side and show honest empty/error states. Block non-essential analytics before consent; accept/reject equally easy; provide persistent change/withdraw control and bilingual purpose/provider information. |
+| **S20 CMS integration** | W4 | S17–S19 PASS | Integrate the three feature packages into one workspace and frontend content path; resolve shared files centrally; validate draft, publish, filter, preview, analytics and consent behavior together. |
+| **S21 Editorial QA** | W1 | S20 PASS | Playwright/manual desktop and mobile review, keyboard/accessibility, hostile text/media/filter fixtures, editor guide and no serious known visual, privacy or workflow defect. |
+| **S22 Final CMS validation** | W0 | S21 PASS | Clean builds and full frontend/CMS regression suite; evidence and human-acceptance checklist. No production release, Studio deploy, analytics activation or legal sign-off. |
 
 ## Parallel schedule
 
 | Wave | May run simultaneously | Gate to next wave |
 | --- | --- | --- |
-| **A** | W0: S0. W1–W5 may inspect read-only only. | S0 integrated PASS |
-| **B** | W1:S1 · W2:S3 · W3:S6 audit/implementation · W4:S2 · W5:S12 audit and S11 preparation | Relevant stage PASS; W0 merges in lowest-risk order |
-| **C** | W1:S5 · W2:S4 · W3:S6 completion · W5:S12 completion/S13 test scaffolding | S4, S5, S6, S12 PASS |
-| **D** | W1:S10 · W2:S8 · W3:S7 · W5:S11 | S7, S8, S10, S11 PASS |
-| **E** | W4:S9; W5 may update its branch from integration but does not finalize S13 | S9 PASS |
-| **F** | W5:S13 | S13 PASS |
-| **G** | W0:S14; W1 parity/a11y, W2 SEO/schema, W3 content/images, W4 performance, W5 CMS/CI perform read-only fresh audits of the frozen candidate | W0 resolves findings and all gates rerun green |
+| **A — complete** | S0–S7 | Verified checkpoint `032bfea` |
+| **B** | W1:S10 · W2:S8 · W3:S9 · W4:S11 | Four isolated PASS handoffs; S12 remains queued behind W4 |
+| **C** | W4:S12 | S8–S12 PASS |
+| **D** | W4:S13 | S13 PASS |
+| **E** | W0:S14; W1–W4 perform scoped read-only audits | Full SEO plan PASS |
+| **F** | W0:S15 | Sanity robot token verified locally; explicit access report |
+| **G** | W1:S16 | Shared CMS shell and ownership split integrated |
+| **H** | W2:S17 · W3:S18 · W4:S19 | Three isolated CMS feature PASS handoffs |
+| **I** | W4:S20 | Integrated CMS workspace PASS |
+| **J** | W1:S21 | Editorial QA PASS |
+| **K** | W0:S22; W1–W4 perform scoped read-only audits | Final evidence green; human acceptance remains |
 
 If a window reaches a NOT READY stage, it reports the missing PASS marker and stops; it does not poll, sleep, or start another window's work.
 

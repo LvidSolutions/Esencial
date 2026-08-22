@@ -43,6 +43,28 @@ test('READY is derived only when every dependency is DONE', () => {
   assert.equal(states.get('S8'), 'READY');
   assert.equal(states.get('S13'), 'PENDING');
   assert.equal(states.get('S14'), 'PENDING');
+  assert.equal(states.get('S15'), 'BLOCKED_HUMAN');
+  assert.equal(states.get('S16'), 'PENDING');
+  assert.equal(states.get('S22'), 'PENDING');
+});
+
+test('the CMS extension cannot bypass final SEO validation or the access gate', () => {
+  const registry = clone(sourceRegistry);
+  registry.stages.find((stage) => stage.id === 'S15').dependencies = [];
+  assert.match(validate(registry).errors.join('\n'), /S15 must depend on S14/);
+});
+
+test('CMS work unlocks only after S14 and verified Sanity access', () => {
+  const registry = clone(sourceRegistry);
+  registry.stages.find((stage) => stage.id === 'S14').state = 'DONE';
+  registry.stages.find((stage) => stage.id === 'S15').state = 'PENDING';
+  let states = deriveEffectiveStates(registry);
+  assert.equal(states.get('S15'), 'READY');
+  assert.equal(states.get('S16'), 'PENDING');
+
+  registry.stages.find((stage) => stage.id === 'S15').state = 'DONE';
+  states = deriveEffectiveStates(registry);
+  assert.equal(states.get('S16'), 'READY');
 });
 
 test('DONE without evidence is rejected', () => {
