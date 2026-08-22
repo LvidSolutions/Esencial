@@ -88,4 +88,3 @@ Du är Esencial W0, koordinator och integratör. Kör GPT-5.6 Sol / xhigh och s�
 Planen kan inte godkänna projektfakta, översättningar, filtermedlemskap, bildrättigheter, personuppgiftsansvarig, lagringstid eller juridisk cookietext. Den kan inte heller bevisa verkliga CWV/analytics före godkänd staging/produktion. Efter S22 krävs pilot med 1–2 verkliga redaktörer, juridisk granskning, klientgodkänt innehåll och fältmätning efter separat auktoriserad lansering.
 
 Pessimistisk kvalitet om planen genomförs felfritt: **8/10** som levererad produkt, **9/10** som arbetsplan. Med redaktörspilot, juridik, godkänt innehåll, riktig staging-preview och produktionsfältdata: **9–9,5/10**.
-
