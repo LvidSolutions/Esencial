@@ -4,6 +4,8 @@ Status: PASS
 
 - Branch: `codex/worker-a-s16`
 - Starting S16 commit: `f1e365b1e0ccd52640409f2217cd67c7535d0e52`
+- Worker PASS commit: `e68b97947e20b1be8cefaa4524c94b294acf5b69`
+- Integrated coordinator commit: `641129c8ece0eb5149a1ef5d253da966151fe911`
 - Coordinator ref observed during preflight: `ec8ca06a12b601eb02e0b32a8f1560bd079a8545`
 - Registry baseline: `032bfeae23a2ec318d395bfc778d84cc542baa51`
 - Completed locally: `2026-08-22T23:08:51+02:00`
@@ -138,6 +140,10 @@ No shared hotspot can reach generated public output, so a frontend build/parity 
 | final `git status --porcelain=v1 --untracked-files=all` | PASS — clean after the single final commit |
 
 The root validator warns that the active Node runtime is 24.16.0 while the root package requests Node 22.x; the validator itself passed. This is an environment warning, not an S16 failure.
+
+### Coordinator integration checks
+
+The coordinator independently reviewed the UI/UX, React component boundaries, Sanity composition, scope and secrets, then reran the Studio build, all 30 Studio safeguards, TypeScript, lint, the full 56-page root build, image quality and all 11 orchestration tests. All passed on the integrated commit. S16 changed no public frontend or image asset file.
 
 ## Browser and visual evidence
 

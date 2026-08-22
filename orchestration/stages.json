@@ -276,15 +276,15 @@
       "title": "CMS visual system and single-workspace architecture",
       "ownerLane": "Worker A",
       "dependencies": ["S15"],
-      "state": "RUNNING",
-      "stateReason": "Worker A is implementing the S16 visual system and single-workspace architecture in isolated branch codex/worker-a-s16 from verified S15 commit f1e365b; no external Sanity mutation is authorized.",
+      "state": "DONE",
+      "stateReason": "Integrated commit 641129c adds the accessible Esencial Studio theme, one vertically flowing workspace and stable S17/S18/S19 extension contracts; independent Studio, TypeScript, lint, full root-build, image-quality and orchestration gates passed without public image/frontend changes or external mutation.",
       "model": "GPT-5.6 Sol",
       "effort": "xhigh",
       "ownedPaths": ["cms/studio/components/workspace-shell/**", "cms/studio/theme/**", "audit/cms/s16-visual-system.md"],
       "sharedHotspots": ["cms/studio/components/studioTools.tsx", "cms/studio/components/studioTools.css", "cms/studio/sanity.config.ts"],
       "acceptanceCommands": ["npm --prefix cms/studio run build", "corepack pnpm run check-studio-workspace"],
       "reportPaths": ["audit/cms/s16-visual-system.md"],
-      "evidence": [],
+      "evidence": ["audit/cms/s16-visual-system.md", "cms/studio/components/workspace-shell/WorkspaceShell.tsx", "cms/studio/components/workspace-shell/contracts.ts", "cms/studio/theme/tokens.ts"],
       "manualBlockers": ["Material visual redesign choices outside Esencial's established frontend identity require human approval."]
     },
     {
