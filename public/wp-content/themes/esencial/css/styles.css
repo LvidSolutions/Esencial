@@ -1782,3 +1782,36 @@ h2.css_about_info_label {
 .css_grid_photo_item > img[data-seo-image="grid"] {
   object-fit: contain !important;
 }
+
+/* Accessibility layer: inactive unless keyboard navigation or reduced motion is requested. */
+.skip-link {
+  background: #111;
+  color: #fff;
+  left: 1rem;
+  padding: .7rem 1rem;
+  position: fixed;
+  top: -5rem;
+  z-index: 1001;
+}
+
+.skip-link:focus { top: 1rem; }
+
+:where(a, button, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 3px solid #005fcc;
+  outline-offset: 3px;
+}
+
+.css_tag_item:focus-visible { opacity: 1; }
+
+.css_grid_card_wrapper:focus-within .css_grid_text_container { opacity: 1; }
+.css_grid_card_wrapper:focus-within .css_grid_text_top_wrapper { opacity: 1; }
+.css_grid_card_wrapper:focus-within .css_grid_text_bottom_wrapper { opacity: .8; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}

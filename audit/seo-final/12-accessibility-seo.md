@@ -1,12 +1,23 @@
 # Accessibility and SEO
 
-Status: IN_PROGRESS
+Status: PASS
 
-- Baseline/integration SHA: `2d4ff1e9145f4c472208f714f7a404577e6f5ab0` (2026-08-22, local worker preflight).
-- Scope: S10 accessibility audit and minimal, identity-preserving remediation for the static frontend; source checker, browser evidence, and this report only.
-- Pre-existing implementation: S1 and S5 are integrated and passed; semantic markup is validated separately, but no dedicated accessibility automation or browser accessibility evidence exists yet.
-- Files changed: this report starts the isolated S10 record.
-- Commands/tests: preflight completed — `node orchestration/status.mjs --json` reports S10 effective state `READY`; worker branch is clean and was fast-forwarded to the coordinator integration SHA.
-- Playwright evidence: pending local-browser keyboard, focus, zoom/reflow, reduced-motion, and automated accessibility checks.
-- Unresolved risks/manual needs: final verification still depends on local browser testing; no production, external-account, content, DNS, deployment, or source-generator action has been taken.
-- Final local commit(s) and recommended merge order: pending S10 validation; integrate after the other Wave B worker handoffs only through the coordinator.
+- Baseline/integration SHA and timestamp: `2d4ff1e9145f4c472208f714f7a404577e6f5ab0`; preflight and final validation completed 2026-08-22. `node orchestration/status.mjs --json` reported S10 effectively `READY` before work; S1 and S5 were already complete.
+- Scope inspected: all 56 indexable documents; core shell routes `/`, `/projects/`, `/om-oss/`, and `/about/`; representative bilingual project routes `/projekt/domkyrkoforum/` and `/projects/domkyrkoforum/`. Existing S5 landmark/H1 structure and S7 image alt data were retained.
+- Relevant pre-existing implementation: semantic landmarks/H1s and project-page skip links already existed. The four shell pages still disabled zoom, lacked skip links and focus treatment, exposed icon-only links without names, and used click-only filter `<div>` controls.
+- Files changed and why:
+  - `scripts/check-accessibility.js` and `audit/accessibility/s10-accessibility-evidence.json`: new deterministic static plus Chromium/Playwright S10 gate and evidence.
+  - `scripts/normalize-core-semantics.js` plus four generated shell documents: idempotently remove the zoom lock, add localized skip links, add accessible icon names, and preserve ARIA-button/filter state on later builds.
+  - `public/wp-content/themes/esencial/css/styles.css`: keyboard-only focus indicator, focused-card reveal, skip-link presentation, and `prefers-reduced-motion` handling. Normal, hover, and layout styles are unchanged.
+  - `public/wp-content/themes/esencial/scripts.js`: Enter/Space activation and `aria-pressed` synchronization for the legacy CSS-table filter controls.
+  - `scripts/check-functionality.js`: excludes the intentionally off-screen, keyboard-only skip link from the unrelated hover probe.
+  - `package.json`: exposes the required `check-accessibility` command.
+  These are shared hotspots; the ARIA-button form deliberately keeps the legacy `<div>` display to avoid native-button table-layout drift. It provides `role="button"`, `tabindex="0"`, `aria-pressed`, and both Enter/Space activation without changing rendered geometry.
+- Commands/tests and exact outcomes:
+  - `corepack pnpm run build` — PASS: generated 52 project pages; SEO, international SEO, semantic HTML (56 pages/56 non-empty H1s), project, image, architecture, and internal-link checks passed.
+  - `ACCESSIBILITY_ORIGIN=http://127.0.0.1:3010 corepack pnpm run check-accessibility` — PASS: 56 pages, 216 images, 70 headings, 10 ARIA-button filter controls, 0 errors.
+  - `LOCAL_ORIGIN=http://127.0.0.1:3012 PORT=3012 corepack pnpm run check-reference-parity` — PASS: 40 live/local page-viewport pairs, 0 geometry/style/structure differences; 4 interaction scenarios, 0 mismatches; 0 console-error rows.
+  - `LOCAL_ORIGIN=http://127.0.0.1:3013 PORT=3013 corepack pnpm run check-functionality` — PASS: 4 shell routes, all explicit local route responses 200, all hover checks passed, no console errors.
+- Playwright browser evidence: Chromium verified first keyboard focus is the skip link and reaches `#main-content`; filter Enter activation yields `aria-pressed="true"` and hides 12 nonmatching cards; focused project links reveal their visual card overlay; focus outline is `rgb(0, 95, 204)` with a 5.98:1 contrast ratio against white; no horizontal overflow at 320 CSS px on all four shell routes plus the two representative project routes; reduced-motion computed transition/animation duration is `1e-05s`. The parity run covered the required ten desktop/tablet/mobile viewports (1920, 1440, 1280, 1024, 820, 768, 430, 390, 375, and 360 widths).
+- Unresolved risks, manual needs, and prohibited actions not taken: the automated gate does not substitute for a screen-reader user study or a human contrast judgement for text rendered over editorial photography; no serious or critical known violation remains in the covered scope. Axe was not added because the repository has no axe dependency and `package.json` is a shared hotspot; the deterministic checker uses real Chromium DOM, keyboard, computed-style, and reflow assertions instead. The optional `agent-browser` executable was unavailable, so evidence is from direct Playwright/Chromium. No production, external account, Sanity mutation, push, PR, deployment, DNS, or generated-page hand-edit was performed.
+- Final local commit(s) and recommended merge order: `SEO-S10 PASS: accessible parity-preserving shell controls` follows the START record `28e86e9df12bf47057d759a6ccd2a4143a2aeb5e`. W0 should integrate this S10 handoff after reviewing the shared hotspot changes; then rerun build, `check-accessibility`, `check-functionality`, and reference parity on the integration branch before accepting other Wave B work.

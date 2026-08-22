@@ -59,7 +59,7 @@ async function main() {
         await check.close();
         checkedLinks.push({ href: link.href.replace(LOCAL_ORIGIN, ""), text: link.text, status });
       }
-      const hover = await page.locator("a:visible").first().hover({ timeout: 5000 }).then(() => "first visible link hover ok").catch(error => error.message);
+      const hover = await page.locator("a:not(.skip-link):visible").first().hover({ timeout: 5000 }).then(() => "first visible link hover ok").catch(error => error.message);
       const scrollHeight = await page.evaluate(() => document.documentElement.scrollHeight);
       results.push({ page: pagePath, checkedLinks, hover, scrollHeight, consoleErrors: errors });
       await page.close();

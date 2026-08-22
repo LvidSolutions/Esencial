@@ -76,6 +76,14 @@ $( document ).ready(function() {
       // var tagTextItem = $(this).text()
       // $('.css_grid_card_container:not([' + tagTextItem + '])').removeClass('tag-dn')
     }
+    $('.css_tag_item').attr('aria-pressed', 'false');
+    $('.css_tag_item_active').attr('aria-pressed', 'true');
+  })
+  $('.css_tag_item').keydown(function(event) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      $(this).trigger('click');
+    }
   })
   // tags ------ END
 

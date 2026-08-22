@@ -1,0 +1,76 @@
+{
+  "generatedAt": "2026-08-22T13:05:06.786Z",
+  "liveReference": "https://www.esencial.se",
+  "localOrigin": "http://127.0.0.1:3010",
+  "static": {
+    "pages": 56,
+    "images": 216,
+    "headings": 70,
+    "coreFilters": 10
+  },
+  "browser": {
+    "keyboard": {
+      "firstFocus": {
+        "className": "skip-link",
+        "outline": "solid",
+        "top": "11px"
+      },
+      "skipDestination": {
+        "hash": "#main-content",
+        "mainTop": 0
+      },
+      "filter": {
+        "pressed": "true",
+        "hiddenCards": 12
+      }
+    },
+    "focus": {
+      "filter": {
+        "outline": "solid",
+        "outlineColor": "rgb(0, 95, 204)",
+        "opacity": "1"
+      },
+      "cardLink": {
+        "outline": "solid",
+        "overlayOpacity": "1",
+        "wrapperFocusWithin": true,
+        "cardClasses": "css_grid_card_container"
+      }
+    },
+    "reflow": {
+      "/": {
+        "clientWidth": 320,
+        "scrollWidth": 320
+      },
+      "/projects/": {
+        "clientWidth": 320,
+        "scrollWidth": 320
+      },
+      "/om-oss/": {
+        "clientWidth": 320,
+        "scrollWidth": 320
+      },
+      "/about/": {
+        "clientWidth": 320,
+        "scrollWidth": 320
+      },
+      "/projekt/domkyrkoforum/": {
+        "clientWidth": 320,
+        "scrollWidth": 320
+      },
+      "/projects/domkyrkoforum/": {
+        "clientWidth": 320,
+        "scrollWidth": 320
+      }
+    },
+    "reducedMotion": {
+      "transitionDuration": "1e-05s",
+      "animationDuration": "1e-05s"
+    },
+    "accessibleNames": {
+      "projects": []
+    },
+    "focusOutlineContrast": 5.984934612252126
+  },
+  "errors": []
+}
