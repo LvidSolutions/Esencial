@@ -15,7 +15,7 @@ Den här instruktionen skapar en **separat** stagingmiljö för ersättningssajt
 3. Låt Vercel läsa `vercel.json`. Kontrollera att Build Command är `npm run build` och Output Directory är `public`.
 4. Tilldela ingen befintlig Esencial-domän och gör inga DNS-ändringar. Använd en Vercel-adress eller en ny, tillfällig staging-subdomän som är helt separat från live.
 5. I Settings → Git, behåll `main` som staging-projektets produktionsgren. Preview-deployer för andra brancher ska vara påslagna.
-6. Lägg bara till de miljövariabler som beskrivs i [ANALYTICS_SETUP.md](ANALYTICS_SETUP.md) när Matomo, Cookiebot och Search Console är redo. Utan dem fungerar webbplatsen, men statistikpanelen är tydligt tom.
+6. Lägg bara till de miljövariabler som beskrivs i [ANALYTICS_SETUP.md](ANALYTICS_SETUP.md) när Vercel Web Analytics och Cookiebot är redo. Search Console ansluts först för den slutliga produktionsdomänen. Utan variablerna fungerar webbplatsen, men ingen statistikresurs laddas och panelen visar ett tydligt otillgängligt läge.
 7. Gör första deployen från `main` och kontrollera startsida, projekt, svenska/engelska språkväxling, sitemap och `/api/analytics`.
 
 ## CMS-koppling
