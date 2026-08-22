@@ -42,25 +42,24 @@ Precedence when sources disagree:
 ### W0 setup
 
 1. Confirm the primary checkout is clean; preserve and report any unowned changes instead of stashing, resetting, or overwriting them.
-2. Fetch read-only, record `origin/main` SHA, create/reuse local branch `codex/seo-integration`, and never push it.
+2. Use the existing local integration branch `codex/orchestrator-bootstrap`; record its SHA and never push it unless separately authorized.
 3. Create one sibling worktree/branch per worker:
 
 | Window | Worktree | Local branch |
 | --- | --- | --- |
-| W1 | `...\Esencial-w1` | `codex/seo-w1-parity` |
-| W2 | `...\Esencial-w2` | `codex/seo-w2-technical` |
-| W3 | `...\Esencial-w3` | `codex/seo-w3-content` |
-| W4 | `...\Esencial-w4` | `codex/seo-w4-performance` |
-| W5 | `...\Esencial-w5` | `codex/seo-w5-platform` |
+| W1 | `...\Esencial-worker-a-sXX` | `codex/worker-a-sXX` |
+| W2 | `...\Esencial-worker-b-sXX` | `codex/worker-b-sXX` |
+| W3 | `...\Esencial-worker-c-sXX` | `codex/worker-c-sXX` |
+| W4 | `...\Esencial-worker-d-sXX` | `codex/worker-d-sXX` |
 
-Base all worktrees on `codex/seo-integration`. W1–W5 must stop if their assigned worktree/branch is missing, dirty with unknown work, or attached to another window.
+Create a fresh stage-specific worktree from the current `codex/orchestrator-bootstrap` head. W1–W4 must stop if their assigned worktree/branch is missing, dirty with unknown work, or attached to another window.
 
 ### Before every stage
 
 Each window must:
 
 1. Inspect `git status`, worktrees, branches, integration log, relevant code/reports, and current tests. Do not trust plan checkboxes or old prose.
-2. Fast-forward/merge the latest local `codex/seo-integration` into its own clean branch before new edits.
+2. Create or update the stage branch from the latest local `codex/orchestrator-bootstrap` head before new edits.
 3. Determine state using the rules below. Do no implementation when dependencies are not passed.
 4. Commit a unique report at `audit/parallel/stage-XX-<slug>.md`; start with `Status: IN_PROGRESS` and commit subject `SEO-SXX START: <scope>`.
 5. Stay inside assigned files. Ask W0 for shared-file work; do not race-edit.
@@ -73,12 +72,12 @@ Each window must:
 - **READY:** every dependency is PASS and no newer claim exists.
 - **NOT READY:** any dependency is not PASS.
 - Existing code is only evidence. The owner may produce an audit-only PASS commit when all acceptance checks already pass.
-- W0 alone accepts PASS into `codex/seo-integration`. A worker-branch PASS is pending review, not project truth.
+- W0 alone accepts PASS into `codex/orchestrator-bootstrap`. A worker-branch PASS is pending review, not project truth.
 
 Useful checks:
 
 ```powershell
-git log codex/seo-integration --oneline --grep='SEO-S'
+git log codex/orchestrator-bootstrap --oneline --grep='SEO-S'
 git log --all --oneline --grep='SEO-SXX'
 git worktree list
 git status --short
@@ -162,7 +161,7 @@ If a window reaches a NOT READY stage, it reports the missing PASS marker and st
 ## Integration rules for W0
 
 1. Review worker report and diff; reject scope creep, unverified generated output, secrets, facts without sources, and unrelated formatting churn.
-2. Merge local worker branches into `codex/seo-integration` one at a time. After each merge, regenerate deterministic output and run the stage's focused tests plus build/SEO/link checks.
+2. Merge local worker branches into `codex/orchestrator-bootstrap` one at a time. After each merge, regenerate deterministic output and run the stage's focused tests plus build/SEO/link checks.
 3. Resolve shared-file changes centrally. Never accept “ours/theirs” wholesale or rewrite unrelated user work.
 4. A failed merge verification returns to the owning window; no PASS marker is accepted until corrected.
 5. After integration, notify that worker to fast-forward/merge the new integration head before its next stage.
