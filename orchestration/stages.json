@@ -237,15 +237,22 @@
       "title": "Final integrated validation",
       "ownerLane": "Coordinator",
       "dependencies": ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "S11", "S12", "S13"],
-      "state": "RUNNING",
-      "stateReason": "Final integrated validation is running on commit 218af03 with four isolated read-only specialist audits; production release and external mutations remain prohibited.",
+      "state": "DONE",
+      "stateReason": "Integrated commit 85aad30 passed four specialist audits plus coordinator reruns: 56-page SEO/build, 40 visual pairs, four interactions, accessibility, runtime budgets, exact Node determinism, Studio build/audit, 14 CI gates, six negative fixtures, and perceptual quality checks for 78 uncropped image derivatives; no external mutation occurred.",
       "model": "GPT-5.6 Sol",
       "effort": "xhigh",
       "ownedPaths": ["audit/final/**", "audit/seo-final/18-final-validation.md"],
       "sharedHotspots": ["**"],
       "acceptanceCommands": ["corepack pnpm run build", "corepack pnpm run check-reference-parity", "node orchestration/status.mjs"],
       "reportPaths": ["audit/seo-final/18-final-validation.md"],
-      "evidence": [],
+      "evidence": [
+        "audit/seo-final/18-final-validation.md",
+        "audit/final/s14-validation-evidence.json",
+        "audit/performance/image-quality-evidence.json",
+        "audit/seo-final/stage-1-parity-evidence.json",
+        "audit/accessibility/s10-accessibility-evidence.json",
+        "audit/performance/runtime-evidence.json"
+      ],
       "manualBlockers": ["Production release, DNS, deployment, and final go/no-go remain separately authorized human decisions."]
     },
     {
