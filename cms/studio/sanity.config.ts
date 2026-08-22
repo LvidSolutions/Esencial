@@ -5,6 +5,7 @@ import {documentListWidget} from 'sanity-plugin-dashboard-widget-document-list'
 import {schemaTypes} from './schemaTypes'
 import {deskStructure} from './deskStructure'
 import {VisualWorkspaceTool} from './components/studioTools'
+import {esencialStudioTheme} from './theme/esencialTheme'
 import './components/studioTools.css'
 
 export default defineConfig({
@@ -12,7 +13,12 @@ export default defineConfig({
   title: 'Esencial hemsida',
   projectId: 'g6xm8j7l',
   dataset: 'production',
+  theme: esencialStudioTheme,
   plugins: [
+    {
+      name: 'esencial-editor-tools',
+      tools: [{name: 'arbetsyta', title: 'Arbetsyta', component: VisualWorkspaceTool}],
+    },
     dashboardTool({
       widgets: [
         documentListWidget({title: 'Klar att publicera', query: '*[_type == "project" && status == "review"] | order(_updatedAt desc)[0...6]', showCreateButton: false, layout: {width: 'large'}}),
@@ -24,12 +30,6 @@ export default defineConfig({
       ],
     }),
     structureTool({structure: deskStructure}),
-    {
-      name: 'esencial-editor-tools',
-      tools: [
-        {name: 'arbetsyta', title: 'Arbetsyta', component: VisualWorkspaceTool},
-      ],
-    },
   ],
   schema: {
     types: schemaTypes,
