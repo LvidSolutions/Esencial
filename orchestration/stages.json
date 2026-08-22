@@ -157,15 +157,15 @@
       "title": "Performance and Core Web Vitals",
       "ownerLane": "Worker C",
       "dependencies": ["S1", "S7"],
-      "state": "RUNNING",
-      "stateReason": "Dispatched to W3 in isolated branch codex/worker-c-s9 from orchestration commit 77935aa.",
+      "state": "DONE",
+      "stateReason": "Integrated commit 70a05f0 adds deterministic responsive grid media and a six-case performance gate; merged S9/S10 code then passed 40 parity pairs, four interactions, accessibility, functionality, and the full build.",
       "model": "GPT-5.6 Sol",
       "effort": "high",
       "ownedPaths": ["scripts/check-performance.js", "audit/performance/**", "audit/seo-final/11-performance-core-web-vitals.md"],
       "sharedHotspots": ["public/assets/**", "public/wp-content/themes/esencial/css/**", "scripts/build-project-pages.js", "vercel.json", "package.json"],
       "acceptanceCommands": ["corepack pnpm run check-performance", "corepack pnpm run check-reference-parity", "corepack pnpm run build"],
       "reportPaths": ["audit/seo-final/11-performance-core-web-vitals.md"],
-      "evidence": [],
+      "evidence": ["audit/seo-final/11-performance-core-web-vitals.md", "audit/performance/lighthouse-summary.json", "audit/performance/runtime-evidence.json", "public/assets/images/grid/manifest.json"],
       "manualBlockers": []
     },
     {
