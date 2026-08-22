@@ -189,15 +189,15 @@
       "title": "Analytics cleanup and measurement",
       "ownerLane": "Worker D",
       "dependencies": ["S0", "S3"],
-      "state": "RUNNING",
-      "stateReason": "Dispatched to W4 in isolated branch codex/worker-d-s11 from orchestration commit 77935aa; external account activation and secrets remain prohibited.",
+      "state": "DONE",
+      "stateReason": "Integrated commit 90af57e validates consent-gated Vercel measurement, fail-closed provider/origin states and zero analytics runtime when Cookiebot is absent.",
       "model": "GPT-5.6 Sol",
       "effort": "high",
       "ownedPaths": ["api/analytics.js", "scripts/check-analytics.js", "audit/seo-final/14-analytics-measurement.md"],
       "sharedHotspots": ["scripts/inject-vercel-analytics.js", "vercel.json", "cms/studio/**", "package.json"],
       "acceptanceCommands": ["corepack pnpm run check-analytics", "corepack pnpm run build"],
       "reportPaths": ["audit/seo-final/14-analytics-measurement.md"],
-      "evidence": [],
+      "evidence": ["scripts/check-analytics.js", "api/analytics.js"],
       "manualBlockers": ["External Vercel Analytics, Cookiebot, and Search Console account actions require authorized owners and secrets."]
     },
     {
