@@ -7,6 +7,7 @@ import {
   type WorkspaceSectionId,
   workspaceSectionDomId,
 } from './contracts'
+import {EditorialStatusOverview} from './EditorialStatusOverview'
 import './workspaceShell.css'
 
 export type WorkspaceShellStatus = {
@@ -47,7 +48,9 @@ const workspaceStyle: WorkspaceCustomProperties = {
   '--esencial-workspace-critical-surface': esencialVisualTokens.color.criticalSurface,
   '--esencial-workspace-font': esencialVisualTokens.typography.sans,
   '--esencial-workspace-measure': esencialVisualTokens.typography.measure,
+  '--esencial-workspace-heading-tracking': esencialVisualTokens.typography.headingTracking,
   '--esencial-workspace-label-tracking': esencialVisualTokens.typography.labelTracking,
+  '--esencial-workspace-content-line-height': esencialVisualTokens.typography.contentLineHeight,
   '--esencial-workspace-motion-duration': esencialVisualTokens.motion.duration,
   '--esencial-workspace-motion-easing': esencialVisualTokens.motion.easing,
   '--esencial-workspace-section-space': `${esencialVisualTokens.spacing.section}px`,
@@ -71,13 +74,9 @@ export function WorkspaceShell({
   const orderedSections = WORKSPACE_SECTION_ORDER.map((id) => sectionsById.get(id)).filter(
     (section): section is WorkspaceSectionDefinition => Boolean(section),
   )
-  const firstSectionId = orderedSections[0]
-    ? workspaceSectionDomId(orderedSections[0].id)
-    : workspaceSectionDomId(WORKSPACE_SECTION_ORDER[0])
-
   return (
     <main className="esencial-workspace-shell" style={workspaceStyle}>
-      <a className="esencial-workspace-shell__skip" href={`#${firstSectionId}`}>
+      <a className="esencial-workspace-shell__skip" href="#esencial-workspace-status">
         Hoppa till arbetsytans innehåll
       </a>
       <Container width={6} className="esencial-workspace-shell__container">
@@ -115,7 +114,9 @@ export function WorkspaceShell({
             </Card>
           </header>
 
-          <nav className="esencial-workspace-shell__tabs" aria-label="Arbetsytans avsnitt">
+          <EditorialStatusOverview />
+
+          <nav className="esencial-workspace-shell__tabs" aria-label="Arbetsytans tre steg">
             <ol>
               {orderedSections.map((section, index) => {
                 const contract = WORKSPACE_SECTION_CONTRACTS[section.id]
@@ -144,13 +145,7 @@ export function WorkspaceShell({
   )
 }
 
-function WorkspaceSection({
-  section,
-  index,
-}: {
-  section: WorkspaceSectionDefinition
-  index: number
-}) {
+function WorkspaceSection({section, index}: {section: WorkspaceSectionDefinition; index: number}) {
   const contract = WORKSPACE_SECTION_CONTRACTS[section.id]
   const domId = workspaceSectionDomId(section.id)
   const headingId = `${domId}-heading`
@@ -166,7 +161,7 @@ function WorkspaceSection({
     >
       <header className="esencial-workspace-shell__section-header">
         <Text as="p" className="esencial-workspace-shell__eyebrow">
-          Avsnitt {String(index + 1).padStart(2, '0')}
+          Steg {String(index + 1).padStart(2, '0')}
         </Text>
         <Box>
           <Heading as="h2" id={headingId} size={4}>

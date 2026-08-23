@@ -1,7 +1,7 @@
 export const WORKSPACE_SECTION_CONTRACTS = {
   'projects-filters': {
     id: 'projects-filters',
-    navigationLabel: 'Projekt & filter',
+    navigationLabel: 'Redigera projekt',
     heading: 'Projekt och filter',
     ownerStage: 'S17',
     featureBoundary: 'cms/studio/features/projects/**',
@@ -10,8 +10,8 @@ export const WORKSPACE_SECTION_CONTRACTS = {
   },
   'live-preview': {
     id: 'live-preview',
-    navigationLabel: 'Live preview',
-    heading: 'Live preview',
+    navigationLabel: 'Kontrollera sidan',
+    heading: 'Förhandsvisning',
     ownerStage: 'S18',
     featureBoundary: 'cms/studio/features/preview/**',
     purpose:
@@ -19,8 +19,8 @@ export const WORKSPACE_SECTION_CONTRACTS = {
   },
   'analytics-consent': {
     id: 'analytics-consent',
-    navigationLabel: 'Analys & samtycke',
-    heading: 'Analys och samtycke',
+    navigationLabel: 'Följ resultat',
+    heading: 'Resultat och samtycke',
     ownerStage: 'S19',
     featureBoundary: 'cms/studio/features/analytics/**',
     purpose:

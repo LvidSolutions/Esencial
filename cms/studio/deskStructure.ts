@@ -2,14 +2,20 @@ import type {StructureResolver} from 'sanity/structure'
 
 export const deskStructure: StructureResolver = (S) =>
   S.list()
-    .title('Esencial CMS')
+    .title('Innehåll & publicering · avancerat')
     .items([
       S.listItem()
         .title('Klar att publicera')
-        .child(S.documentList().title('Klar att publicera').filter('_type == "project" && status == "review"')),
+        .child(
+          S.documentList()
+            .title('Klar att publicera')
+            .filter('_type == "project" && status == "review"'),
+        ),
       S.listItem()
         .title('Under arbete')
-        .child(S.documentList().title('Under arbete').filter('_type == "project" && status == "draft"')),
+        .child(
+          S.documentList().title('Under arbete').filter('_type == "project" && status == "draft"'),
+        ),
       S.divider(),
       S.listItem()
         .title('Startsida')
@@ -17,10 +23,18 @@ export const deskStructure: StructureResolver = (S) =>
       S.divider(),
       S.listItem()
         .title('Svenska projekt')
-        .child(S.documentList().title('Svenska projekt').filter('_type == "project" && language == "sv"')),
+        .child(
+          S.documentList()
+            .title('Svenska projekt')
+            .filter('_type == "project" && language == "sv"'),
+        ),
       S.listItem()
-        .title('English projects')
-        .child(S.documentList().title('English projects').filter('_type == "project" && language == "en"')),
+        .title('Engelska projekt')
+        .child(
+          S.documentList()
+            .title('Engelska projekt')
+            .filter('_type == "project" && language == "en"'),
+        ),
       S.listItem()
         .title('Projektfilter')
         .child(S.documentTypeList('filterCategory').title('Projektfilter')),
@@ -28,10 +42,10 @@ export const deskStructure: StructureResolver = (S) =>
         .title('Projektrutnät och filteretiketter')
         .child(S.document().schemaType('navigationSettings').documentId('navigationSettings')),
       S.listItem()
-        .title('Tjanster och services')
-        .child(S.documentTypeList('service').title('Tjanster och services')),
+        .title('Tjänster / Services')
+        .child(S.documentTypeList('service').title('Tjänster / Services')),
       S.divider(),
       S.listItem()
-        .title('Webbplatsinstallningar')
+        .title('Webbplatsinställningar')
         .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
     ])

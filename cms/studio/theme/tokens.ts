@@ -16,9 +16,11 @@ export const esencialVisualTokens = {
     criticalSurface: '#fff1ed',
   },
   typography: {
-    sans: 'Roboto, Arial, Helvetica, sans-serif',
+    sans: '"Roboto", Arial, Helvetica, sans-serif',
     measure: '68ch',
+    headingTracking: '-0.025em',
     labelTracking: '0.1em',
+    contentLineHeight: '1.55',
   },
   spacing: {
     xs: 4,

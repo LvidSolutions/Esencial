@@ -10,3 +10,4 @@ export {
   type WorkspaceSectionDefinition,
   type WorkspaceShellStatus,
 } from './WorkspaceShell'
+export {EditorialStatusOverview} from './EditorialStatusOverview'
