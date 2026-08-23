@@ -12,6 +12,7 @@ const RETURNING_VISITORS_LIMITATION = 'Återkommande besökare är inte tillgän
 const CONSENT_LIMITATION = 'Trafikmätningen omfattar endast besökare som har godkänt statistikmätning.'
 const DAILY_VISITORS_LIMITATION = 'Summa dagliga besökare summerar varje dags besökarvärde. Samma person kan räknas på flera dagar och därför flera gånger under perioden.'
 const SEARCH_LIMITATION = 'Search Console kan utelämna vissa detaljrader och slutlig data har normalt några dagars fördröjning.'
+const SERIES_LIMITATION = 'Dagserien visar endast mätpunkter som leverantören faktiskt returnerade. Saknade dagar fylls inte med uppskattade nollor.'
 
 class ProviderError extends Error {
   constructor(provider, status) {
@@ -94,6 +95,25 @@ function finiteMetric(value, provider) {
   return value
 }
 
+function providerDay(value, provider) {
+  if (typeof value !== 'string') throw new ProviderError(provider)
+  const timestamp = Date.parse(value)
+  if (!Number.isFinite(timestamp)) throw new ProviderError(provider)
+  return new Date(timestamp).toISOString().slice(0, 10)
+}
+
+function sortedDailySeries(points, range, provider) {
+  const sorted = [...points].sort((left, right) => left.date.localeCompare(right.date))
+  const dates = new Set()
+  for (const point of sorted) {
+    if (point.date < range.since || point.date > range.until || dates.has(point.date)) {
+      throw new ProviderError(provider)
+    }
+    dates.add(point.date)
+  }
+  return sorted
+}
+
 async function vercelQuery(kind, range, extra = {}) {
   const config = analyticsConfiguration().values
   const url = new URL(`${VERCEL_ANALYTICS_API}/${kind}`)
@@ -116,6 +136,14 @@ function vercelSummary(result) {
     dailyVisitorsSum: summary.dailyVisitorsSum + finiteMetric(row?.visitors, 'Vercel Web Analytics'),
     pageviews: summary.pageviews + finiteMetric(row?.pageviews, 'Vercel Web Analytics'),
   }), {dailyVisitorsSum: 0, pageviews: 0})
+}
+
+function vercelDailySeries(result, range) {
+  return sortedDailySeries(vercelRows(result).map((row) => ({
+    date: providerDay(row?.timestamp, 'Vercel Web Analytics'),
+    dailyVisitors: finiteMetric(row?.visitors, 'Vercel Web Analytics'),
+    pageviews: finiteMetric(row?.pageviews, 'Vercel Web Analytics'),
+  })), range, 'Vercel Web Analytics')
 }
 
 function vercelTopPages(result, extended = result?.version === 1) {
@@ -167,11 +195,14 @@ async function traffic(period) {
       state: summary.visitors === 0 && summary.pageviews === 0 && topPages.length === 0 ? 'empty' : 'ready',
     }
   }
+  const series = vercelDailySeries(currentResult, period.current)
+  vercelDailySeries(previousResult, period.previous)
   const summary = vercelSummary(currentResult)
   const topPages = vercelTopPages(pagesResult)
   return {
     ...summary,
     previous: vercelSummary(previousResult),
+    series,
     topPages,
     freshness: {
       requestedThrough: period.current.until,
@@ -246,13 +277,21 @@ function searchRows(data) {
   }))
 }
 
-function latestSearchDataAt(data) {
+function searchDailySeries(data, range) {
   if (!Array.isArray(data?.rows) && data?.rows !== undefined) throw new ProviderError('Google Search Console')
-  const dates = (data?.rows || [])
-    .map((row) => typeof row?.keys?.[0] === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(row.keys[0]) ? row.keys[0] : null)
-    .filter(Boolean)
-    .sort()
-  return dates.at(-1) || null
+  return sortedDailySeries((data?.rows || []).map((row) => {
+    const date = row?.keys?.[0]
+    if (typeof date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      throw new ProviderError('Google Search Console')
+    }
+    const normalizedDate = providerDay(`${date}T00:00:00.000Z`, 'Google Search Console')
+    if (normalizedDate !== date) throw new ProviderError('Google Search Console')
+    return {
+      date: normalizedDate,
+      clicks: metric(row.clicks),
+      impressions: metric(row.impressions),
+    }
+  }), range, 'Google Search Console')
 }
 
 async function search(period) {
@@ -268,17 +307,19 @@ async function search(period) {
   ])
   const totals = searchTotals(summary)
   const prior = searchTotals(previousSummary)
+  const series = searchDailySeries(dates, period.current)
   return {
     clicks: totals.clicks,
     impressions: totals.impressions,
     ctr: totals.impressions ? totals.clicks / totals.impressions : 0,
     position: totals.impressions ? totals.weightedPosition / totals.impressions : 0,
     previous: {clicks: prior.clicks, impressions: prior.impressions},
+    series,
     topPages: searchRows(pages),
     queries: searchRows(queries),
     freshness: {
       requestedThrough: period.current.until,
-      latestDataAt: latestSearchDataAt(dates),
+      latestDataAt: series.at(-1)?.date || null,
     },
     state: totals.clicks === 0 && totals.impressions === 0 ? 'empty' : 'ready',
   }
@@ -350,7 +391,7 @@ async function handler(req, res) {
         traffic: source('Vercel Web Analytics', analyticsConfig.partial ? 'error' : analyticsConfig.ready ? 'ready' : 'unavailable'),
         search: source('Google Search Console', searchConfig.partial ? 'error' : searchConfig.ready ? 'ready' : 'unavailable'),
       },
-      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, DAILY_VISITORS_LIMITATION, SEARCH_LIMITATION],
+      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, DAILY_VISITORS_LIMITATION, SEARCH_LIMITATION, SERIES_LIMITATION],
     }, allowedOrigin)
   }
 
@@ -368,7 +409,7 @@ async function handler(req, res) {
         traffic: source('Vercel Web Analytics', 'unavailable', 'Kontoaktivering och server-token återstår.'),
         search: source('Google Search Console', 'unavailable', 'Produktionsdomänens egendom och servernyckel återstår.'),
       },
-      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, DAILY_VISITORS_LIMITATION, SEARCH_LIMITATION],
+      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, DAILY_VISITORS_LIMITATION, SEARCH_LIMITATION, SERIES_LIMITATION],
     }, allowedOrigin)
   }
 
@@ -392,7 +433,7 @@ async function handler(req, res) {
         search: source('Google Search Console', searchState, searchData ? undefined : 'Produktionsdomänens egendom är inte ansluten.'),
       },
       observations: observations(searchData),
-      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, DAILY_VISITORS_LIMITATION, SEARCH_LIMITATION],
+      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, DAILY_VISITORS_LIMITATION, SEARCH_LIMITATION, SERIES_LIMITATION],
     }, allowedOrigin)
   } catch (error) {
     const provider = error instanceof ProviderError ? error.message : 'Statistiken kunde inte hämtas.'
@@ -409,10 +450,18 @@ async function handler(req, res) {
         traffic: source('Vercel Web Analytics', analyticsConfig.ready ? 'error' : 'unavailable'),
         search: source('Google Search Console', searchConfig.ready ? 'error' : 'unavailable'),
       },
-      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, DAILY_VISITORS_LIMITATION, SEARCH_LIMITATION],
+      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, DAILY_VISITORS_LIMITATION, SEARCH_LIMITATION, SERIES_LIMITATION],
     }, allowedOrigin)
   }
 }
 
 module.exports = handler
-module.exports._internals = {dateRange, periodRanges, traffic, vercelSummary, vercelTopPages}
+module.exports._internals = {
+  dateRange,
+  periodRanges,
+  searchDailySeries,
+  traffic,
+  vercelDailySeries,
+  vercelSummary,
+  vercelTopPages,
+}

@@ -8,10 +8,21 @@ Status: tekniska kontroller finns lokalt; kontoaktivering, publik information oc
 
 - **Vercel Web Analytics** ger sidvisningar, summa dagliga besökare och toppsidor. `api/analytics.js` använder den publika Web Analytics-API:ns `visits/aggregate` grupperad per dag för 7, 30 och 90 dagar. Varje dags besökarvärde summeras till `dailyVisitorsSum`; samma person kan därför räknas en gång per dag och flera gånger under en period. Aktuell och föregående period beräknas på exakt samma sätt.
 - **Google Search Console** är en senare, valfri källa för den slutliga produktionsdomänen. Den ger klick, visningar, CTR, position, toppsidor och sökfraser. Search Console kan utelämna detaljrader och slutlig data har normalt några dagars fördröjning.
+- **Dagliga trendserier** returneras separat för vald 7/30/90-dagarsperiod: Vercel ger datum, dagliga besökare och sidvisningar; Search Console ger datum, klick och visningar. Bara leverantörens verkliga datumrader används. Saknade datum lämnas som synliga luckor och fylls aldrig med uppskattade nollor.
 - **Cookiebot by Usercentrics** är den valda samtyckestjänsten. S19:s publika kontroll använder Cookiebots dokumenterade SDK-metoder men laddar inte Vercels statistikresurs förrän ett aktuellt, versionsgiltigt och maskinellt icke-utgånget statistikval både finns lokalt och har synkroniserats med Cookiebot.
 - `api/analytics.js` körs som Vercel Function. Leverantörsnycklar finns bara i servermiljön. Studio skickar ingen API-nyckel, leverantörstoken eller annan webbläsarhemlighet.
 
 Vercels besökarvärde i en daggrupperad aggregatrad gäller den dagen. Summan av raderna är därför **summa dagliga besökare**, inte periodunika personer. Vercels besökarhash återställs dessutom dagligen, så återkommande besökare visas alltid som **inte tillgängligt med den valda integritetsnivån**. Ingen cookie-baserad eller beräknad ersättning används.
+
+## Trendgrafen i Arbetsyta
+
+Den kompakta grafen visar en vald vardagligt namngiven serie åt gången: sidvisningar, dagliga besökare, klick från Google eller visningar i Google. Perioden väljs med 7, 30 eller 90 dagar. Varje vy visar källa, senaste verkliga mätpunkt, begärt slutdatum och jämförelse med den föregående lika långa perioden.
+
+- En tangentbordsanvändare tabbar en gång in i grafen och flyttar mellan exakta punkter med piltangenterna, `Home` och `End`.
+- Exakta datum och värden finns även i en intilliggande, fällbar HTML-tabell.
+- Måttkorten förklarar på enkel svenska vad varje värde betyder; exempelvis är en Google-visning ett tillfälle då en Esencial-sida syntes i sökresultatet, och en lägre genomsnittlig plats är bättre.
+- Vid periodbyte tas gamla siffror bort medan den nya perioden laddas. Otillgänglig, tom och felaktig data har egna texter och ersätts aldrig med tidigare eller påhittade värden.
+- Grafen säger uttryckligen att den visar samvariation, inte att SEO har orsakat en trafikförändring. Kampanjer, säsong, publiceringstakt, press och andra händelser kan påverka utvecklingen.
 
 ## Tre bygglägen
 
@@ -81,6 +92,7 @@ Studio byggs efter S20 med den publika endpointadressen `SANITY_STUDIO_ANALYTICS
 - Saknad leverantörsautentisering ger `unavailable`; partiella hemligheter ger HTTP 503; nekad/felaktig providerautentisering ger sanitiserat HTTP 502.
 - Alla anrop har 8 sekunders timeout och kontrollerar dokumenterad svarsversion, datatyper och icke-negativa tal.
 - Studio godtar inte API-svaret enbart utifrån top-level-fält. Den lokala kontraktsvakten kontrollerar tillåtna lägen, exakt 7/30/90-dagars period och sammanhängande datumintervall, kanoniska tidsstämplar, de två förväntade källorna, lägesöverensstämmelse, stränglistor, kompletta trafik-/sökrader, färskhet samt ändliga icke-negativa tal; CTR måste ligga mellan 0 och 1. Ett saknat, ofullständigt eller feltypat underfält ger det säkra felet utan att någon statistik renderas.
+- Dagserier valideras dessutom mot vald periods datumfönster, strikt stigande datumordning, högst en punkt per datum, högst en punkt per perioddag, färskhetens senaste datum och fullständiga icke-negativa mått. Dubbletter, datum utanför perioden, fel ordning, `NaN`, `Infinity`, negativa värden eller ofullständiga punkter stoppar hela svaret.
 - Strukturerade HTTP 503/502-svar innehåller uttryckligen `traffic: null` och `search: null`, så ett legitimt konfigurations-/leverantörsfel kan visas sanitiserat samtidigt som ett felaktigt svar fortfarande nekas.
 - `traffic.dailyVisitorsSum` är summan av dagradernas `visitors`, inte ett periodunikt personmått. Begränsningen finns både i API-svaret och direkt vid Studio-måttet. Jämförelsen använder samma dagliga summa för båda perioderna.
 - Svaret innehåller vald/föregående period, genereringstid och senaste verkliga mätpunkt per källa. Tom källa visas som `empty`, aldrig som ett gammalt cachevärde.
@@ -104,16 +116,20 @@ node scripts/check-consent.js
 corepack pnpm run check-analytics
 Push-Location cms/studio
 npm exec tsx -- features/analytics/analyticsClient.test.ts
+npm exec tsx -- features/analytics/trendModel.test.ts
 npm exec tsc -- --noEmit
 npm exec eslint -- features/analytics --max-warnings=0
 Pop-Location
+node --test cms/studio/features/analytics/analyticsServer.test.mjs cms/studio/features/analytics/analyticsAccessibility.test.mjs
 npm --prefix cms/studio run build
 corepack pnpm run build
 ```
 
 `check-consent.js` har positiva och negativa fixtures för pre-consent-blockering, likvärdiga val, accept, avvisning, återöppning, återkallelse, versionsbyte, lokal lagring, exakt utgångsgräns, framtida/ogiltiga datum, providerfel, kontraktet för summa dagliga besökare, CSP-hash, CMS-origin, browser-secret-isolering, idempotent injektion och S11-regression. Klockan är deterministisk i fixtures. Fixture-värden är uttryckligen testdata och används inte i byggd publik output.
 
-`analyticsClient.test.ts` använder lokala assertions och den installerade `tsx`-köraren, så samma fil både typkontrolleras av Studio och kan köras direkt. Positiva fixtures täcker `ready`, `unavailable`, `empty` och ett komplett sanitiserat `error`-svar. Tjugoen negativa fixtures för top-level- och nästlade lägen, perioder, källor, begränsningar/observationer, trafik, sökrader, färskhet, ofullständiga fält, `NaN`/`Infinity`, negativa tal och CTR utanför intervallet visar att klienten failar stängt med det säkra felet. Testet kontrollerar även `credentials: omit` och att ingen browser-`Authorization` skickas.
+`analyticsClient.test.ts` använder lokala assertions och den installerade `tsx`-köraren, så samma fil både typkontrolleras av Studio och kan köras direkt. Positiva fixtures täcker `ready`, `unavailable`, `empty` och ett komplett sanitiserat `error`-svar. Tjugonio negativa fixtures för top-level- och nästlade lägen, perioder, källor, begränsningar/observationer, trafik, sökrader, dagserier, färskhet, ofullständiga fält, `NaN`/`Infinity`, negativa tal och CTR utanför intervallet visar att klienten failar stängt med det säkra felet. Testet kontrollerar även `credentials: omit` och att ingen browser-`Authorization` skickas.
+
+`analyticsServer.test.mjs` verifierar leverantörsradernas sortering och avvisar dubbletter, datum utanför perioden, ogiltiga datum och mått utan att fylla luckor. `trendModel.test.ts` kontrollerar visuella luckor, exakta extremvärden och avgränsad tangentbordsnavigering. `analyticsAccessibility.test.mjs` låser roving focus, tabellalternativ, enkel svensk måttförklaring, ärlig laddning, responsiv overflow och korrelation/orsak-varningen.
 
 ## Mänskliga och externa blockerare
 

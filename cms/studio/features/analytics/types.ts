@@ -29,6 +29,12 @@ export type TrafficPage = {
   visitors: number
 }
 
+export type TrafficDailyPoint = {
+  date: string
+  dailyVisitors: number
+  pageviews: number
+}
+
 export type SearchRow = {
   label: string
   value: number
@@ -36,6 +42,12 @@ export type SearchRow = {
   impressions: number
   ctr: number
   position: number
+}
+
+export type SearchDailyPoint = {
+  date: string
+  clicks: number
+  impressions: number
 }
 
 export type AnalyticsResponse = {
@@ -49,6 +61,7 @@ export type AnalyticsResponse = {
     dailyVisitorsSum: number
     pageviews: number
     previous: {dailyVisitorsSum: number; pageviews: number}
+    series: TrafficDailyPoint[]
     topPages: TrafficPage[]
     freshness: Freshness
   } | null
@@ -59,6 +72,7 @@ export type AnalyticsResponse = {
     ctr: number
     position: number
     previous: {clicks: number; impressions: number}
+    series: SearchDailyPoint[]
     topPages: SearchRow[]
     queries: SearchRow[]
     freshness: Freshness

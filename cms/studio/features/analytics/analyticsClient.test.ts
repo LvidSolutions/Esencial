@@ -37,6 +37,10 @@ function readyPayload(): AnalyticsResponse {
       dailyVisitorsSum: 15,
       pageviews: 32,
       previous: {dailyVisitorsSum: 7, pageviews: 15},
+      series: [
+        {date: '2026-08-21', dailyVisitors: 10, pageviews: 20},
+        {date: '2026-08-22', dailyVisitors: 5, pageviews: 12},
+      ],
       topPages: [{label: '/', value: 28, pageviews: 28, visitors: 12}],
       freshness: {
         requestedThrough: '2026-08-22',
@@ -50,6 +54,10 @@ function readyPayload(): AnalyticsResponse {
       ctr: 0.02,
       position: 8.4,
       previous: {clicks: 10, impressions: 800},
+      series: [
+        {date: '2026-08-19', clicks: 8, impressions: 400},
+        {date: '2026-08-20', clicks: 12, impressions: 600},
+      ],
       topPages: [{
         label: 'https://www.esencial.se/',
         value: 18,
@@ -104,6 +112,7 @@ function emptyPayload(): AnalyticsResponse {
       dailyVisitorsSum: 0,
       pageviews: 0,
       previous: {dailyVisitorsSum: 0, pageviews: 0},
+      series: [],
       topPages: [],
       freshness: {requestedThrough: '2026-08-22', latestDataAt: null},
     },
@@ -193,6 +202,24 @@ async function checkInvalidResponses() {
     ['missing traffic previous', (payload) => {
       delete (payload.traffic as Record<string, unknown>).previous
     }],
+    ['missing traffic series', (payload) => {
+      delete (payload.traffic as Record<string, unknown>).series
+    }],
+    ['traffic series date outside period', (payload) => {
+      ((((payload.traffic as Record<string, unknown>).series as unknown[])[0]) as Record<string, unknown>).date = '2026-08-15'
+    }],
+    ['unordered traffic series', (payload) => {
+      ((payload.traffic as Record<string, unknown>).series as unknown[]).reverse()
+    }],
+    ['duplicate traffic series date', (payload) => {
+      ((((payload.traffic as Record<string, unknown>).series as unknown[])[1]) as Record<string, unknown>).date = '2026-08-21'
+    }],
+    ['negative traffic series value', (payload) => {
+      ((((payload.traffic as Record<string, unknown>).series as unknown[])[0]) as Record<string, unknown>).pageviews = -1
+    }],
+    ['traffic freshness disagrees with series', (payload) => {
+      ((payload.traffic as Record<string, unknown>).freshness as Record<string, unknown>).latestDataAt = '2026-08-21T00:00:00.000Z'
+    }],
     ['traffic state', (payload) => {
       (payload.traffic as Record<string, unknown>).state = 'unknown'
     }],
@@ -213,6 +240,12 @@ async function checkInvalidResponses() {
     }],
     ['out-of-bounds search CTR', (payload) => {
       (payload.search as Record<string, unknown>).ctr = 1.01
+    }],
+    ['missing search series', (payload) => {
+      delete (payload.search as Record<string, unknown>).series
+    }],
+    ['non-numeric search series value', (payload) => {
+      ((((payload.search as Record<string, unknown>).series as unknown[])[0]) as Record<string, unknown>).clicks = '8'
     }],
     ['infinite search metric', (payload) => {
       (payload.search as Record<string, unknown>).position = Number.POSITIVE_INFINITY
@@ -237,7 +270,7 @@ async function main() {
   await checkValidResponses()
   await checkProviderError()
   await checkInvalidResponses()
-  console.log('Analytics client contract checks passed: ready/unavailable/empty/error positives and 21 nested fail-closed fixtures.')
+  console.log('Analytics client contract checks passed: ready/unavailable/empty/error positives and 29 nested fail-closed fixtures.')
 }
 
 void main()

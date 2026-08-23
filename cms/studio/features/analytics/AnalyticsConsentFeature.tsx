@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useId, useState} from 'react'
 import {Badge, Box, Button, Card, Flex, Grid, Heading, Inline, Stack, Text} from '@sanity/ui'
 import {fetchAnalytics} from './analyticsClient'
+import {AnalyticsTrend} from './AnalyticsTrend'
 import type {
   AnalyticsResponse,
   AnalyticsSource,
@@ -11,7 +12,7 @@ import './analyticsFeature.css'
 
 type PeriodDays = 7 | 30 | 90
 type LoadState =
-  | {status: 'loading'; data?: AnalyticsResponse}
+  | {status: 'loading'}
   | {status: 'ready'; data: AnalyticsResponse}
   | {status: 'error'; message: string}
 
@@ -88,7 +89,7 @@ export function AnalyticsConsentFeature() {
 
   useEffect(() => {
     const controller = new AbortController()
-    setState((current) => ({status: 'loading', data: current.status === 'ready' ? current.data : undefined}))
+    setState({status: 'loading'})
     void fetchAnalytics(days, controller.signal)
       .then((data) => setState({status: 'ready', data}))
       .catch((error) => {
@@ -96,8 +97,6 @@ export function AnalyticsConsentFeature() {
       })
     return () => controller.abort()
   }, [days, requestVersion])
-
-  const data = state.status === 'ready' || state.status === 'loading' ? state.data : undefined
 
   return (
     <Stack className="esencial-analytics" space={5}>
@@ -125,9 +124,9 @@ export function AnalyticsConsentFeature() {
       </Flex>
 
       <div aria-live="polite" aria-busy={state.status === 'loading'}>
-        {state.status === 'loading' && !data ? <LoadingState /> : null}
+        {state.status === 'loading' ? <LoadingState /> : null}
         {state.status === 'error' ? <ErrorState message={state.message} onRetry={retry} /> : null}
-        {data ? <Dashboard data={data} refreshing={state.status === 'loading'} /> : null}
+        {state.status === 'ready' ? <Dashboard data={state.data} /> : null}
       </div>
 
       <ConsentEngineeringSummary />
@@ -156,7 +155,7 @@ function ErrorState({message, onRetry}: {message: string; onRetry: () => void}) 
   )
 }
 
-function Dashboard({data, refreshing}: {data: AnalyticsResponse; refreshing: boolean}) {
+function Dashboard({data}: {data: AnalyticsResponse}) {
   const period = data.period?.current
   return (
     <Stack space={5}>
@@ -164,7 +163,6 @@ function Dashboard({data, refreshing}: {data: AnalyticsResponse; refreshing: boo
         <Badge tone={data.state === 'ready' ? 'positive' : data.state === 'error' ? 'critical' : 'caution'}>
           {data.state === 'ready' ? 'Verklig data' : data.state === 'empty' ? 'Ingen data' : data.state === 'error' ? 'Fel' : 'Väntar på anslutning'}
         </Badge>
-        {refreshing ? <Text size={1} muted>Uppdaterar…</Text> : null}
         {period ? <Text size={1} muted>{formatDate(period.since)}–{formatDate(period.until)}</Text> : null}
       </Flex>
 
@@ -184,6 +182,7 @@ function Dashboard({data, refreshing}: {data: AnalyticsResponse; refreshing: boo
             </Card>
           ) : null}
           <MetricGrid data={data} />
+          <AnalyticsTrend data={data} />
           <Grid columns={[1, 1, 2]} gap={4}>
             <TrafficTable items={data.traffic?.topPages || []} />
             <SearchTable title="Sidor från Google" items={data.search?.topPages || []} />
@@ -200,13 +199,46 @@ function Dashboard({data, refreshing}: {data: AnalyticsResponse; refreshing: boo
 
 function MetricGrid({data}: {data: AnalyticsResponse}) {
   const metrics = [
-    {label: 'Summa dagliga besökare', value: data.traffic ? numberFormatter.format(data.traffic.dailyVisitorsSum) : 'Inte tillgängligt', note: data.traffic ? `${comparison(data.traffic.dailyVisitorsSum, data.traffic.previous.dailyVisitorsSum)}. Samma person kan räknas på flera dagar.` : undefined},
-    {label: 'Sidvisningar', value: data.traffic ? numberFormatter.format(data.traffic.pageviews) : 'Inte tillgängligt', note: data.traffic ? comparison(data.traffic.pageviews, data.traffic.previous.pageviews) : undefined},
-    {label: 'Återkommande besökare', value: 'Inte tillgängligt', note: 'Begränsning i vald integritetsnivå'},
-    {label: 'Organiska klick', value: data.search ? numberFormatter.format(data.search.clicks) : 'Inte tillgängligt', note: data.search ? comparison(data.search.clicks, data.search.previous.clicks) : undefined},
-    {label: 'Visningar i Google', value: data.search ? numberFormatter.format(data.search.impressions) : 'Inte tillgängligt', note: data.search ? comparison(data.search.impressions, data.search.previous.impressions) : undefined},
-    {label: 'CTR', value: data.search ? percentFormatter.format(data.search.ctr) : 'Inte tillgängligt'},
-    {label: 'Genomsnittlig position', value: data.search ? decimalFormatter.format(data.search.position) : 'Inte tillgängligt'},
+    {
+      label: 'Besökare, dagsumma',
+      value: data.traffic ? numberFormatter.format(data.traffic.dailyVisitorsSum) : 'Inte tillgängligt',
+      definition: 'Antalet besökare per dag, summerat för perioden. Samma person kan räknas på flera dagar.',
+      note: data.traffic ? comparison(data.traffic.dailyVisitorsSum, data.traffic.previous.dailyVisitorsSum) : undefined,
+    },
+    {
+      label: 'Sidvisningar',
+      value: data.traffic ? numberFormatter.format(data.traffic.pageviews) : 'Inte tillgängligt',
+      definition: 'Hur många sidor som visades på webbplatsen under perioden.',
+      note: data.traffic ? comparison(data.traffic.pageviews, data.traffic.previous.pageviews) : undefined,
+    },
+    {
+      label: 'Återkommande besökare',
+      value: 'Inte tillgängligt',
+      definition: 'Om samma person kom tillbaka vid ett senare tillfälle.',
+      note: 'Kan inte mätas med den valda integritetsnivån.',
+    },
+    {
+      label: 'Klick från Google',
+      value: data.search ? numberFormatter.format(data.search.clicks) : 'Inte tillgängligt',
+      definition: 'Besök som började med ett klick i Googles sökresultat.',
+      note: data.search ? comparison(data.search.clicks, data.search.previous.clicks) : undefined,
+    },
+    {
+      label: 'Visningar i Google',
+      value: data.search ? numberFormatter.format(data.search.impressions) : 'Inte tillgängligt',
+      definition: 'Hur många gånger en Esencial-sida syntes i Googles sökresultat.',
+      note: data.search ? comparison(data.search.impressions, data.search.previous.impressions) : undefined,
+    },
+    {
+      label: 'Klickfrekvens (CTR)',
+      value: data.search ? percentFormatter.format(data.search.ctr) : 'Inte tillgängligt',
+      definition: 'Andelen Google-visningar som ledde till ett klick.',
+    },
+    {
+      label: 'Genomsnittlig plats i Google',
+      value: data.search ? decimalFormatter.format(data.search.position) : 'Inte tillgängligt',
+      definition: 'Sidornas genomsnittliga plats i sökresultatet. Ett lägre tal är bättre.',
+    },
   ]
 
   return (
@@ -215,6 +247,7 @@ function MetricGrid({data}: {data: AnalyticsResponse}) {
         <Card border className="esencial-analytics__metric" key={metric.label} padding={3} radius={2}>
           <Text as="p" muted size={1}>{metric.label}</Text>
           <Text as="p" className="esencial-analytics__metric-value" size={3} weight="semibold">{metric.value}</Text>
+          <Text as="p" size={1}>{metric.definition}</Text>
           {metric.note ? <Text as="p" muted size={1}>{metric.note}</Text> : null}
         </Card>
       ))}

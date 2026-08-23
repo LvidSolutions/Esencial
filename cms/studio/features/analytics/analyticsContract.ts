@@ -4,7 +4,9 @@ import type {
   AnalyticsSource,
   AnalyticsState,
   Freshness,
+  SearchDailyPoint,
   SearchRow,
+  TrafficDailyPoint,
   TrafficPage,
 } from './types'
 
@@ -99,7 +101,49 @@ function isSearchRow(value: unknown): value is SearchRow {
     && isFiniteNonNegative(value.position)
 }
 
-function isTraffic(value: unknown): value is NonNullable<AnalyticsResponse['traffic']> {
+function isTrafficDailyPoint(value: unknown): value is TrafficDailyPoint {
+  return isRecord(value)
+    && isoDay(value.date) !== null
+    && isFiniteNonNegative(value.dailyVisitors)
+    && isFiniteNonNegative(value.pageviews)
+}
+
+function isSearchDailyPoint(value: unknown): value is SearchDailyPoint {
+  return isRecord(value)
+    && isoDay(value.date) !== null
+    && isFiniteNonNegative(value.clicks)
+    && isFiniteNonNegative(value.impressions)
+}
+
+function isDailySeries<T extends {date: string}>(
+  value: unknown,
+  period: AnalyticsPeriod,
+  isPoint: (point: unknown) => point is T,
+): value is T[] {
+  if (!Array.isArray(value) || value.length > period.days) return false
+  const since = isoDay(period.current.since)
+  const until = isoDay(period.current.until)
+  if (since === null || until === null) return false
+
+  let previousDay: number | null = null
+  for (const point of value) {
+    if (!isPoint(point)) return false
+    const day = isoDay(point.date)
+    if (day === null || day < since || day > until || (previousDay !== null && day <= previousDay)) {
+      return false
+    }
+    previousDay = day
+  }
+  return true
+}
+
+function freshnessMatchesSeries(freshness: Freshness, series: Array<{date: string}>) {
+  if (series.length === 0) return freshness.latestDataAt === null
+  return freshness.latestDataAt !== null
+    && freshness.latestDataAt.slice(0, 10) === series.at(-1)?.date
+}
+
+function isTraffic(value: unknown, period: AnalyticsPeriod): value is NonNullable<AnalyticsResponse['traffic']> {
   if (!isRecord(value) || !DATA_STATES.has(value.state as string)) return false
   if (!isFiniteNonNegative(value.dailyVisitorsSum) || !isFiniteNonNegative(value.pageviews)) {
     return false
@@ -109,13 +153,17 @@ function isTraffic(value: unknown): value is NonNullable<AnalyticsResponse['traf
     || !isFiniteNonNegative(value.previous.pageviews)) {
     return false
   }
+  if (!isDailySeries(value.series, period, isTrafficDailyPoint)
+    || !isFreshness(value.freshness)
+    || !freshnessMatchesSeries(value.freshness, value.series)) {
+    return false
+  }
   return Array.isArray(value.topPages)
     && value.topPages.length <= 10
     && value.topPages.every(isTrafficPage)
-    && isFreshness(value.freshness)
 }
 
-function isSearch(value: unknown): value is NonNullable<AnalyticsResponse['search']> {
+function isSearch(value: unknown, period: AnalyticsPeriod): value is NonNullable<AnalyticsResponse['search']> {
   if (!isRecord(value) || !DATA_STATES.has(value.state as string)) return false
   if (!isFiniteNonNegative(value.clicks)
     || !isFiniteNonNegative(value.impressions)
@@ -128,13 +176,17 @@ function isSearch(value: unknown): value is NonNullable<AnalyticsResponse['searc
     || !isFiniteNonNegative(value.previous.impressions)) {
     return false
   }
+  if (!isDailySeries(value.series, period, isSearchDailyPoint)
+    || !isFreshness(value.freshness)
+    || !freshnessMatchesSeries(value.freshness, value.series)) {
+    return false
+  }
   return Array.isArray(value.topPages)
     && value.topPages.length <= 10
     && value.topPages.every(isSearchRow)
     && Array.isArray(value.queries)
     && value.queries.length <= 10
     && value.queries.every(isSearchRow)
-    && isFreshness(value.freshness)
 }
 
 function isStringArray(value: unknown): value is string[] {
@@ -162,8 +214,8 @@ export function isAnalyticsResponse(value: unknown): value is AnalyticsResponse 
   }
 
   if (!Object.hasOwn(value, 'traffic') || !Object.hasOwn(value, 'search')) return false
-  if (value.traffic !== null && !isTraffic(value.traffic)) return false
-  if (value.search !== null && !isSearch(value.search)) return false
+  if (value.traffic !== null && !isTraffic(value.traffic, value.period)) return false
+  if (value.search !== null && !isSearch(value.search, value.period)) return false
 
   if (value.state === 'unavailable') {
     return !value.configured && value.traffic === null && value.search === null

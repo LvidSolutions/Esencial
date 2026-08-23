@@ -19,6 +19,125 @@
   line-height: 1.2;
 }
 
+.esencial-analytics__trend-card {
+  min-width: 0;
+}
+
+.esencial-analytics__trend-intro,
+.esencial-analytics__trend-summary,
+.esencial-analytics__trend-instruction {
+  max-width: var(--esencial-workspace-measure, 68ch);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.esencial-analytics__trend-select {
+  display: grid;
+  min-width: min(100%, 15rem);
+  gap: 6px;
+  color: var(--esencial-workspace-muted, #5b5b55);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.esencial-analytics__trend-select select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 36px 8px 12px;
+  border: 1px solid var(--esencial-workspace-border-strong, #8b8b83);
+  border-radius: 4px;
+  background: var(--esencial-workspace-paper, #fff);
+  color: var(--esencial-workspace-ink, #171714);
+  font: inherit;
+}
+
+.esencial-analytics__chart-wrap {
+  position: relative;
+  min-width: 0;
+  border: 1px solid var(--esencial-workspace-border, #d1d1ca);
+  border-radius: 6px;
+  background: var(--esencial-workspace-paper, #fff);
+}
+
+.esencial-analytics__chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 9rem;
+  overflow: visible;
+}
+
+.esencial-analytics__chart-grid {
+  stroke: var(--esencial-workspace-border, #d1d1ca);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.esencial-analytics__chart-axis {
+  fill: var(--esencial-workspace-muted, #5b5b55);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.esencial-analytics__chart-line {
+  fill: none;
+  stroke: var(--esencial-workspace-ink, #171714);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.esencial-analytics__chart-point {
+  outline: none;
+}
+
+.esencial-analytics__chart-hit {
+  fill: transparent;
+  pointer-events: all;
+}
+
+.esencial-analytics__chart-point-ring {
+  fill: var(--esencial-workspace-paper, #fff);
+  stroke: transparent;
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.esencial-analytics__chart-point-dot {
+  fill: var(--esencial-workspace-ink, #171714);
+}
+
+.esencial-analytics__chart-point:focus-visible .esencial-analytics__chart-point-ring {
+  stroke: var(--esencial-workspace-focus, #005fcc);
+}
+
+.esencial-analytics__chart-tooltip {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--esencial-workspace-border, #d1d1ca);
+  color: var(--esencial-workspace-ink, #171714);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.esencial-analytics__trend-details {
+  border-top: 1px solid var(--esencial-workspace-border, #d1d1ca);
+}
+
+.esencial-analytics__trend-details summary {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .esencial-analytics__table-scroll {
   max-width: 100%;
   margin-top: 16px;
@@ -138,6 +257,22 @@
     content: attr(data-label) ': ';
     color: var(--esencial-workspace-muted, #5b5b55);
     font-weight: 600;
+  }
+}
+
+@media (max-width: 40rem) {
+  .esencial-analytics__chart-axis {
+    font-size: 22px;
+  }
+
+  .esencial-analytics__chart-tooltip {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .esencial-analytics__trend-select {
+    width: 100%;
   }
 }
 
