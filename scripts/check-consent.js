@@ -22,7 +22,8 @@ const CMS_ORIGIN = 'https://esencial-cms.sanity.studio'
 const FIXTURE_CONFIG = {
   COOKIEBOT_CBID: '00000000-0000-0000-0000-000000000000',
   CONSENT_ANALYTICS_RETENTION: 'Fixture: 30 days',
-  CONSENT_CHOICE_RETENTION: 'Fixture: 6 months',
+  CONSENT_CHOICE_RETENTION: 'Fixture: 180 days',
+  CONSENT_CHOICE_RETENTION_DAYS: '180',
   CONSENT_CONTROLLER_NAME: 'Fixture Controller AB',
   CONSENT_NOTICE_VERSION: 'fixture-v2',
   CONSENT_PRIVACY_URL: '/fixture-privacy/',
@@ -84,7 +85,14 @@ class FakeElement {
   }
 }
 
-function createRuntime({choice, cookieBot = true, language = 'sv', providerStatistics = false} = {}) {
+const FIXTURE_NOW = '2026-08-23T12:00:00.000Z'
+const FIXTURE_RETENTION_MS = 180 * 86400000
+
+function fixtureTimestamp(offsetMs) {
+  return new Date(Date.parse(FIXTURE_NOW) + offsetMs).toISOString()
+}
+
+function createRuntime({choice, cookieBot = true, language = 'sv', now = FIXTURE_NOW, providerStatistics = false} = {}) {
   const storage = new Map()
   if (choice !== undefined) storage.set('esencial.consent', JSON.stringify(choice))
   const nodes = new Map()
@@ -175,8 +183,17 @@ function createRuntime({choice, cookieBot = true, language = 'sv', providerStati
   }
 
   const config = consentConfiguration(FIXTURE_CONFIG)
+  class FixtureDate extends Date {
+    constructor(...args) {
+      super(...(args.length ? args : [now]))
+    }
+
+    static now() {
+      return Date.parse(now)
+    }
+  }
   vm.runInNewContext(consentControllerSource(config), {
-    Date,
+    Date: FixtureDate,
     DOMException,
     JSON,
     console,
@@ -213,6 +230,12 @@ function checkConfigurationAndMarkup() {
     () => consentConfiguration({...FIXTURE_CONFIG, CONSENT_CONTROLLER_NAME: '<script>'}),
     /invalid public value/,
   )
+  for (const invalidDays of ['0', '1.5', '366', '1000', 'not-a-number']) {
+    assert.throws(
+      () => consentConfiguration({...FIXTURE_CONFIG, CONSENT_CHOICE_RETENTION_DAYS: invalidDays}),
+      /integer from 1 to 365/,
+    )
+  }
 
   const attributeFixture = consentMarkup(consentConfiguration({
     ...FIXTURE_CONFIG,
@@ -244,7 +267,7 @@ function checkRuntimeFixtures() {
   assert.deepEqual(JSON.parse(initial.storage.get('esencial.consent')), {
     version: 'fixture-v2',
     statistics: true,
-    decidedAt: JSON.parse(initial.storage.get('esencial.consent')).decidedAt,
+    decidedAt: FIXTURE_NOW,
   })
   assert.equal(initial.document.analyticsRequests.length, 1)
   assert.equal(initial.document.analyticsRequests[0], '/_vercel/insights/script.js')
@@ -274,13 +297,36 @@ function checkRuntimeFixtures() {
   assert.equal(JSON.parse(unavailable.storage.get('esencial.consent')).statistics, false)
 
   const outdated = createRuntime({
-    choice: {version: 'fixture-v1', statistics: true, decidedAt: '2026-01-01T00:00:00.000Z'},
+    choice: {version: 'fixture-v1', statistics: true, decidedAt: fixtureTimestamp(-86400000)},
     providerStatistics: true,
   })
   assert.equal(outdated.storage.has('esencial.consent'), false)
   assert.equal(outdated.window.Cookiebot.withdrawCount, 1)
   assert.equal(outdated.document.analyticsRequests.length, 0)
   assert.equal(outdated.nodes.notice.hidden, false)
+
+  const almostExpired = createRuntime({
+    choice: {version: 'fixture-v2', statistics: true, decidedAt: fixtureTimestamp(-FIXTURE_RETENTION_MS + 1)},
+    providerStatistics: true,
+  })
+  assert.equal(almostExpired.document.analyticsRequests.length, 1)
+  assert.equal(almostExpired.storage.has('esencial.consent'), true)
+
+  for (const decidedAt of [
+    fixtureTimestamp(-FIXTURE_RETENTION_MS),
+    fixtureTimestamp(1),
+    'not-a-timestamp',
+    '2026-08-23T12:00:00Z',
+  ]) {
+    const invalid = createRuntime({
+      choice: {version: 'fixture-v2', statistics: true, decidedAt},
+      providerStatistics: true,
+    })
+    assert.equal(invalid.storage.has('esencial.consent'), false)
+    assert.equal(invalid.window.Cookiebot.withdrawCount, 1)
+    assert.equal(invalid.document.analyticsRequests.length, 0)
+    assert.equal(invalid.nodes.notice.hidden, false)
+  }
 }
 
 function checkCspAndBrowserSecrets() {
@@ -391,10 +437,12 @@ async function checkOfficialVercelAggregateFixtures() {
     assert.equal(payload.configured, true)
     assert.equal(payload.state, 'ready')
     assert.deepEqual(
-      {visitors: payload.traffic.visitors, pageviews: payload.traffic.pageviews},
-      {visitors: 15, pageviews: 32},
+      {dailyVisitorsSum: payload.traffic.dailyVisitorsSum, pageviews: payload.traffic.pageviews},
+      {dailyVisitorsSum: 15, pageviews: 32},
     )
-    assert.deepEqual(payload.traffic.previous, {visitors: 7, pageviews: 15})
+    assert.deepEqual(payload.traffic.previous, {dailyVisitorsSum: 7, pageviews: 15})
+    assert.equal(payload.traffic.visitors, undefined)
+    assert.match(payload.limitations.join(' '), /Samma person kan räknas på flera dagar/)
     assert.deepEqual(payload.traffic.topPages[0], {
       label: '/', value: 28, pageviews: 28, visitors: 12,
     })
@@ -472,7 +520,7 @@ async function main() {
   await checkOfficialVercelAggregateFixtures()
   checkIdempotentFixtures()
   const pages = checkGeneratedPagesRemainFailClosed()
-  console.log(`Consent checks passed: ${pages} generated pages plus pre-consent, symmetry, withdrawal, version/storage, CSP hash, origin, secret-isolation and S11 regression fixtures.`)
+  console.log(`Consent checks passed: ${pages} generated pages plus pre-consent, symmetry, withdrawal, version/storage, deterministic expiry/clock, daily-visitor-sum, CSP hash, origin, secret-isolation and S11 regression fixtures.`)
 }
 
 main().catch((error) => {

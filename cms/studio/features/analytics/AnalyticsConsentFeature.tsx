@@ -200,7 +200,7 @@ function Dashboard({data, refreshing}: {data: AnalyticsResponse; refreshing: boo
 
 function MetricGrid({data}: {data: AnalyticsResponse}) {
   const metrics = [
-    {label: 'Besökare', value: data.traffic ? numberFormatter.format(data.traffic.visitors) : 'Inte tillgängligt', note: data.traffic ? comparison(data.traffic.visitors, data.traffic.previous.visitors) : undefined},
+    {label: 'Summa dagliga besökare', value: data.traffic ? numberFormatter.format(data.traffic.dailyVisitorsSum) : 'Inte tillgängligt', note: data.traffic ? `${comparison(data.traffic.dailyVisitorsSum, data.traffic.previous.dailyVisitorsSum)}. Samma person kan räknas på flera dagar.` : undefined},
     {label: 'Sidvisningar', value: data.traffic ? numberFormatter.format(data.traffic.pageviews) : 'Inte tillgängligt', note: data.traffic ? comparison(data.traffic.pageviews, data.traffic.previous.pageviews) : undefined},
     {label: 'Återkommande besökare', value: 'Inte tillgängligt', note: 'Begränsning i vald integritetsnivå'},
     {label: 'Organiska klick', value: data.search ? numberFormatter.format(data.search.clicks) : 'Inte tillgängligt', note: data.search ? comparison(data.search.clicks, data.search.previous.clicks) : undefined},
@@ -225,8 +225,8 @@ function MetricGrid({data}: {data: AnalyticsResponse}) {
 function TrafficTable({items}: {items: TrafficPage[]}) {
   return (
     <DataTable title="Mest besökta sidor" empty="Ingen trafikdata för perioden." hasItems={items.length > 0}>
-      <thead><tr><th scope="col">Sida</th><th scope="col">Besökare</th><th scope="col">Sidvisningar</th></tr></thead>
-      <tbody>{items.map((item) => <tr key={item.label}><th scope="row">{item.label}</th><td data-label="Besökare">{numberFormatter.format(item.visitors)}</td><td data-label="Sidvisningar">{numberFormatter.format(item.pageviews)}</td></tr>)}</tbody>
+      <thead><tr><th scope="col">Sida</th><th scope="col">Besökare på sidan</th><th scope="col">Sidvisningar</th></tr></thead>
+      <tbody>{items.map((item) => <tr key={item.label}><th scope="row">{item.label}</th><td data-label="Besökare på sidan">{numberFormatter.format(item.visitors)}</td><td data-label="Sidvisningar">{numberFormatter.format(item.pageviews)}</td></tr>)}</tbody>
     </DataTable>
   )
 }

@@ -46,9 +46,9 @@ export type AnalyticsResponse = {
   generatedAt: string
   traffic: {
     state: 'empty' | 'ready'
-    visitors: number
+    dailyVisitorsSum: number
     pageviews: number
-    previous: {visitors: number; pageviews: number}
+    previous: {dailyVisitorsSum: number; pageviews: number}
     topPages: TrafficPage[]
     freshness: Freshness
   } | null

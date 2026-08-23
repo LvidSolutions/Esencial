@@ -10,6 +10,7 @@ const VERCEL_ANALYTICS_API = 'https://api.vercel.com/v1/query/web-analytics/visi
 const REQUEST_TIMEOUT_MS = 8000
 const RETURNING_VISITORS_LIMITATION = 'Återkommande besökare är inte tillgängligt med den valda integritetsnivån.'
 const CONSENT_LIMITATION = 'Trafikmätningen omfattar endast besökare som har godkänt statistikmätning.'
+const DAILY_VISITORS_LIMITATION = 'Summa dagliga besökare summerar varje dags besökarvärde. Samma person kan räknas på flera dagar och därför flera gånger under perioden.'
 const SEARCH_LIMITATION = 'Search Console kan utelämna vissa detaljrader och slutlig data har normalt några dagars fördröjning.'
 
 class ProviderError extends Error {
@@ -112,9 +113,9 @@ function vercelRows(result) {
 
 function vercelSummary(result) {
   return vercelRows(result).reduce((summary, row) => ({
-    visitors: summary.visitors + finiteMetric(row?.visitors, 'Vercel Web Analytics'),
+    dailyVisitorsSum: summary.dailyVisitorsSum + finiteMetric(row?.visitors, 'Vercel Web Analytics'),
     pageviews: summary.pageviews + finiteMetric(row?.pageviews, 'Vercel Web Analytics'),
-  }), {visitors: 0, pageviews: 0})
+  }), {dailyVisitorsSum: 0, pageviews: 0})
 }
 
 function vercelTopPages(result, extended = result?.version === 1) {
@@ -176,7 +177,7 @@ async function traffic(period) {
       requestedThrough: period.current.until,
       latestDataAt: latestVercelDataAt(currentResult),
     },
-    state: summary.visitors === 0 && summary.pageviews === 0 && topPages.length === 0 ? 'empty' : 'ready',
+    state: summary.dailyVisitorsSum === 0 && summary.pageviews === 0 && topPages.length === 0 ? 'empty' : 'ready',
   }
 }
 
@@ -347,7 +348,7 @@ async function handler(req, res) {
         traffic: source('Vercel Web Analytics', analyticsConfig.partial ? 'error' : analyticsConfig.ready ? 'ready' : 'unavailable'),
         search: source('Google Search Console', searchConfig.partial ? 'error' : searchConfig.ready ? 'ready' : 'unavailable'),
       },
-      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, SEARCH_LIMITATION],
+      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, DAILY_VISITORS_LIMITATION, SEARCH_LIMITATION],
     }, allowedOrigin)
   }
 
@@ -365,7 +366,7 @@ async function handler(req, res) {
         traffic: source('Vercel Web Analytics', 'unavailable', 'Kontoaktivering och server-token återstår.'),
         search: source('Google Search Console', 'unavailable', 'Produktionsdomänens egendom och servernyckel återstår.'),
       },
-      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, SEARCH_LIMITATION],
+      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, DAILY_VISITORS_LIMITATION, SEARCH_LIMITATION],
     }, allowedOrigin)
   }
 
@@ -389,7 +390,7 @@ async function handler(req, res) {
         search: source('Google Search Console', searchState, searchData ? undefined : 'Produktionsdomänens egendom är inte ansluten.'),
       },
       observations: observations(searchData),
-      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, SEARCH_LIMITATION],
+      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, DAILY_VISITORS_LIMITATION, SEARCH_LIMITATION],
     }, allowedOrigin)
   } catch (error) {
     const provider = error instanceof ProviderError ? error.message : 'Statistiken kunde inte hämtas.'
@@ -404,7 +405,7 @@ async function handler(req, res) {
         traffic: source('Vercel Web Analytics', analyticsConfig.ready ? 'error' : 'unavailable'),
         search: source('Google Search Console', searchConfig.ready ? 'error' : 'unavailable'),
       },
-      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, SEARCH_LIMITATION],
+      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, DAILY_VISITORS_LIMITATION, SEARCH_LIMITATION],
     }, allowedOrigin)
   }
 }

@@ -6,12 +6,12 @@ Status: tekniska kontroller finns lokalt; kontoaktivering, publik information oc
 
 ## Beslutad teknisk lösning
 
-- **Vercel Web Analytics** ger aggregerade besökare, sidvisningar och toppsidor. `api/analytics.js` använder den publika Web Analytics-API:ns `visits/aggregate` grupperad per dag för 7, 30 och 90 dagar. Därmed avser jämförelsen verkligen aktuell respektive föregående period.
+- **Vercel Web Analytics** ger sidvisningar, summa dagliga besökare och toppsidor. `api/analytics.js` använder den publika Web Analytics-API:ns `visits/aggregate` grupperad per dag för 7, 30 och 90 dagar. Varje dags besökarvärde summeras till `dailyVisitorsSum`; samma person kan därför räknas en gång per dag och flera gånger under en period. Aktuell och föregående period beräknas på exakt samma sätt.
 - **Google Search Console** är en senare, valfri källa för den slutliga produktionsdomänen. Den ger klick, visningar, CTR, position, toppsidor och sökfraser. Search Console kan utelämna detaljrader och slutlig data har normalt några dagars fördröjning.
-- **Cookiebot by Usercentrics** är den valda samtyckestjänsten. S19:s publika kontroll använder Cookiebots dokumenterade SDK-metoder men laddar inte Vercels statistikresurs förrän ett aktuellt, versionsgiltigt statistikval både finns lokalt och har synkroniserats med Cookiebot.
+- **Cookiebot by Usercentrics** är den valda samtyckestjänsten. S19:s publika kontroll använder Cookiebots dokumenterade SDK-metoder men laddar inte Vercels statistikresurs förrän ett aktuellt, versionsgiltigt och maskinellt icke-utgånget statistikval både finns lokalt och har synkroniserats med Cookiebot.
 - `api/analytics.js` körs som Vercel Function. Leverantörsnycklar finns bara i servermiljön. Studio skickar ingen API-nyckel, leverantörstoken eller annan webbläsarhemlighet.
 
-Vercels besökarhash återställs dagligen. Därför visas återkommande besökare alltid som **inte tillgängligt med den valda integritetsnivån**. Ingen cookie-baserad eller beräknad ersättning används.
+Vercels besökarvärde i en daggrupperad aggregatrad gäller den dagen. Summan av raderna är därför **summa dagliga besökare**, inte periodunika personer. Vercels besökarhash återställs dessutom dagligen, så återkommande besökare visas alltid som **inte tillgängligt med den valda integritetsnivån**. Ingen cookie-baserad eller beräknad ersättning används.
 
 ## Tre bygglägen
 
@@ -33,6 +33,8 @@ Kontrollen:
 - har endast den nödvändiga valinformationen och den valbara kategorin statistik, eftersom ingen annan icke-nödvändig kategori implementeras;
 - tolkar aldrig passivitet som samtycke;
 - lagrar `{version, statistics, decidedAt}` under `localStorage`-nyckeln `esencial.consent`;
+- godtar bara ett kanoniskt ISO-datum som inte ligger i framtiden och vars ålder är mindre än det ägargodkända heltalsvärdet `CONSENT_CHOICE_RETENTION_DAYS`;
+- raderar ogiltiga eller utgångna val, återkallar ett eventuellt kvarvarande statistikval hos Cookiebot och visar valet på nytt utan att ladda statistik;
 - frågar på nytt när versionen ändras;
 - visar en beständig knapp för att öppna valet igen;
 - tar bort statistikskriptet, återkallar Cookiebot-valet och laddar om sidan vid återkallelse, så att redan installerade statistiklyssnare inte fortsätter;
@@ -52,9 +54,10 @@ Dessa värden hamnar i den publika sidan och får inte innehålla hemligheter. D
 | `CONSENT_CONTROLLER_NAME` | Godkänt namn på personuppgiftsansvarig | Får inte gissas från varumärket |
 | `CONSENT_PRIVACY_URL` | Godkänd rot-relativ eller absolut HTTPS-länk | Integritetsinformationen måste finnas och granskas |
 | `CONSENT_ANALYTICS_RETENTION` | Godkänd offentlig beskrivning av statistikens lagringstid | Beror på valt Vercel-konto/plan och avtal |
-| `CONSENT_CHOICE_RETENTION` | Godkänd offentlig beskrivning av samtyckesvalets lagringstid | Ska stämma med Cookiebot-konfigurationen |
+| `CONSENT_CHOICE_RETENTION` | Godkänd offentlig beskrivning av samtyckesvalets lagringstid | Ska stämma med det maskinella antalet dagar och Cookiebot-konfigurationen |
+| `CONSENT_CHOICE_RETENTION_DAYS` | Ägargodkänt heltal 1–365 som maskinellt begränsar valets ålder | Teknisk maxgräns, inte ett juridiskt förslag; måste stämma med offentlig text och Cookiebot |
 
-`scripts/inject-vercel-analytics.js` avvisar `javascript:`-länkar, HTTP-länkar, HTML-tecken i textfält och partiell S19-konfiguration.
+`scripts/inject-vercel-analytics.js` avvisar `javascript:`-länkar, HTTP-länkar, HTML-tecken i textfält, dagar utanför 1–365 och partiell S19-konfiguration.
 
 ## Servermiljö
 
@@ -77,6 +80,7 @@ Studio byggs efter S20 med den publika endpointadressen `SANITY_STUDIO_ANALYTICS
 - Vercel-token skickas endast i serverns `Authorization`-header till `api.vercel.com`. Google-nyckeln används endast server-side för en kortlivad OAuth-token. Ingen hemlighet placeras i URL, CORS-svar eller CMS-data.
 - Saknad leverantörsautentisering ger `unavailable`; partiella hemligheter ger HTTP 503; nekad/felaktig providerautentisering ger sanitiserat HTTP 502.
 - Alla anrop har 8 sekunders timeout och kontrollerar dokumenterad svarsversion, datatyper och icke-negativa tal.
+- `traffic.dailyVisitorsSum` är summan av dagradernas `visitors`, inte ett periodunikt personmått. Begränsningen finns både i API-svaret och direkt vid Studio-måttet. Jämförelsen använder samma dagliga summa för båda perioderna.
 - Svaret innehåller vald/föregående period, genereringstid och senaste verkliga mätpunkt per källa. Tom källa visas som `empty`, aldrig som ett gammalt cachevärde.
 - Funktionsloggen innehåller bara route, request-id, status, källäge och tid. Ingen token, provider-body eller statistikrad loggas.
 
@@ -99,7 +103,7 @@ npm --prefix cms/studio run build
 corepack pnpm run build
 ```
 
-`check-consent.js` har positiva och negativa fixtures för pre-consent-blockering, likvärdiga val, accept, avvisning, återöppning, återkallelse, versionsbyte, lokal lagring, providerfel, CSP-hash, CMS-origin, browser-secret-isolering, idempotent injektion och S11-regression. Fixture-värden är uttryckligen testdata och används inte i byggd publik output.
+`check-consent.js` har positiva och negativa fixtures för pre-consent-blockering, likvärdiga val, accept, avvisning, återöppning, återkallelse, versionsbyte, lokal lagring, exakt utgångsgräns, framtida/ogiltiga datum, providerfel, kontraktet för summa dagliga besökare, CSP-hash, CMS-origin, browser-secret-isolering, idempotent injektion och S11-regression. Klockan är deterministisk i fixtures. Fixture-värden är uttryckligen testdata och används inte i byggd publik output.
 
 ## Mänskliga och externa blockerare
 
@@ -107,7 +111,7 @@ Följande ingår inte och får inte markeras som godkänt av automatiska tester:
 
 1. fastställa personuppgiftsansvarig och kontaktuppgifter;
 2. godkänna svenska/engelska ändamål, kategori, leverantörslista och full integritetsinformation;
-3. fastställa lagringstider mot verklig Vercel-plan, Cookiebot-inställning och avtal;
+3. fastställa lagringstider mot verklig Vercel-plan, Cookiebot-inställning och avtal samt godkänna att `CONSENT_CHOICE_RETENTION`, `CONSENT_CHOICE_RETENTION_DAYS` och Cookiebot anger samma gräns;
 4. aktivera Vercel Web Analytics eller Cookiebot och skapa minsta-behörighets-token;
 5. besluta om staging-API:ts autentiserings-/Deployment Protection-modell;
 6. efter en separat auktoriserad stagingdeploy verifiera nätverk, faktisk Cookiebot-domän, språk, samtyckeslogg och jämförelse mot Vercels dashboard;
@@ -119,7 +123,7 @@ Följande ingår inte och får inte markeras som godkänt av automatiska tester:
 - [IMY: tillsyn av Aktiebolaget Trav och Galopp](https://www.imy.se/tillsyner/aktiebolaget-trav-och-galopp/) – beslut om vilseledande bannerdesign och att återkallelse inte var lika enkel som samtycke.
 - [EU GDPR artikel 7](https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=celex:32016R0679) och [EDPB Guidelines 05/2020](https://www.edpb.europa.eu/our-work-tools/our-documents/guidelines/guidelines-052020-consent-under-regulation-2016679_en) – villkor för samtycke och lika enkel återkallelse.
 - [Cookiebot: manual cookie blocking](https://support.cookiebot.com/hc/en-us/articles/4405978132242-Manual-cookie-blocking), [developer SDK](https://www.cookiebot.com/en/developer/) och [changing or withdrawing consent](https://support.cookiebot.com/hc/en-us/articles/360003798814-Changing-or-withdrawing-consent) – `data-cookieconsent`, events, `submitCustomConsent`, `renew` och `withdraw`.
-- [Vercel: Web Analytics API](https://vercel.com/docs/analytics/web-analytics-api), [privacy and compliance](https://vercel.com/docs/analytics/privacy-policy) och [limits/pricing](https://vercel.com/docs/analytics/limits-and-pricing) – aggregat, identifieringsmodell, datapunkter och planberoende rapportfönster.
+- [Vercel: Web Analytics API](https://vercel.com/docs/analytics/web-analytics-api), [privacy and compliance](https://vercel.com/docs/analytics/privacy-policy) och [limits/pricing](https://vercel.com/docs/analytics/limits-and-pricing) – count som ett totalfrågemönster, aggregate-by-day som dagliga rader/trender, identifieringsmodell, datapunkter och planberoende rapportfönster.
 - [Google: Search Analytics query](https://developers.google.com/webmaster-tools/v1/searchanalytics/query) – datum, dimensioner, scopes, svarsfält och begränsningar för detaljrader.
 
 Källorna styr tekniska kontroller. De utgör inte certifiering eller juridiskt godkännande av Esencials framtida produktionskonfiguration.

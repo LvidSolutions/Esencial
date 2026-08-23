@@ -18,6 +18,7 @@ const publicConsentVariables = [
   'CONSENT_PRIVACY_URL',
   'CONSENT_ANALYTICS_RETENTION',
   'CONSENT_CHOICE_RETENTION',
+  'CONSENT_CHOICE_RETENTION_DAYS',
 ]
 
 function legacyCookiebotId(environment = process.env) {
@@ -50,6 +51,16 @@ function privacyUrl(value) {
   return text
 }
 
+function choiceRetentionDays(value) {
+  const text = value?.trim()
+  if (!/^[1-9]\d{0,2}$/.test(text || '')) {
+    throw new Error('CONSENT_CHOICE_RETENTION_DAYS must be an integer from 1 to 365.')
+  }
+  const days = Number(text)
+  if (days > 365) throw new Error('CONSENT_CHOICE_RETENTION_DAYS must be an integer from 1 to 365.')
+  return days
+}
+
 function consentConfiguration(environment = process.env) {
   const present = publicConsentVariables.filter((name) => environment[name]?.trim())
   if (present.length === 0) return null
@@ -69,6 +80,7 @@ function consentConfiguration(environment = process.env) {
     analyticsRetention: cleanPublicText('CONSENT_ANALYTICS_RETENTION', environment.CONSENT_ANALYTICS_RETENTION),
     cbid,
     choiceRetention: cleanPublicText('CONSENT_CHOICE_RETENTION', environment.CONSENT_CHOICE_RETENTION),
+    choiceRetentionDays: choiceRetentionDays(environment.CONSENT_CHOICE_RETENTION_DAYS),
     controller: cleanPublicText('CONSENT_CONTROLLER_NAME', environment.CONSENT_CONTROLLER_NAME, 120),
     privacyUrl: privacyUrl(environment.CONSENT_PRIVACY_URL),
     version,
@@ -103,7 +115,12 @@ function consentControllerSource(config) {
   function readChoice() {
     try {
       var parsed = JSON.parse(window.localStorage.getItem(key));
-      if (!parsed || parsed.version !== config.version || typeof parsed.statistics !== 'boolean' || typeof parsed.decidedAt !== 'string') {
+      var now = Date.now();
+      var decidedAt = parsed && typeof parsed.decidedAt === 'string' ? Date.parse(parsed.decidedAt) : NaN;
+      var retentionMs = config.choiceRetentionDays * 86400000;
+      var canonicalTimestamp = Number.isFinite(decidedAt) && new Date(decidedAt).toISOString() === parsed.decidedAt;
+      var currentTimestamp = canonicalTimestamp && decidedAt <= now && now - decidedAt < retentionMs;
+      if (!parsed || parsed.version !== config.version || typeof parsed.statistics !== 'boolean' || !currentTimestamp) {
         window.localStorage.removeItem(key);
         return null;
       }
