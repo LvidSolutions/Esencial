@@ -6,7 +6,10 @@ import {schemaTypes} from './schemaTypes'
 import {deskStructure} from './deskStructure'
 import {VisualWorkspaceTool} from './components/studioTools'
 import {esencialStudioTheme} from './theme/esencialTheme'
+import {createPreviewPresentationPlugins} from './features/preview/presentation'
 import './components/studioTools.css'
+
+const previewPresentationPlugins = createPreviewPresentationPlugins()
 
 export default defineConfig({
   name: 'default',
@@ -19,6 +22,7 @@ export default defineConfig({
       name: 'esencial-editor-tools',
       tools: [{name: 'arbetsyta', title: 'Arbetsyta', component: VisualWorkspaceTool}],
     },
+    ...previewPresentationPlugins,
     dashboardTool({
       widgets: [
         documentListWidget({title: 'Klar att publicera', query: '*[_type == "project" && status == "review"] | order(_updatedAt desc)[0...6]', showCreateButton: false, layout: {width: 'large'}}),

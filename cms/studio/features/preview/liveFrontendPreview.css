@@ -1,0 +1,141 @@
+.esencial-frontend-preview {
+  min-width: 0;
+}
+
+.esencial-preview-control {
+  min-width: 0;
+}
+
+.esencial-preview-control-row {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.esencial-preview-control-row > * {
+  flex: 0 0 auto;
+}
+
+.esencial-preview-route,
+.esencial-preview-issues,
+.esencial-preview-issues * {
+  overflow-wrap: anywhere;
+}
+
+.esencial-preview-stage {
+  position: relative;
+  width: 100%;
+  min-height: 180px;
+  overflow: hidden;
+  border: 1px solid var(--esencial-workspace-border-strong);
+  background: var(--esencial-workspace-wash);
+}
+
+.esencial-preview-viewport {
+  position: absolute;
+  inset: 0 auto auto 0;
+  transform-origin: top left;
+  background: var(--esencial-workspace-paper);
+}
+
+.esencial-preview-iframe {
+  display: block;
+  border: 0;
+  background: #fff;
+}
+
+.esencial-preview-fallback {
+  min-height: 100%;
+  background: #fbfbfa;
+  color: #1f1f1d;
+  font-family: Roboto, Arial, sans-serif;
+}
+
+.esencial-preview-fallback > header {
+  display: flex;
+  min-height: 80px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px clamp(20px, 4vw, 64px);
+  border-bottom: 1px solid #686862;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.esencial-preview-fallback > main {
+  max-width: 78rem;
+  margin-inline: auto;
+  padding: clamp(32px, 7vw, 104px) clamp(20px, 5vw, 72px);
+}
+
+.esencial-preview-fallback article {
+  display: grid;
+  max-width: 70ch;
+  gap: 32px;
+  margin-top: 32px;
+}
+
+.esencial-preview-fallback article > button {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  white-space: normal;
+}
+
+.esencial-preview-fallback article > button:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.esencial-preview-fallback__media {
+  display: grid;
+  min-height: 240px;
+  place-items: center;
+  padding: 32px;
+  border: 1px solid #686862;
+  background: #f5f5f1;
+  color: #4f4f4a;
+  font-size: 16px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.esencial-preview-issues {
+  display: grid;
+  gap: 16px;
+  margin: 0;
+  padding-left: 24px;
+}
+
+.esencial-preview-issues li {
+  padding-left: 8px;
+}
+
+@media (max-width: 56rem) {
+  .esencial-preview-stage {
+    min-height: 140px;
+  }
+}
+
+@media (max-width: 30rem) {
+  .esencial-preview-control-row > * {
+    flex: 1 1 100%;
+  }
+
+  .esencial-preview-control-row button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esencial-frontend-preview *,
+  .esencial-frontend-preview *::before,
+  .esencial-frontend-preview *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

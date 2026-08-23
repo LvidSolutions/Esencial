@@ -1,0 +1,137 @@
+:root {
+  color: #1f1f1d;
+  background: #fbfbfa;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-width: 0;
+  margin: 0;
+}
+
+body {
+  overflow-x: visible;
+}
+
+.fixture-header {
+  display: flex;
+  min-height: 64px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px clamp(16px, 4vw, 64px);
+  border-bottom: 1px solid #686862;
+}
+
+.fixture-main {
+  width: min(100%, 78rem);
+  margin-inline: auto;
+  padding: clamp(28px, 6vw, 88px) clamp(16px, 5vw, 72px);
+}
+
+.fixture-copy {
+  display: grid;
+  max-width: 70ch;
+  gap: 24px;
+}
+
+.fixture-copy h1 {
+  margin: 0;
+  font-size: clamp(2rem, 7vw, 5rem);
+  font-weight: 400;
+  line-height: 1.02;
+  hyphens: none;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.fixture-copy p {
+  margin: 0;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  line-height: 1.65;
+}
+
+.fixture-media {
+  display: block;
+  width: min(100%, 720px);
+  height: auto;
+  margin-top: 48px;
+  border: 1px solid #686862;
+}
+
+.fixture-failure-grid {
+  display: grid;
+  gap: 32px;
+}
+
+.fixture-clipped {
+  width: 220px;
+  height: 24px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.fixture-unbroken {
+  width: 190px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.fixture-unsafe-measure {
+  width: 96ch;
+  max-width: none;
+}
+
+.fixture-overlap {
+  position: relative;
+  height: 90px;
+}
+
+.fixture-overlap > div {
+  position: absolute;
+  width: 180px;
+  height: 64px;
+  padding: 12px;
+  border: 1px solid #1f1f1d;
+  background: #fff;
+}
+
+.fixture-overlap > div:last-child {
+  top: 24px;
+  left: 80px;
+}
+
+.fixture-force-horizontal {
+  width: calc(100vw + 80px);
+  height: 1px;
+}
+
+.fixture-media-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.fixture-media-row img {
+  display: block;
+  width: 100%;
+  min-height: 80px;
+  border: 1px solid #686862;
+}
+
+@media (max-width: 40rem) {
+  .fixture-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .fixture-media-row {
+    grid-template-columns: 1fr;
+  }
+}

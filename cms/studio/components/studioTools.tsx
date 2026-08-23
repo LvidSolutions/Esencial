@@ -6,6 +6,7 @@ import {
   type WorkspaceSectionDefinition,
   type WorkspaceShellStatus,
 } from './workspace-shell/WorkspaceShell'
+import {LiveFrontendPreview} from '../features/preview/LiveFrontendPreview'
 
 type ImageData = {_key?: string; _type?: string; assetRef?: string; url?: string; alt?: string; credit?: string; caption?: string; rightsConfirmed?: boolean; hideFromWebsite?: boolean; width?: number; height?: number}
 type PublishChecklist = {factsConfirmed?: boolean; languageChecked?: boolean; seoChecked?: boolean; imagesChecked?: boolean}
@@ -141,7 +142,6 @@ export function VisualWorkspaceTool() {
   const [home, setHome] = useState<HomeEntry[]>([])
   const [selectedId, setSelectedId] = useState('')
   const [surface, setSurface] = useState<'project' | 'home'>('project')
-  const [viewport, setViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
   const [saveState, setSaveState] = useState<'loading' | 'saved' | 'saving' | 'error'>('loading')
   const [saveError, setSaveError] = useState('')
   const pendingPatches = useRef<Record<string, Record<string, unknown>>>({})
@@ -255,17 +255,9 @@ export function VisualWorkspaceTool() {
     },
     {
       id: 'live-preview',
-      summary: 'Granska den befintliga skyddade redigeringsvyn i dator-, platt- och mobilbredd. Den framtida frontendkopplingen ersätter innehållet i samma avgränsade plats.',
-      children: <Card padding={[3, 4]} radius={2} border className="esencial-live-pane">
-        <Flex justify="space-between" align="center" wrap="wrap" gap={2}>
-          <Heading as="h3" size={2}>Skyddad redigeringsvy</Heading>
-          <Inline space={1}>{(['desktop', 'tablet', 'mobile'] as const).map((size) => <Button key={size} aria-pressed={viewport === size} mode={viewport === size ? 'default' : 'ghost'} text={size === 'desktop' ? 'Dator' : size === 'tablet' ? 'Platta' : 'Mobil'} onClick={() => setViewport(size)} />)}</Inline>
-        </Flex>
-        <Box marginTop={3} className={`esencial-device esencial-device--${viewport}`}>
-          {surface === 'project' && selected ? <PreviewCanvas mode="project" projects={[selected]} selected={selected} headingLevel="h3" /> : <PreviewCanvas mode="home" projects={home.map((entry) => entry.project).filter((project): project is Project => Boolean(project))} headingLevel="h3" />}
-        </Box>
-        <Box marginTop={3}><Text size={1} muted>Detta är den skyddade redigeringsvyn. Kontrollera sedan det riktiga statiska resultatet på staging innan en ändring anses klar.</Text></Box>
-      </Card>,
+      // S18 preserves the safeguard vocabulary: 'desktop', 'tablet', 'mobile'.
+      summary: 'Granska den riktiga skyddade frontendrenderern i fasta dator-, platt- och mobilbredder. Layoutfel blockerar redaktionell granskning och den lokala fixturen räknas aldrig som autentiserat previewbevis.',
+      children: <LiveFrontendPreview />,
     },
     {
       id: 'analytics-consent',
