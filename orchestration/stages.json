@@ -292,15 +292,15 @@
       "title": "Project editor, filter taxonomy and grid navigation",
       "ownerLane": "Worker B",
       "dependencies": ["S16"],
-      "state": "RUNNING",
-      "stateReason": "Worker B is implementing S17 in isolated branch codex/worker-b-s17 from integrated S16 commit 7235840, limited to project/filter ownership and documented shared hotspots.",
+      "state": "DONE",
+      "stateReason": "Integrated commit 72cf09c adds draft-only bilingual project-heading editing, explicit filter membership and keyboard-operable grid inclusion/order with exact legacy fallback; independent contract, TypeScript, lint, Studio, 30-safeguard, full root-build, image-quality and orchestration gates passed.",
       "model": "GPT-5.6 Sol",
       "effort": "xhigh",
       "ownedPaths": ["cms/studio/features/projects/**", "cms/studio/schemaTypes/projectType.ts", "cms/studio/schemaTypes/filterCategoryType.ts", "cms/studio/schemaTypes/navigationSettingsType.ts", "audit/cms/s17-project-filters.md"],
       "sharedHotspots": ["cms/studio/schemaTypes/index.ts", "scripts/build-project-pages.js", "public/**/index.html"],
       "acceptanceCommands": ["npm --prefix cms/studio run build", "corepack pnpm run check-content", "corepack pnpm run build"],
       "reportPaths": ["audit/cms/s17-project-filters.md"],
-      "evidence": [],
+      "evidence": ["audit/cms/s17-project-filters.md", "cms/studio/features/projects/navigationContract.mjs", "cms/studio/features/projects/GridNavigationEditor.tsx", "cms/studio/schemaTypes/filterCategoryType.ts", "cms/studio/schemaTypes/navigationSettingsType.ts"],
       "manualBlockers": ["Filter labels, editorial naming and project membership are content decisions; workers may implement selectors and validation but must not invent classifications."]
     },
     {

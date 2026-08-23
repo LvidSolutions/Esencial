@@ -7,6 +7,8 @@ Status: **PASS**
 - Required model and effort: GPT-5.6 Sol / xhigh
 - Branch: `codex/worker-b-s17`
 - Starting HEAD: `7235840205326c453518fc30cabbed91ec5e003f`
+- Worker PASS commit: `bba077fa2608d718629bfb9e93ad3e2abd4cd5ed`
+- Integrated coordinator commit: `72cf09cf4627b1fd1b638b33fe46efc68b9f44eb`
 - Verification date: 2026-08-23 (Europe/Stockholm)
 - Sanity version: `6.10.1`
 
@@ -61,6 +63,10 @@ All commands below passed from the S17 worktree after the resumed implementation
 Playwright parity/functionality was not rerun because this isolated S17 commit has no public-output reach: it changes no public file, generator, shared schema registration, or S16 composition. Authenticated integrated Studio interaction coverage belongs to S20/S21 after composition. The exact public-output diff and full image-quality/root gates were still rerun here.
 
 The root commands emitted the existing engine warning because the host uses Node `v24.16.0` while the repository requests `22.x`; all listed checks passed. No dependency manifest or lockfile changed.
+
+### Coordinator integration checks
+
+W0 independently reviewed the draft-only data path and the editor UI against the accessibility, keyboard, labeling, error-feedback, responsive-layout and touch-target checklist. After integration it reran the seven S17 contract fixtures, TypeScript, focused ESLint, all 30 Studio safeguards, the Studio production build, the full 56-page root build with image-quality checks, and all 11 orchestration tests. All passed; generated public output and perceived image quality remained unchanged.
 
 ## Scope and safety
 
