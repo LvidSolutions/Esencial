@@ -372,15 +372,15 @@
       "title": "Final CMS and workflow validation",
       "ownerLane": "Coordinator",
       "dependencies": ["S21"],
-      "state": "RUNNING",
-      "stateReason": "Coordinator is performing final CMS/workflow validation from integrated S21 commit 746c2e0; external preview acceptance, owner/legal/provider approval and production release remain separate human gates.",
+      "state": "DONE",
+      "stateReason": "Final Node 22 validation passed the 56-page build, Studio TypeScript/lint/build, 25 CMS/orchestration integration tests, read-only Sanity access, 8-case editorial UX, preview diagnostics, consent/analytics, CI contract, HTTP/functionality/accessibility/performance, 40-pair/4-interaction parity and 78-image quality gates with exact public/assets identity; external release approvals remain explicitly human.",
       "model": "GPT-5.6 Sol",
       "effort": "xhigh",
       "ownedPaths": ["audit/cms/s22-final-validation.md", "audit/cms/evidence/**"],
       "sharedHotspots": ["**"],
       "acceptanceCommands": ["corepack pnpm run build", "npm --prefix cms/studio run build", "corepack pnpm run check-reference-parity", "node orchestration/status.mjs"],
       "reportPaths": ["audit/cms/s22-final-validation.md"],
-      "evidence": [],
+      "evidence": ["audit/cms/s22-final-validation.md", "audit/cms/s21-editorial-qa.md", "scripts/check-cms-ux.js", "audit/seo-final/stage-1-parity-evidence.json", "audit/accessibility/s10-accessibility-evidence.json", "audit/performance/runtime-evidence.json"],
       "manualBlockers": ["Production release, Sanity Studio deployment, domain changes, analytics activation and legal sign-off remain separately authorized human decisions."]
     }
   ]
