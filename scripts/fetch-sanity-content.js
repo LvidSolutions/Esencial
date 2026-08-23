@@ -7,7 +7,7 @@ const outputDirectory = path.join(ROOT, "content", "generated", "sanity");
 const identifierPattern = /^[a-z0-9][a-z0-9_-]*$/;
 
 const query = `*[_type == "project" && status == "published"] | order(title asc) {
-  _id, "id": translationKey, "slug": slug.current, title, location, year, typology, client, team, services, body,
+  _id, "id": translationKey, translationKey, "slug": slug.current, title, location, year, typology, client, team, services, body,
   "description": summary, seoTitle, seoDescription, language, status, translationStatus, imageRightsConfirmed, publishChecklist,
   "relatedProjectIds": relatedProjects[]->translationKey,
   "heroImage": heroImage{"src": asset->url, alt, credit, rightsConfirmed, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height},
@@ -20,6 +20,15 @@ const query = `*[_type == "project" && status == "published"] | order(title asc)
   "floorPlans": floorPlans[]{name, planType, area, description, "image": image{"src": asset->url, alt, credit, rightsConfirmed, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height}}
 }`;
 const homeQuery = `*[_type == "homePage" && _id == "homePage"][0]{"featuredProjects": featuredProjects[]{displayStyle, "id": project->translationKey, "status": project->status}}`;
+const navigationQuery = `{
+  "categories": *[_type == "filterCategory"] | order(order asc, key asc) {
+    _id, key, labelSv, labelEn, order, visible, "projectRefs": projects[]._ref
+  },
+  "settings": *[_type == "navigationSettings" && _id == "navigationSettings"][0] {
+    _id, enabled, headingSv, headingEn, allLabelSv, allLabelEn,
+    "gridEntries": gridProjects[]{_key, "projectRef": project._ref, includeInGrid}
+  }
+}`;
 
 function urlForQuery(queryText, { projectId, dataset }) {
   if (!identifierPattern.test(projectId) || !identifierPattern.test(dataset)) throw new Error("CMS build aborted: SANITY_PROJECT_ID or SANITY_DATASET has an invalid format.");
@@ -79,12 +88,36 @@ function validateHome(home, projects) {
   return { featuredProjects };
 }
 
-function writeSnapshot(projects, home) {
+function containsDraftReference(value) {
+  if (typeof value === "string") return value.startsWith("drafts.");
+  if (Array.isArray(value)) return value.some(containsDraftReference);
+  if (!value || typeof value !== "object") return false;
+  return Object.values(value).some(containsDraftReference);
+}
+
+function transformNavigation(result) {
+  if (result === null || result === undefined) return { categories: [], settings: null, malformed: false };
+  if (!result || typeof result !== "object" || Array.isArray(result)) return { categories: [], settings: null, malformed: true };
+  const categories = Array.isArray(result.categories) ? result.categories : [];
+  const settings = result.settings === null || result.settings === undefined
+    ? null
+    : result.settings && typeof result.settings === "object" && !Array.isArray(result.settings)
+      ? result.settings
+      : null;
+  return {
+    categories,
+    settings,
+    malformed: !Array.isArray(result.categories) || (result.settings !== null && result.settings !== undefined && !settings) || containsDraftReference(result),
+  };
+}
+
+function writeSnapshot(projects, home, navigation = { categories: [], settings: null, malformed: false }) {
   ensureDir(outputDirectory);
   const outputs = new Map([
     [path.join(outputDirectory, "sv.json"), `${JSON.stringify(projects.sv, null, 2)}\n`],
     [path.join(outputDirectory, "en.json"), `${JSON.stringify(projects.en, null, 2)}\n`],
     [path.join(outputDirectory, "home.json"), `${JSON.stringify(home, null, 2)}\n`],
+    [path.join(outputDirectory, "navigation.json"), `${JSON.stringify(navigation, null, 2)}\n`],
   ]);
   const staged = [];
   try {
@@ -136,7 +169,10 @@ function runFixtures() {
   let badHome = "";
   try { validateHome({featuredProjects: [{id: "missing", status: "published"}]}, projects); } catch (error) { badHome = error.message; }
   if (!badHome.includes("missing or unpaired")) throw new Error("The invalid home-reference fixture was not rejected.");
-  console.log(`Sanity fetch fixtures passed (${expectedFailures.length + 1} invalid exports rejected; valid and explicit empty-home controls accepted).`);
+  if (!transformNavigation({categories: {}, settings: null}).malformed) throw new Error("Malformed navigation categories were not marked fail-closed.");
+  if (!transformNavigation({categories: [], settings: {_id: "drafts.navigationSettings"}}).malformed) throw new Error("Draft navigation data was not marked fail-closed.");
+  if (transformNavigation(null).malformed) throw new Error("Missing navigation was not preserved as the legacy path.");
+  console.log(`Sanity fetch fixtures passed (${expectedFailures.length + 3} invalid exports rejected; valid and explicit empty-home/navigation controls accepted).`);
 }
 
 async function main() {
@@ -150,14 +186,18 @@ async function main() {
     token: process.env.SANITY_API_TOKEN,
   };
   if (!config.token) throw new Error("SANITY_API_TOKEN is required for a CMS build. Add a read-only token as a CI secret; never expose it to Studio or commit it.");
-  const projectResult = await fetchQuery(query, config);
-  const homeResult = await fetchQuery(homeQuery, config);
+  const [projectResult, homeResult, navigationResult] = await Promise.all([
+    fetchQuery(query, config),
+    fetchQuery(homeQuery, config),
+    fetchQuery(navigationQuery, config),
+  ]);
   const projects = transformProjects(projectResult);
   const home = validateHome(homeResult, projects);
-  writeSnapshot(projects, home);
+  const navigation = transformNavigation(navigationResult);
+  writeSnapshot(projects, home, navigation);
   console.log(`Fetched and validated ${projects.sv.length + projects.en.length} published Sanity projects.`);
 }
 
 if (require.main === module) main().catch((error) => { console.error(error.message); process.exitCode = 1; });
 
-module.exports = { fetchQuery, runFixtures, transformProjects, urlForQuery, validateHome, writeSnapshot };
+module.exports = { fetchQuery, runFixtures, transformNavigation, transformProjects, urlForQuery, validateHome, writeSnapshot };

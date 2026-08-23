@@ -3,5 +3,17 @@ import {serviceType} from './serviceType'
 import {siteSettingsType} from './siteSettingsType'
 import {homePageType} from './homePageType'
 import {floorPlanType, projectGalleryImageType, projectHeroImageType} from './imageTypes'
+import {filterCategoryType} from './filterCategoryType'
+import {navigationSettingsType} from './navigationSettingsType'
 
-export const schemaTypes = [projectType, serviceType, siteSettingsType, homePageType, projectHeroImageType, projectGalleryImageType, floorPlanType]
+export const schemaTypes = [
+  projectType,
+  serviceType,
+  siteSettingsType,
+  homePageType,
+  filterCategoryType,
+  navigationSettingsType,
+  projectHeroImageType,
+  projectGalleryImageType,
+  floorPlanType,
+]

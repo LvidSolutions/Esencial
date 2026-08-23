@@ -7,7 +7,6 @@ import {deskStructure} from './deskStructure'
 import {VisualWorkspaceTool} from './components/studioTools'
 import {esencialStudioTheme} from './theme/esencialTheme'
 import {createPreviewPresentationPlugins} from './features/preview/presentation'
-import './components/studioTools.css'
 
 const previewPresentationPlugins = createPreviewPresentationPlugins()
 

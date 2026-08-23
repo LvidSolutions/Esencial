@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { pathToFileURL } = require("url");
 const { BASE_URL, PUBLIC_DIR, ROOT, ensureDir } = require("./recovery-utils");
 const { buildPageGraph, serializeStructuredData } = require("./lib/schema/entity-graph");
 
@@ -31,6 +32,13 @@ function decode(value = "") {
 
 function escapeHtml(value = "") {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+function containsDraftReference(value) {
+  if (typeof value === "string") return value.startsWith("drafts.");
+  if (Array.isArray(value)) return value.some(containsDraftReference);
+  if (!value || typeof value !== "object") return false;
+  return Object.values(value).some(containsDraftReference);
 }
 
 function attribute(tag, name) {
@@ -238,23 +246,138 @@ ${serializeStructuredData(structuredData)}
 </html>`;
 }
 
-function updateOverview(html, language, projects) {
+function configuredFilterMarkup(navigation, language) {
+  const items = [
+    { key: "all", label: navigation.allLabels[language] },
+    ...navigation.categories.map((category) => ({ key: category.key, label: category.labels[language] })),
+  ];
+  return `<div class="css_tag_container">\n${items.map((item) => `<div class="css_tag_wrapper"><div class="css_tag_item css_tag_item_inactive" data-tag="${item.key}" role="button" tabindex="0" aria-pressed="false">${escapeHtml(item.label)}</div></div>`).join("\n")}\n</div>\n`;
+}
+
+function projectGridParts(html) {
+  const gridPattern = /(<div class=" css_grid_container"[^>]*>\s*)([\s\S]*?)(\s*<\/div>\s*)(?=<div class=" css__feed__container)/;
+  const match = html.match(gridPattern);
+  if (!match) return null;
+  const cardPattern = /<div class=" css_grid_card_container [\s\S]*?(?=<div class=" css_grid_card_container |$)/g;
+  return { match, cards: [...match[2].matchAll(cardPattern)].map((card) => card[0]) };
+}
+
+function replaceProjectCards(html, cards) {
+  const grid = projectGridParts(html);
+  if (!grid) return null;
+  return html.replace(grid.match[0], `${grid.match[1]}${cards.join("")}${grid.match[3]}`);
+}
+
+function projectFeedParts(html) {
+  const feedPattern = /(<div class=" css__feed__container feed-dn">\s*)([\s\S]*?)(\s*<\/div>\s*)(?=<\/main>)/;
+  const match = html.match(feedPattern);
+  if (!match) return null;
+  const projectPattern = /<div class=" css_feed_project_container [\s\S]*?(?=<div class=" css_feed_project_container |$)/g;
+  return { match, projects: [...match[2].matchAll(projectPattern)].map((entry) => entry[0]) };
+}
+
+function replaceProjectFeeds(html, feeds) {
+  const feed = projectFeedParts(html);
+  if (!feed) return null;
+  return html.replace(feed.match[0], `${feed.match[1]}${feeds.join("")}${feed.match[3]}`);
+}
+
+function configuredMembershipTag(tag, categoryKeys, allCategoryKeys) {
+  const removableKeys = ["all", ...allCategoryKeys];
+  const attributePattern = new RegExp(`\\s(?:${removableKeys.join("|")})=(['\"])\\1`, "g");
+  const cleanTag = tag.replace(attributePattern, "").replace(/>$/, "");
+  return `${cleanTag} all=""${categoryKeys.map((key) => ` ${key}=""`).join("")}>`;
+}
+
+function renderConfiguredOverview(html, language, projects, navigation) {
+  const grid = projectGridParts(html);
+  const feed = projectFeedParts(html);
+  if (!grid || !feed) return null;
+  const cards = grid.cards;
+  const cardsByPair = new Map(cards.map((card) => [(card.match(/id="project-([^\"]+)-title"/i) || [])[1], card]));
+  const feedsByPair = new Map(feed.projects.map((entry) => [(entry.match(/\bid="([^\"]+)"/i) || [])[1], entry]));
+  const projectsByPair = new Map(projects.map((project) => [project.translationKey || project.id, project]));
+  const selectedProjects = navigation.projectsByLanguage[language];
+  const orderedCards = [];
+  const orderedFeeds = [];
+  const allCategoryKeys = navigation.categories.map((category) => category.key);
+  for (const project of selectedProjects) {
+    const pairKey = project.translationKey || project.id;
+    const card = cardsByPair.get(pairKey);
+    const projectFeed = feedsByPair.get(pairKey);
+    if (!pairKey || !card || !projectFeed) return null;
+    const documentId = String(project._id || "");
+    const categoryKeys = navigation.categories
+      .filter((category) => category.projectIdsByLanguage[language].includes(documentId))
+      .map((category) => category.key);
+    orderedCards.push(card.replace(
+      /^<div class=" css_grid_card_container "[^>]*>/i,
+      (tag) => configuredMembershipTag(tag, categoryKeys, allCategoryKeys),
+    ));
+    orderedFeeds.push(projectFeed.replace(
+      /^<div class=" css_feed_project_container "[^>]*>/i,
+      (tag) => configuredMembershipTag(tag, categoryKeys, allCategoryKeys),
+    ));
+  }
+  if (orderedCards.length !== selectedProjects.length || orderedFeeds.length !== selectedProjects.length) return null;
+  if (selectedProjects.some((project) => !projectsByPair.has(project.translationKey || project.id))) return null;
+
+  const headingPattern = /<h1 class="screen-reader-text">[\s\S]*?<\/h1>/;
+  const filterPattern = /<div class="css_tag_container">[\s\S]*?(?=<div class=" css_grid_container")/;
+  if (!headingPattern.test(html) || !filterPattern.test(html) || cards.length === 0) return null;
+  let output = html.replace(
+    headingPattern,
+    `<h1 class="screen-reader-text">${escapeHtml(navigation.headings[language])}</h1>`,
+  );
+  output = output.replace(filterPattern, configuredFilterMarkup(navigation, language));
+  output = replaceProjectCards(output, orderedCards);
+  if (!output) return null;
+  return replaceProjectFeeds(output, orderedFeeds);
+}
+
+function applyPublishedNavigation(html, language, projects, snapshot, resolveProjectNavigation) {
+  const legacy = { html };
+  if (!snapshot || snapshot.malformed === true || containsDraftReference(snapshot) || projects.some((project) => String(project?._id || "").startsWith("drafts."))) return legacy.html;
+  const categories = Array.isArray(snapshot.categories) ? snapshot.categories : [];
+  const settings = snapshot.settings && typeof snapshot.settings === "object" && !Array.isArray(snapshot.settings)
+    ? snapshot.settings
+    : undefined;
+  let resolved;
+  try {
+    resolved = resolveProjectNavigation({ projects, categories, settings, legacy });
+  } catch {
+    return legacy.html;
+  }
+  if (resolved.mode !== "configured") return resolved.data === legacy ? resolved.data.html : legacy.html;
+  return renderConfiguredOverview(html, language, projects, resolved.data) || legacy.html;
+}
+
+function updateOverview(html, language, projects, navigationContext) {
   let output = html;
   for (const project of projects) {
     const hashLink = new RegExp(`href="#${project.id}"`, "g");
     output = output.replace(hashLink, `href="${projectUrl(language, project)}"`);
   }
   const selectedIds = loadHomeOrder();
-  if (!selectedIds.length) return output;
-  const cardPattern = /<div class=" css_grid_card_container [\s\S]*?(?=<div class=" css_grid_card_container |<\/main>)/g;
-  const cards = [...output.matchAll(cardPattern)].map((match) => match[0]);
-  const byId = new Map(cards.map((card) => [(card.match(/id="project-([^\"]+)-title"/i) || [])[1], card]));
-  const selected = selectedIds.map((id) => byId.get(id)).filter(Boolean);
-  if (!selected.length) return output;
-  const rest = cards.filter((card) => !selected.includes(card));
-  const ordered = [...selected, ...rest];
-  let index = 0;
-  return output.replace(cardPattern, () => ordered[index++]);
+  if (selectedIds.length) {
+    const grid = projectGridParts(output);
+    const cards = grid?.cards || [];
+    const byId = new Map(cards.map((card) => [(card.match(/id="project-([^\"]+)-title"/i) || [])[1], card]));
+    const selected = selectedIds.map((id) => byId.get(id)).filter(Boolean);
+    if (selected.length) {
+      const rest = cards.filter((card) => !selected.includes(card));
+      const ordered = [...selected, ...rest];
+      output = replaceProjectCards(output, ordered) || output;
+    }
+  }
+  if (!navigationContext?.resolver) return output;
+  return applyPublishedNavigation(
+    output,
+    language,
+    navigationContext.projects,
+    navigationContext.snapshot,
+    navigationContext.resolver,
+  );
 }
 
 function write(file, content) {
@@ -275,6 +398,17 @@ function loadHomeOrder() {
   return (home.featuredProjects || []).map((entry) => entry.id).filter(Boolean);
 }
 
+function loadNavigationSnapshot() {
+  if (process.env.CONTENT_SOURCE !== "sanity") return undefined;
+  const target = path.join(ROOT, "content", "generated", "sanity", "navigation.json");
+  if (!fs.existsSync(target)) return undefined;
+  try {
+    return JSON.parse(readFile(target));
+  } catch {
+    return { categories: [], settings: null, malformed: true };
+  }
+}
+
 function loadProjects(language, config) {
   const target = contentFile(language);
   if (fs.existsSync(target)) return JSON.parse(readFile(target));
@@ -291,7 +425,7 @@ function buildSitemap(translations) {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(route => `  <url><loc>${BASE_URL}${route}</loc></url>`).join("\n")}\n</urlset>\n`;
 }
 
-function main() {
+async function main() {
   const translations = {};
   const translationMaps = {};
   const languageProjectMaps = {};
@@ -301,19 +435,29 @@ function main() {
     languageProjectMaps[language] = new Map(translations[language].map(project => [project.id, project]));
   }
 
+  const navigationSnapshot = loadNavigationSnapshot();
+  let navigationResolver;
+  if (navigationSnapshot) {
+    const contractUrl = pathToFileURL(path.join(ROOT, "cms", "studio", "features", "projects", "navigationContract.mjs"));
+    ({ resolveProjectNavigation: navigationResolver } = await import(contractUrl.href));
+  }
+  const navigationContext = navigationResolver
+    ? { snapshot: navigationSnapshot, resolver: navigationResolver, projects: [...translations.sv, ...translations.en] }
+    : undefined;
+
   for (const [language, projects] of Object.entries(translations)) {
     for (const project of projects) {
       const output = path.join(PUBLIC_DIR, LANGUAGE_CONFIG[language].directory, project.slug, "index.html");
       write(output, pageHtml(project, language, translationMaps, languageProjectMaps[language]));
     }
     const overviewFile = path.join(PUBLIC_DIR, LANGUAGE_CONFIG[language].source);
-    write(overviewFile, updateOverview(readFile(overviewFile), language, projects));
+    write(overviewFile, updateOverview(readFile(overviewFile), language, projects, navigationContext));
   }
 
   write(path.join(PUBLIC_DIR, "sitemap.xml"), buildSitemap(translations));
   console.log(`Built ${translations.sv.length + translations.en.length} project pages and sitemap.xml.`);
 }
 
-if (require.main === module) main();
+if (require.main === module) main().catch((error) => { console.error(error.message); process.exitCode = 1; });
 
-module.exports = { bodyParagraphs, factEntries, pageHtml, projectUrl };
+module.exports = { applyPublishedNavigation, bodyParagraphs, factEntries, loadNavigationSnapshot, pageHtml, projectUrl, updateOverview };

@@ -22,6 +22,12 @@ export const deskStructure: StructureResolver = (S) =>
         .title('English projects')
         .child(S.documentList().title('English projects').filter('_type == "project" && language == "en"')),
       S.listItem()
+        .title('Projektfilter')
+        .child(S.documentTypeList('filterCategory').title('Projektfilter')),
+      S.listItem()
+        .title('Projektrutnät och filteretiketter')
+        .child(S.document().schemaType('navigationSettings').documentId('navigationSettings')),
+      S.listItem()
         .title('Tjanster och services')
         .child(S.documentTypeList('service').title('Tjanster och services')),
       S.divider(),
