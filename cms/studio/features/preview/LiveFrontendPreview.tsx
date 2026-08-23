@@ -254,7 +254,7 @@ export function LiveFrontendPreview() {
   useEffect(() => {
     setRendererIssues([])
     setRendererState(previewOrigin.kind === 'configured' ? 'verifying' : 'fallback')
-  }, [perspective, previewOrigin.kind, previewUrl, route, viewportId])
+  }, [perspective, previewOrigin.kind, previewUrl, route])
 
   useEffect(() => {
     if (previewOrigin.kind !== 'configured') return undefined
@@ -287,6 +287,12 @@ export function LiveFrontendPreview() {
   const authenticatedRenderer = rendererState === 'authenticated'
   const reviewBlocked = !authenticatedRenderer || issues.length > 0
   const viewport = PREVIEW_VIEWPORTS[viewportId]
+  const selectViewport = (nextViewportId: PreviewViewportId) => {
+    if (nextViewportId === viewportId) return
+    setRendererIssues([])
+    setRendererState(previewOrigin.kind === 'configured' ? 'verifying' : 'fallback')
+    setViewportId(nextViewportId)
+  }
 
   return (
     <Stack space={5} className="esencial-frontend-preview">
@@ -356,7 +362,7 @@ export function LiveFrontendPreview() {
                   aria-pressed={viewportId === value}
                   mode={viewportId === value ? 'default' : 'ghost'}
                   text={PREVIEW_VIEWPORTS[value].label}
-                  onClick={() => setViewportId(value)}
+                  onClick={() => selectViewport(value)}
                 />
               ))}
             </Inline>
@@ -391,6 +397,7 @@ export function LiveFrontendPreview() {
         <ViewportFrame viewportId={viewportId}>
           {previewUrl ? (
             <iframe
+              key={viewportId}
               ref={iframeRef}
               className="esencial-preview-iframe"
               height={viewport.height}

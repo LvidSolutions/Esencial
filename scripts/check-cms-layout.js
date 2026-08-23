@@ -68,16 +68,62 @@ function sha256(file) {
   return crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')
 }
 
+function assertViewportHandshakeContract(componentSource) {
+  assert(
+    componentSource.includes('key={viewportId}'),
+    'Viewport changes must remount the renderer and require a fresh ready handshake',
+  )
+  assert(
+    componentSource.includes('onClick={() => selectViewport(value)}'),
+    'Viewport controls must use the guarded renderer transition',
+  )
+  const viewportTransition = componentSource.match(
+    /const selectViewport = \(nextViewportId: PreviewViewportId\) => \{([\s\S]*?)\n  \}/,
+  )?.[1]
+  assert(viewportTransition, 'Viewport renderer transition must be defined')
+  assert(
+    viewportTransition.includes('setRendererIssues([])') &&
+      viewportTransition.includes("setRendererState(previewOrigin.kind === 'configured' ? 'verifying' : 'fallback')") &&
+      viewportTransition.includes('setViewportId(nextViewportId)'),
+    'Viewport changes must clear stale diagnostics, reset verification, then select the new viewport',
+  )
+  assert(
+    !/\[perspective, previewOrigin\.kind, previewUrl, route, viewportId\]/.test(componentSource),
+    'A viewport-only render must not reset authentication without an explicit iframe re-handshake',
+  )
+}
+
 function assertClientContract() {
   const featureRoot = path.join(ROOT, 'cms', 'studio', 'features', 'preview')
   const files = fs.readdirSync(featureRoot).filter((file) => /\.(?:ts|tsx|css)$/.test(file))
   const source = files.map((file) => fs.readFileSync(path.join(featureRoot, file), 'utf8')).join('\n')
+  const componentSource = fs.readFileSync(path.join(featureRoot, 'LiveFrontendPreview.tsx'), 'utf8')
   assert(!/SANITY_(?:API_)?TOKEN/.test(source), 'Studio preview feature must not reference a Sanity token')
   assert(source.includes('shareAccess: false'), 'Presentation Tool must disable shareable draft URLs')
   assert(source.includes(".listen('*[_type in"), 'Studio preview must subscribe to Sanity live updates')
   assert(source.includes('Lokal layoutfixtur – inte autentiserad frontendpreview'), 'Fallback must be labelled honestly')
   assert(!/text-overflow\s*:\s*ellipsis|-webkit-line-clamp/.test(source), 'S18 must not truncate unsafe content')
   assert(!/object-fit\s*:/.test(source), 'S18 must not change preview image crop or framing')
+  assertViewportHandshakeContract(componentSource)
+  const viewportRegressions = [
+    componentSource.replace('key={viewportId}', ''),
+    componentSource.replace('onClick={() => selectViewport(value)}', 'onClick={() => setViewportId(value)}'),
+    componentSource.replace(
+      "    setRendererState(previewOrigin.kind === 'configured' ? 'verifying' : 'fallback')\n    setViewportId(nextViewportId)",
+      '    setViewportId(nextViewportId)',
+    ),
+    componentSource.replace(
+      '[perspective, previewOrigin.kind, previewUrl, route]',
+      '[perspective, previewOrigin.kind, previewUrl, route, viewportId]',
+    ),
+  ]
+  for (const regression of viewportRegressions) {
+    assert.throws(
+      () => assertViewportHandshakeContract(regression),
+      {name: 'AssertionError'},
+      'Viewport handshake regression mutation must be rejected',
+    )
+  }
 }
 
 async function readDiagnostics(page) {
@@ -199,7 +245,7 @@ async function main() {
     console.log(`Evidence: ${path.relative(ROOT, evidenceFile)}`)
   }
   console.log(
-    `CMS layout PASS: ${evidence.cases.length} long-copy viewport cases, 7/7 blocking diagnostic classes, zero unexpected console errors.`,
+    `CMS layout PASS: viewport renderer re-handshake contract, ${evidence.cases.length} long-copy viewport cases, 7/7 blocking diagnostic classes, zero unexpected console errors.`,
   )
 }
 

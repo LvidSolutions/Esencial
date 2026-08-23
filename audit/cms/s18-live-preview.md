@@ -6,9 +6,10 @@ Status: PASS
 - Branch: `codex/worker-c-s18`
 - Starting and pre-commit HEAD: `7235840205326c453518fc30cabbed91ec5e003f`
 - Registry baseline: `032bfeae23a2ec318d395bfc778d84cc542baa51`
-- Completed locally: `2026-08-23T14:06:05.0625320+02:00`
+- Completed locally: `2026-08-23T14:16:38.1774576+02:00`
 - Required runtime: GPT-5.6 Sol / xhigh
-- Final local PASS commit: this audit is included in the single S18 PASS commit; the immutable SHA is reported in the worker handoff.
+- Original PASS commit: `5a2ba34831a299ebeff3c46d56eb74b0d6d51d87`
+- Corrective fix commit: this audit update is included in the follow-up S18 fix commit; its immutable SHA is reported in the worker handoff.
 
 ## Outcome
 
@@ -17,6 +18,14 @@ S18 replaces only the S16 `live-preview` extension slot with a versioned, protec
 The production site remains static and unchanged. A real preview requires a separate protected SSR/hybrid renderer at `SANITY_STUDIO_PREVIEW_ORIGIN`. The Studio never receives a Sanity read token, never emits a copyable draft URL, and never describes the deterministic local fixture as authenticated preview proof. When the origin is missing or invalid, the local fallback remains visibly unauthenticated and blocks editorial approval.
 
 No public frontend file, image asset, image derivative, LCP behavior, crop, framing, compression setting, Sanity document, dataset, dependency, lockfile or orchestration state changed.
+
+### Coordinator regression correction
+
+W0 found that the original renderer-reset effect also depended on `viewportId`. A viewport selection updated the iframe width and height but did not guarantee a reload, while the child resize handler emitted diagnostics without repeating its ready message. That could leave a previously authenticated renderer stranded in `verifying`.
+
+The corrective fix uses an explicit guarded viewport transition. In the same UI event it clears diagnostics, marks a configured renderer as `verifying`, selects the new viewport and keys the iframe by viewport identity. React therefore discards the previous child browsing context and creates a new iframe that must complete the exact-origin, exact-iframe ready handshake. Messages from the discarded iframe fail the existing `event.source` check. The general renderer-reset effect no longer depends on viewport identity, so no later passive effect can discard the fresh ready result.
+
+`scripts/check-cms-layout.js` now deterministically asserts all four regression invariants: viewport controls use the guarded transition, stale diagnostics are cleared, verification is reset before selection, and the iframe is viewport-keyed for a guaranteed remount/re-handshake. Four negative source mutations remove each protection in turn and must be rejected by the same contract check.
 
 ## Architecture and trust boundary
 
@@ -142,11 +151,11 @@ The generated captures were deliberately excluded from the commit. `work/` is a 
 
 | Command / review | Result |
 | --- | --- |
-| `git branch --show-current` / `git rev-parse HEAD` | PASS — `codex/worker-c-s18` at exact starting SHA `7235840205326c453518fc30cabbed91ec5e003f` before the single final commit. |
+| `git branch --show-current` / `git rev-parse HEAD` | PASS — `codex/worker-c-s18` started at `7235840205326c453518fc30cabbed91ec5e003f`; original PASS commit preserved at `5a2ba34831a299ebeff3c46d56eb74b0d6d51d87`; corrective work began from a clean tree. |
 | `node orchestration/status.mjs --json` | PASS — registry valid; exactly S17, S18 and S19 effective READY; zero errors/warnings. |
 | `node --test orchestration/status.test.mjs` | PASS — 11/11. |
 | `node scripts/check-cms-layout.js --evidence-dir work/s18-layout-evidence` | PASS — 10 long-copy viewport cases; 7/7 diagnostic classes; zero unexpected console errors; 11 captures recorded above. |
-| `node scripts/check-cms-layout.js` | PASS — exact registered S18 layout command. |
+| `node scripts/check-cms-layout.js` | PASS — viewport renderer re-handshake contract including four rejected regression mutations, 10 long-copy viewport cases, 7/7 diagnostic classes and zero unexpected console errors. |
 | `npx tsc --noEmit` in `cms/studio` | PASS. |
 | `npx eslint . --max-warnings=0` in `cms/studio` | PASS with zero warnings. |
 | `npm --prefix cms/studio run build` | PASS — Sanity Studio build completed. |
