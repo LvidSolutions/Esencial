@@ -97,7 +97,9 @@ function assertClientContract() {
   const featureRoot = path.join(ROOT, 'cms', 'studio', 'features', 'preview')
   const files = fs.readdirSync(featureRoot).filter((file) => /\.(?:ts|tsx|css)$/.test(file))
   const source = files.map((file) => fs.readFileSync(path.join(featureRoot, file), 'utf8')).join('\n')
-  const componentSource = fs.readFileSync(path.join(featureRoot, 'LiveFrontendPreview.tsx'), 'utf8')
+  const componentSource = fs
+    .readFileSync(path.join(featureRoot, 'LiveFrontendPreview.tsx'), 'utf8')
+    .replace(/\r\n/g, '\n')
   assert(!/SANITY_(?:API_)?TOKEN/.test(source), 'Studio preview feature must not reference a Sanity token')
   assert(source.includes('shareAccess: false'), 'Presentation Tool must disable shareable draft URLs')
   assert(source.includes(".listen('*[_type in"), 'Studio preview must subscribe to Sanity live updates')
@@ -106,22 +108,23 @@ function assertClientContract() {
   assert(!/object-fit\s*:/.test(source), 'S18 must not change preview image crop or framing')
   assertViewportHandshakeContract(componentSource)
   const viewportRegressions = [
-    componentSource.replace('key={viewportId}', ''),
-    componentSource.replace('onClick={() => selectViewport(value)}', 'onClick={() => setViewportId(value)}'),
-    componentSource.replace(
+    ['iframe remount', componentSource.replace('key={viewportId}', '')],
+    ['guarded viewport control', componentSource.replace('onClick={() => selectViewport(value)}', 'onClick={() => setViewportId(value)}')],
+    ['verification reset', componentSource.replace(
       "    setRendererState(previewOrigin.kind === 'configured' ? 'verifying' : 'fallback')\n    setViewportId(nextViewportId)",
       '    setViewportId(nextViewportId)',
-    ),
-    componentSource.replace(
+    )],
+    ['passive viewport reset', componentSource.replace(
       '[perspective, previewOrigin.kind, previewUrl, route]',
       '[perspective, previewOrigin.kind, previewUrl, route, viewportId]',
-    ),
+    )],
   ]
-  for (const regression of viewportRegressions) {
+  for (const [name, regression] of viewportRegressions) {
+    assert.notEqual(regression, componentSource, `${name} regression fixture must mutate the component source`)
     assert.throws(
       () => assertViewportHandshakeContract(regression),
       {name: 'AssertionError'},
-      'Viewport handshake regression mutation must be rejected',
+      `${name} regression mutation must be rejected`,
     )
   }
 }

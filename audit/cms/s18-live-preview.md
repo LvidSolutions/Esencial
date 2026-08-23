@@ -9,7 +9,8 @@ Status: PASS
 - Completed locally: `2026-08-23T14:16:38.1774576+02:00`
 - Required runtime: GPT-5.6 Sol / xhigh
 - Original PASS commit: `5a2ba34831a299ebeff3c46d56eb74b0d6d51d87`
-- Corrective fix commit: this audit update is included in the follow-up S18 fix commit; its immutable SHA is reported in the worker handoff.
+- Corrective fix commit: `2b17cd8f26d01fa3af5200c89e25e35321bac93b`
+- Coordinator integration commits: `6a72dcd` (feature) and `5a0913b` (viewport re-handshake).
 
 ## Outcome
 
@@ -26,6 +27,8 @@ W0 found that the original renderer-reset effect also depended on `viewportId`. 
 The corrective fix uses an explicit guarded viewport transition. In the same UI event it clears diagnostics, marks a configured renderer as `verifying`, selects the new viewport and keys the iframe by viewport identity. React therefore discards the previous child browsing context and creates a new iframe that must complete the exact-origin, exact-iframe ready handshake. Messages from the discarded iframe fail the existing `event.source` check. The general renderer-reset effect no longer depends on viewport identity, so no later passive effect can discard the fresh ready result.
 
 `scripts/check-cms-layout.js` now deterministically asserts all four regression invariants: viewport controls use the guarded transition, stale diagnostics are cleared, verification is reset before selection, and the iframe is viewport-keyed for a guaranteed remount/re-handshake. Four negative source mutations remove each protection in turn and must be rejected by the same contract check.
+
+W0 repeated the registered checks after S17/S18 composition. The integrated Windows worktree exposed a CRLF-only false failure in the negative source mutation; the DONE integration normalizes source line endings inside the test and labels every mutation, without changing preview behavior. Layout fixtures, TypeScript, lint, Studio build, 30 workspace safeguards, the full 56-page root build, image-quality validation and 40-pair/4-interaction reference parity then passed.
 
 ## Architecture and trust boundary
 

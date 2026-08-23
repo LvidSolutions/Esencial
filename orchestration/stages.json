@@ -308,15 +308,15 @@
       "title": "Live frontend preview and responsive layout guardrails",
       "ownerLane": "Worker C",
       "dependencies": ["S16"],
-      "state": "RUNNING",
-      "stateReason": "Worker C is implementing S18 in isolated branch codex/worker-c-s18 from integrated S16 commit 7235840, limited to protected preview and layout guardrails.",
+      "state": "DONE",
+      "stateReason": "Integrated commits 6a72dcd and 5a0913b add protected responsive preview, deterministic layout diagnostics and guaranteed viewport re-handshake; W0 repeated layout fixtures, TypeScript, lint, Studio build, 30 safeguards, full 56-page build, image-quality and 40-pair/4-interaction parity checks after S17 composition.",
       "model": "GPT-5.6 Sol",
       "effort": "xhigh",
       "ownedPaths": ["cms/studio/features/preview/**", "preview/**", "scripts/check-cms-layout.js", "audit/cms/s18-live-preview.md"],
       "sharedHotspots": ["cms/studio/components/studioTools.tsx", "cms/studio/sanity.config.ts", "scripts/build-project-pages.js"],
       "acceptanceCommands": ["npm --prefix cms/studio run build", "node scripts/check-cms-layout.js", "corepack pnpm run check-reference-parity"],
       "reportPaths": ["audit/cms/s18-live-preview.md"],
-      "evidence": [],
+      "evidence": ["audit/cms/s18-live-preview.md", "cms/studio/features/preview/LiveFrontendPreview.tsx", "preview/README.md", "preview/layout-diagnostics.js", "scripts/check-cms-layout.js"],
       "manualBlockers": ["Protected preview origin and draft-mode secrets require authorized staging configuration; local deterministic preview remains required without it."]
     },
     {
