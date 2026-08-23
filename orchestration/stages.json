@@ -356,15 +356,15 @@
       "title": "CMS usability, accessibility and editorial acceptance",
       "ownerLane": "Worker A",
       "dependencies": ["S20"],
-      "state": "RUNNING",
-      "stateReason": "Worker A is performing independent editorial usability and accessibility acceptance from clean integrated coordinator commit fb24f2f in isolated branch codex/worker-a-s21; unauthorised staging, legal/provider activation and external publication remain blocked.",
+      "state": "DONE",
+      "stateReason": "Integrated commit 5777458 fixes cross-language edit loss, misleading saved status and dirty-form escape/recovery risks; W0 independently repeated eight responsive CMS UX cases, 14 integration/negative tests, S18 layout diagnostics, 30 Studio safeguards, TypeScript, lint and the Studio production build with authenticated staging correctly retained as BLOCKED_HUMAN.",
       "model": "GPT-5.6 Sol",
       "effort": "high",
       "ownedPaths": ["scripts/check-cms-ux.js", "tests/cms/**", "docs/CMS_USER_GUIDE.md", "audit/cms/s21-editorial-qa.md"],
       "sharedHotspots": ["cms/studio/**", "public/**"],
       "acceptanceCommands": ["node scripts/check-cms-ux.js", "npm --prefix cms/studio run build", "corepack pnpm run check-reference-parity"],
       "reportPaths": ["audit/cms/s21-editorial-qa.md", "docs/CMS_USER_GUIDE.md"],
-      "evidence": [],
+      "evidence": ["audit/cms/s21-editorial-qa.md", "docs/CMS_USER_GUIDE.md", "scripts/check-cms-ux.js", "tests/cms/editorial-workspace.html"],
       "manualBlockers": ["Final wording and editor acceptance require the site owner; automated checks cannot certify legal compliance or subjective usability alone."]
     },
     {
