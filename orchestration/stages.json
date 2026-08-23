@@ -324,15 +324,15 @@
       "title": "Analytics dashboard, consent and privacy controls",
       "ownerLane": "Worker D",
       "dependencies": ["S11", "S15", "S16"],
-      "state": "RUNNING",
-      "stateReason": "Worker D is implementing S19 in isolated branch codex/worker-d-s19 from integrated S16 commit 7235840, limited to privacy-safe analytics and consent controls with no provider activation.",
+      "state": "DONE",
+      "stateReason": "Integrated commits 2b2c9dc, 80d5023 and 4bc4aa5 add consent-gated real-data analytics, machine-enforced choice expiry, explicit daily-visitor sums and strict nested response validation; W0 repeated 21 client contract mutations, consent/API fixtures, TypeScript, lint, Studio build, 30 safeguards and the full 56-page/image-quality build with no public diff or external activation.",
       "model": "GPT-5.6 Sol",
       "effort": "xhigh",
       "ownedPaths": ["cms/studio/features/analytics/**", "api/analytics.js", "scripts/inject-vercel-analytics.js", "scripts/check-consent.js", "docs/ANALYTICS_SETUP.md", "audit/cms/s19-analytics-consent.md"],
       "sharedHotspots": [".env.example", "vercel.json", "cms/studio/components/studioTools.tsx"],
       "acceptanceCommands": ["node scripts/check-consent.js", "corepack pnpm run build", "npm --prefix cms/studio run build"],
       "reportPaths": ["audit/cms/s19-analytics-consent.md"],
-      "evidence": [],
+      "evidence": ["audit/cms/s19-analytics-consent.md", "docs/ANALYTICS_SETUP.md", "cms/studio/features/analytics/analyticsContract.ts", "cms/studio/features/analytics/analyticsClient.test.ts", "scripts/check-consent.js", "api/analytics.js"],
       "manualBlockers": ["Analytics providers, privacy text, controller identity, retention periods and final legal approval remain human/external decisions.", "No non-essential analytics may load before informed consent; reject and accept must be equally easy and consent must be withdrawable."]
     },
     {

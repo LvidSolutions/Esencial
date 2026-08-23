@@ -9,8 +9,9 @@ Required model/effort: GPT-5.6 Sol / xhigh
 Branch: `codex/worker-d-s19`
 Verified starting HEAD: `7235840205326c453518fc30cabbed91ec5e003f`
 Initial PASS commit: `6f346c802d295e4a81d3ad450a77a985360c5c4c` (`CMS-S19 PASS: add consent-gated analytics workspace`).
-Retention/visitor-sum fix: `aae5248819cdc8b68bd4d0f4b0bfa133e2d93ff0` (`CMS-S19 FIX: enforce consent expiry and clarify visitor sum`).
-Response-contract follow-up: this separate fix commit preserves both earlier commits; its SHA is reported in the final handoff.
+Retention/visitor-sum fix: `aae5248819cdc8b68bd4d0f4b0bfa133e2d93ff0` (`CMS-S19 FIX: enforce consent expiry and label daily visitor sums`).
+Response-contract fix: `1aeaa7f0b0f25667cda0a3998cd98206f736562d` (`CMS-S19 FIX: validate nested analytics responses`).
+Coordinator integration commits: `2b2c9dc`, `80d5023`, `4bc4aa5` and report commit `70c41f1`.
 
 ## Outcome
 
