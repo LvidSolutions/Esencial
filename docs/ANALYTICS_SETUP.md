@@ -1,56 +1,125 @@
-# Statistikpanelen – Vercel Web Analytics och Search Console
+# Statistik, samtycke och integritetskontroller
 
-`Webbplatsens utveckling` visar bara verklig, aggregerad data. En källa som inte är ansluten, inte har data eller ger fel får ett eget tydligt läge. Tidigare värden, exempelvärden och uppskattningar används aldrig som reserv.
+Status: tekniska kontroller finns lokalt; kontoaktivering, publik information och juridiskt godkännande återstår.
 
-## Beslutad lösning
+`Analys och samtycke` visar bara verklig, aggregerad leverantörsdata. En källa som inte är ansluten, saknar data eller ger fel har ett eget synligt läge. Tidigare värden, exempelvärden och uppskattningar används aldrig som reserv.
 
-- **Vercel Web Analytics** ger besökare, sidvisningar och toppsidor från Vercels offentliga, aggregerade Web Analytics API.
-- **Cookiebot** är samtyckesytan. Vercels statistikskript är manuellt blockerat som `statistics` och får inte hämtas före godkänt statistiksamtycke.
-- **Google Search Console** är en senare, valfri källa för den slutliga produktionsdomänen. Den ger organiska klick, visningar, CTR, position, toppsidor och sökfraser.
-- `api/analytics.js` körs som en Vercel Function. Leverantörsnycklarna finns bara i servermiljön och svaret innehåller endast summerade tal och källstatus.
+## Beslutad teknisk lösning
 
-Vercels besökaridentifierare återställs dagligen. Därför visas återkommande besökare alltid som **inte tillgängligt med den valda integritetsnivån**. Ingen cookie-baserad eller beräknad ersättning används.
+- **Vercel Web Analytics** ger aggregerade besökare, sidvisningar och toppsidor. `api/analytics.js` använder den publika Web Analytics-API:ns `visits/aggregate` grupperad per dag för 7, 30 och 90 dagar. Därmed avser jämförelsen verkligen aktuell respektive föregående period.
+- **Google Search Console** är en senare, valfri källa för den slutliga produktionsdomänen. Den ger klick, visningar, CTR, position, toppsidor och sökfraser. Search Console kan utelämna detaljrader och slutlig data har normalt några dagars fördröjning.
+- **Cookiebot by Usercentrics** är den valda samtyckestjänsten. S19:s publika kontroll använder Cookiebots dokumenterade SDK-metoder men laddar inte Vercels statistikresurs förrän ett aktuellt, versionsgiltigt statistikval både finns lokalt och har synkroniserats med Cookiebot.
+- `api/analytics.js` körs som Vercel Function. Leverantörsnycklar finns bara i servermiljön. Studio skickar ingen API-nyckel, leverantörstoken eller annan webbläsarhemlighet.
 
-## Samtycke och statisk byggning
+Vercels besökarhash återställs dagligen. Därför visas återkommande besökare alltid som **inte tillgängligt med den valda integritetsnivån**. Ingen cookie-baserad eller beräknad ersättning används.
 
-Utan `COOKIEBOT_CBID` genererar byggningen ingen Vercel Analytics-resurs alls. Med ett giltigt CBID genereras Cookiebot och följande manuellt blockerade resurs:
+## Tre bygglägen
 
-```html
-<script type="text/plain" data-cookieconsent="statistics" src="/_vercel/insights/script.js"></script>
-```
+### 1. All konfiguration saknas
 
-`type="text/plain"` förhindrar webbläsaren från att köra statistikskriptet. Cookiebot får aktivera det först när besökaren har godkänt kategorin `statistics`. En avvisning eller uteblivet val laddar därför inte Vercels statistikresurs. Slutlig bannertext, lika enkla acceptera/avvisa-val och en beständig möjlighet att ändra eller återkalla samtycke är externa och manuella godkännandepunkter.
+Bygget genererar ingen Cookiebot- eller Vercel-resurs. Detta är det normala lokala och CI-läget och är fail-closed.
 
-## Servermiljö i Vercel
+### 2. Endast `COOKIEBOT_CBID` finns
 
-Lägg värdena som krypterade miljövariabler för det separata stagingprojektet. Riktiga värden får aldrig ligga i Git, Sanity-dataset, Studio-konfiguration eller byggloggar.
+Detta bevarar S11-kontraktet: Cookiebot laddas och Vercel-resursen ligger som manuellt blockerad `type="text/plain"` med `data-cookieconsent="statistics"`. Banner, information, version och återkallelsekontroll måste då vara korrekt konfigurerade i Cookiebot-kontot.
+
+### 3. Full S19-konfiguration finns
+
+Den lokala, minimala kontrollen aktiveras bara när samtliga offentliga fält nedan finns. Om en del saknas avbryts bygget i stället för att visa ofullständig information eller starta mätning.
+
+Kontrollen:
+
+- visar avvisa och acceptera samtidigt som två likadant utformade native-knappar;
+- har endast den nödvändiga valinformationen och den valbara kategorin statistik, eftersom ingen annan icke-nödvändig kategori implementeras;
+- tolkar aldrig passivitet som samtycke;
+- lagrar `{version, statistics, decidedAt}` under `localStorage`-nyckeln `esencial.consent`;
+- frågar på nytt när versionen ändras;
+- visar en beständig knapp för att öppna valet igen;
+- tar bort statistikskriptet, återkallar Cookiebot-valet och laddar om sidan vid återkallelse, så att redan installerade statistiklyssnare inte fortsätter;
+- lämnar webbplatsen fullt användbar vid avvisning eller fel i Cookiebot;
+- växlar till engelska på dokument vars `html[lang]` börjar med `en`.
+
+Detta verifierar beteende, inte om den slutliga texten, lagringstiden eller kategoriseringen är juridiskt tillräcklig.
+
+## Offentlig byggkonfiguration
+
+Dessa värden hamnar i den publika sidan och får inte innehålla hemligheter. De ska godkännas av behörig ägare/jurist innan full S19-aktivering.
+
+| Variabel | Innehåll | Blockerare |
+| --- | --- | --- |
+| `COOKIEBOT_CBID` | Cookiebots publika domain-group-id för exakt domän | Konto/domän får inte aktiveras av arbetsflödet |
+| `CONSENT_NOTICE_VERSION` | Kort version, exempelvis ett godkänt policydatum eller revisions-id | Versionen ska kopplas till godkänd information |
+| `CONSENT_CONTROLLER_NAME` | Godkänt namn på personuppgiftsansvarig | Får inte gissas från varumärket |
+| `CONSENT_PRIVACY_URL` | Godkänd rot-relativ eller absolut HTTPS-länk | Integritetsinformationen måste finnas och granskas |
+| `CONSENT_ANALYTICS_RETENTION` | Godkänd offentlig beskrivning av statistikens lagringstid | Beror på valt Vercel-konto/plan och avtal |
+| `CONSENT_CHOICE_RETENTION` | Godkänd offentlig beskrivning av samtyckesvalets lagringstid | Ska stämma med Cookiebot-konfigurationen |
+
+`scripts/inject-vercel-analytics.js` avvisar `javascript:`-länkar, HTTP-länkar, HTML-tecken i textfält och partiell S19-konfiguration.
+
+## Servermiljö
+
+Riktiga värden ska ligga som krypterade miljövariabler i det separata stagingprojektet. De får aldrig ligga i Git, Sanity-dataset, Studio-konfiguration eller byggloggar.
 
 | Variabel | Krävs för | Kommentar |
 | --- | --- | --- |
-| `CMS_ORIGIN` | API-åtkomst | Exakt HTTPS-origin, normalt `https://esencial-cms.sanity.studio` |
-| `COOKIEBOT_CBID` | samtycke och klientmätning | Cookiebots CBID för exakt stagingdomän |
-| `VERCEL_ANALYTICS_TOKEN` | statistikproxy | Separat server-token med minsta läsbehörighet |
-| `VERCEL_ANALYTICS_TEAM_ID` | statistikproxy | Teamet som äger stagingprojektet |
-| `VERCEL_ANALYTICS_PROJECT_ID` | statistikproxy | Stagingprojektets projekt-id |
-| `GOOGLE_SEARCH_CONSOLE_SITE_URL` | framtida SEO-data | Den slutliga produktionsdomänens Search Console-egendom |
-| `GOOGLE_SERVICE_ACCOUNT_JSON` | framtida SEO-data | Service account med enbart `webmasters.readonly` |
+| `CMS_ORIGIN` | API-origin | Exakt HTTPS-origin, normalt `https://esencial-cms.sanity.studio` |
+| `VERCEL_ANALYTICS_TOKEN` | Statistikproxy | Separat server-token med minsta nödvändiga läsbehörighet |
+| `VERCEL_ANALYTICS_TEAM_ID` | Statistikproxy | Teamet som äger stagingprojektet |
+| `VERCEL_ANALYTICS_PROJECT_ID` | Statistikproxy | Stagingprojektets projekt-id |
+| `GOOGLE_SEARCH_CONSOLE_SITE_URL` | Framtida SEO-data | Den slutliga produktionsdomänens Search Console-egendom |
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | Framtida SEO-data | Service account med endast `webmasters.readonly` |
 
-Studio byggs senare med den publika endpointadressen `SANITY_STUDIO_ANALYTICS_ENDPOINT=https://<staging-adress>/api/analytics`. Den adressen är inte en hemlighet.
+Studio byggs efter S20 med den publika endpointadressen `SANITY_STUDIO_ANALYTICS_ENDPOINT=https://<staging-adress>/api/analytics`. Adressen är inte en hemlighet. S19-komponenten skickar `credentials: omit` och ingen `Authorization`-header.
 
-## API-kontrakt och felbeteende
+## API-kontrakt och skydd
 
-- Bara `GET` och en giltig CORS-preflight från exakt `CMS_ORIGIN` accepteras. Saknad eller annan `Origin` nekas.
-- Vercel-token skickas endast i serverns `Authorization`-header till `api.vercel.com`; den placeras aldrig i en URL eller ett CMS-svar.
-- Perioderna 7, 30 och 90 dagar hämtas som verkliga totalsiffror och toppsidor. Alla andra periodvärden faller deterministiskt tillbaka till 30 dagar.
-- Saknade nycklar ger `unavailable`, komplett källa utan mätpunkter ger `empty`, ofullständig konfiguration ger `error`, och leverantörsfel ger HTTP 502 med ett sanerat meddelande.
-- Ett oväntat eller typfelaktigt leverantörssvar avvisas. Text eller saknade fält konverteras inte till trovärdiga nollor.
+- Bara `GET` och en giltig CORS-preflight från exakt `CMS_ORIGIN` accepteras. Saknad, annan eller icke-HTTPS-origin nekas. CORS/origin är en webbläsargräns, inte en ersättning för autentisering; stagingens åtkomstskydd och slutliga exponeringsmodell är ett manuellt säkerhetsbeslut.
+- Vercel-token skickas endast i serverns `Authorization`-header till `api.vercel.com`. Google-nyckeln används endast server-side för en kortlivad OAuth-token. Ingen hemlighet placeras i URL, CORS-svar eller CMS-data.
+- Saknad leverantörsautentisering ger `unavailable`; partiella hemligheter ger HTTP 503; nekad/felaktig providerautentisering ger sanitiserat HTTP 502.
+- Alla anrop har 8 sekunders timeout och kontrollerar dokumenterad svarsversion, datatyper och icke-negativa tal.
+- Svaret innehåller vald/föregående period, genereringstid och senaste verkliga mätpunkt per källa. Tom källa visas som `empty`, aldrig som ett gammalt cachevärde.
+- Funktionsloggen innehåller bara route, request-id, status, källäge och tid. Ingen token, provider-body eller statistikrad loggas.
 
-## Externa steg före manuell godkännande
+## Content Security Policy
 
-1. Kontoägaren aktiverar Web Analytics för `esencial-staging` i Vercel.
-2. Kontoägaren skapar en separat lästoken och sparar de tre `VERCEL_ANALYTICS_*`-värdena som serverhemligheter.
-3. Kontoägaren skapar Cookiebot-konfigurationen för exakt stagingdomän, godkänner svensk/engelsk ändamålstext och sparar CBID som servermiljövariabel.
-4. Efter en auktoriserad stagingdeploy verifieras i webbläsarens nätverkspanel att `/_vercel/insights/script.js` inte hämtas vid avvisat eller uteblivet samtycke och hämtas först efter godkänt statistiksamtycke.
-5. Search Console ansluts först när produktionsdomänens egendom och ett begränsat service account har skapats av behörig ägare. Ingen DNS-ändring ingår här.
+S19-kontrollen har deterministisk inline-kod och inline-stil. Om en framtida blockerande CSP införs måste den auktoriserade byggningen använda exakt SHA-256-hash från `cspHashes()` och tillåta Cookiebots dokumenterade skript-origin. En hash för en äldre samtyckesversion får inte återanvändas.
 
-Lokalt kör `corepack pnpm run check-analytics` samtyckesfria och samtyckesgivna fixtures, dubblett/legacy-kontroll, CMS-origin, serverhemligheter samt unavailable/empty/error/success-svar. Det aktiverar inga konton och gör inga externa leverantörsanrop.
+```powershell
+node -e "const c=require('./scripts/inject-vercel-analytics'); console.log(c.cspHashes())"
+```
+
+Ingen blockerande CSP läggs till i S19: den befintliga statiska frontendens alla skript måste inventeras och parity-testas centralt innan en sådan shared-header kan aktiveras.
+
+## Lokala kontroller
+
+```powershell
+node scripts/check-consent.js
+corepack pnpm run check-analytics
+npm --prefix cms/studio run build
+corepack pnpm run build
+```
+
+`check-consent.js` har positiva och negativa fixtures för pre-consent-blockering, likvärdiga val, accept, avvisning, återöppning, återkallelse, versionsbyte, lokal lagring, providerfel, CSP-hash, CMS-origin, browser-secret-isolering, idempotent injektion och S11-regression. Fixture-värden är uttryckligen testdata och används inte i byggd publik output.
+
+## Mänskliga och externa blockerare
+
+Följande ingår inte och får inte markeras som godkänt av automatiska tester:
+
+1. fastställa personuppgiftsansvarig och kontaktuppgifter;
+2. godkänna svenska/engelska ändamål, kategori, leverantörslista och full integritetsinformation;
+3. fastställa lagringstider mot verklig Vercel-plan, Cookiebot-inställning och avtal;
+4. aktivera Vercel Web Analytics eller Cookiebot och skapa minsta-behörighets-token;
+5. besluta om staging-API:ts autentiserings-/Deployment Protection-modell;
+6. efter en separat auktoriserad stagingdeploy verifiera nätverk, faktisk Cookiebot-domän, språk, samtyckeslogg och jämförelse mot Vercels dashboard;
+7. slutlig juridisk och redaktionell bedömning.
+
+## Primära källor
+
+- [PTS: Kakor (cookies)](https://pts.se/internet-och-telefoni/kakor-cookies/) – aktivt, specifikt och informerat val; avvisa och acceptera i samma vy med liknande utformning; endast nödvändig lagring utan val; enkel återkallelse.
+- [IMY: tillsyn av Aktiebolaget Trav och Galopp](https://www.imy.se/tillsyner/aktiebolaget-trav-och-galopp/) – beslut om vilseledande bannerdesign och att återkallelse inte var lika enkel som samtycke.
+- [EU GDPR artikel 7](https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=celex:32016R0679) och [EDPB Guidelines 05/2020](https://www.edpb.europa.eu/our-work-tools/our-documents/guidelines/guidelines-052020-consent-under-regulation-2016679_en) – villkor för samtycke och lika enkel återkallelse.
+- [Cookiebot: manual cookie blocking](https://support.cookiebot.com/hc/en-us/articles/4405978132242-Manual-cookie-blocking), [developer SDK](https://www.cookiebot.com/en/developer/) och [changing or withdrawing consent](https://support.cookiebot.com/hc/en-us/articles/360003798814-Changing-or-withdrawing-consent) – `data-cookieconsent`, events, `submitCustomConsent`, `renew` och `withdraw`.
+- [Vercel: Web Analytics API](https://vercel.com/docs/analytics/web-analytics-api), [privacy and compliance](https://vercel.com/docs/analytics/privacy-policy) och [limits/pricing](https://vercel.com/docs/analytics/limits-and-pricing) – aggregat, identifieringsmodell, datapunkter och planberoende rapportfönster.
+- [Google: Search Analytics query](https://developers.google.com/webmaster-tools/v1/searchanalytics/query) – datum, dimensioner, scopes, svarsfält och begränsningar för detaljrader.
+
+Källorna styr tekniska kontroller. De utgör inte certifiering eller juridiskt godkännande av Esencials framtida produktionskonfiguration.

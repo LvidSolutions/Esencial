@@ -1,0 +1,151 @@
+.esencial-analytics {
+  min-width: 0;
+}
+
+.esencial-analytics__measure {
+  max-width: var(--esencial-workspace-measure, 68ch);
+  margin-top: 8px;
+  line-height: 1.55;
+}
+
+.esencial-analytics__metric {
+  min-width: 0;
+}
+
+.esencial-analytics__metric-value {
+  margin-block: 8px 4px;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.esencial-analytics__table-scroll {
+  max-width: 100%;
+  margin-top: 16px;
+  overflow-x: auto;
+}
+
+.esencial-analytics table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.esencial-analytics th,
+.esencial-analytics td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--esencial-workspace-border, #d1d1ca);
+  text-align: right;
+  vertical-align: top;
+  font-variant-numeric: tabular-nums;
+}
+
+.esencial-analytics th:first-child,
+.esencial-analytics td:first-child {
+  min-width: 12rem;
+  padding-left: 0;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+.esencial-analytics thead th {
+  color: var(--esencial-workspace-muted, #5b5b55);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.esencial-analytics tbody th {
+  font-weight: 400;
+}
+
+.esencial-analytics__empty {
+  margin-top: 16px;
+}
+
+.esencial-analytics__source-list,
+.esencial-analytics__limitations {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.esencial-analytics__source-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.esencial-analytics__source-list li {
+  padding-top: 12px;
+  border-top: 1px solid var(--esencial-workspace-border, #d1d1ca);
+}
+
+.esencial-analytics__privacy {
+  background: var(--esencial-workspace-wash, #f5f5f1);
+}
+
+.esencial-analytics__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 30rem) {
+  .esencial-analytics__table-scroll {
+    overflow-x: visible;
+  }
+
+  .esencial-analytics table,
+  .esencial-analytics thead,
+  .esencial-analytics tbody,
+  .esencial-analytics tr,
+  .esencial-analytics th,
+  .esencial-analytics td {
+    display: block;
+  }
+
+  .esencial-analytics thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .esencial-analytics tbody tr {
+    padding-block: 12px;
+    border-bottom: 1px solid var(--esencial-workspace-border, #d1d1ca);
+  }
+
+  .esencial-analytics tbody th,
+  .esencial-analytics tbody td,
+  .esencial-analytics th:first-child,
+  .esencial-analytics td:first-child {
+    min-width: 0;
+    padding: 3px 0;
+    border: 0;
+    text-align: left;
+  }
+
+  .esencial-analytics tbody td::before {
+    content: attr(data-label) ': ';
+    color: var(--esencial-workspace-muted, #5b5b55);
+    font-weight: 600;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .esencial-analytics *,
+  .esencial-analytics *::before,
+  .esencial-analytics *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

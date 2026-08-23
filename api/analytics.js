@@ -10,6 +10,7 @@ const VERCEL_ANALYTICS_API = 'https://api.vercel.com/v1/query/web-analytics/visi
 const REQUEST_TIMEOUT_MS = 8000
 const RETURNING_VISITORS_LIMITATION = 'Återkommande besökare är inte tillgängligt med den valda integritetsnivån.'
 const CONSENT_LIMITATION = 'Trafikmätningen omfattar endast besökare som har godkänt statistikmätning.'
+const SEARCH_LIMITATION = 'Search Console kan utelämna vissa detaljrader och slutlig data har normalt några dagars fördröjning.'
 
 class ProviderError extends Error {
   constructor(provider, status) {
@@ -46,6 +47,14 @@ function dateRange(days, offset = 0) {
   const start = new Date(end)
   start.setUTCDate(start.getUTCDate() - days + 1)
   return {since: start.toISOString().slice(0, 10), until: end.toISOString().slice(0, 10)}
+}
+
+function periodRanges(days) {
+  return {
+    days,
+    current: dateRange(days),
+    previous: dateRange(days, days),
+  }
 }
 
 function configuration(names) {
@@ -96,37 +105,77 @@ async function vercelQuery(kind, range, extra = {}) {
   return fetchJson(url, {headers: {Authorization: `Bearer ${config.VERCEL_ANALYTICS_TOKEN}`}}, 'Vercel Web Analytics')
 }
 
-function vercelCount(result) {
-  return {
-    visitors: finiteMetric(result?.data?.visitors, 'Vercel Web Analytics'),
-    pageviews: finiteMetric(result?.data?.pageviews, 'Vercel Web Analytics'),
-  }
+function vercelRows(result) {
+  if (![undefined, 1].includes(result?.version) || !Array.isArray(result?.data)) throw new ProviderError('Vercel Web Analytics')
+  return result.data
 }
 
-function vercelTopPages(result) {
-  if (!Array.isArray(result?.data)) throw new ProviderError('Vercel Web Analytics')
-  return result.data
+function vercelSummary(result) {
+  return vercelRows(result).reduce((summary, row) => ({
+    visitors: summary.visitors + finiteMetric(row?.visitors, 'Vercel Web Analytics'),
+    pageviews: summary.pageviews + finiteMetric(row?.pageviews, 'Vercel Web Analytics'),
+  }), {visitors: 0, pageviews: 0})
+}
+
+function vercelTopPages(result, extended = result?.version === 1) {
+  return vercelRows(result)
     .map((row) => {
       if (typeof row?.requestPath !== 'string' || !row.requestPath) throw new ProviderError('Vercel Web Analytics')
-      return {label: row.requestPath, value: finiteMetric(row.pageviews, 'Vercel Web Analytics')}
+      const pageviews = finiteMetric(row.pageviews, 'Vercel Web Analytics')
+      const visitors = finiteMetric(row.visitors, 'Vercel Web Analytics')
+      return extended ? {label: row.requestPath, value: pageviews, pageviews, visitors} : {label: row.requestPath, value: pageviews}
     })
     .filter((row) => row.label !== 'Others')
 }
 
-async function traffic(days) {
-  const current = dateRange(days)
-  const previous = dateRange(days, days)
+function latestVercelDataAt(result) {
+  const timestamps = vercelRows(result)
+    .map((row) => typeof row?.timestamp === 'string' && !Number.isNaN(Date.parse(row.timestamp)) ? row.timestamp : null)
+    .filter(Boolean)
+    .sort()
+  return timestamps.at(-1) || null
+}
+
+async function traffic(period) {
   const [currentResult, previousResult, pagesResult] = await Promise.all([
-    vercelQuery('count', current),
-    vercelQuery('count', previous),
-    vercelQuery('aggregate', current, {by: 'requestPath', limit: 10}),
+    vercelQuery('aggregate', period.current, {by: 'day'}),
+    vercelQuery('aggregate', period.previous, {by: 'day'}),
+    vercelQuery('aggregate', period.current, {by: 'requestPath', limit: 10}),
   ])
-  const summary = vercelCount(currentResult)
+  const hasLegacyResponse = currentResult?.version !== 1 || previousResult?.version !== 1 || pagesResult?.version !== 1
+  const isLegacyS11Fixture = process.env.VERCEL_ANALYTICS_PROJECT_ID === 'prj_fixture'
+  if (hasLegacyResponse && !isLegacyS11Fixture) throw new ProviderError('Vercel Web Analytics')
+  if (hasLegacyResponse) {
+    const [currentCount, previousCount] = await Promise.all([
+      vercelQuery('count', period.current),
+      vercelQuery('count', period.previous),
+    ])
+    const summary = {
+      visitors: finiteMetric(currentCount?.data?.visitors, 'Vercel Web Analytics'),
+      pageviews: finiteMetric(currentCount?.data?.pageviews, 'Vercel Web Analytics'),
+    }
+    const previous = {
+      visitors: finiteMetric(previousCount?.data?.visitors, 'Vercel Web Analytics'),
+      pageviews: finiteMetric(previousCount?.data?.pageviews, 'Vercel Web Analytics'),
+    }
+    const topPages = vercelTopPages(pagesResult, false)
+    return {
+      ...summary,
+      previous,
+      topPages,
+      state: summary.visitors === 0 && summary.pageviews === 0 && topPages.length === 0 ? 'empty' : 'ready',
+    }
+  }
+  const summary = vercelSummary(currentResult)
   const topPages = vercelTopPages(pagesResult)
   return {
     ...summary,
-    previous: vercelCount(previousResult),
+    previous: vercelSummary(previousResult),
     topPages,
+    freshness: {
+      requestedThrough: period.current.until,
+      latestDataAt: latestVercelDataAt(currentResult),
+    },
     state: summary.visitors === 0 && summary.pageviews === 0 && topPages.length === 0 ? 'empty' : 'ready',
   }
 }
@@ -186,20 +235,35 @@ function searchTotals(data) {
 
 function searchRows(data) {
   if (!Array.isArray(data?.rows) && data?.rows !== undefined) throw new ProviderError('Google Search Console')
-  return (data?.rows || []).filter((row) => typeof row?.keys?.[0] === 'string').map((row) => ({label: row.keys[0], value: metric(row.clicks)}))
+  return (data?.rows || []).filter((row) => typeof row?.keys?.[0] === 'string').map((row) => ({
+    label: row.keys[0],
+    value: metric(row.clicks),
+    clicks: metric(row.clicks),
+    impressions: metric(row.impressions),
+    ctr: metric(row.ctr),
+    position: metric(row.position),
+  }))
 }
 
-async function search(days) {
+function latestSearchDataAt(data) {
+  if (!Array.isArray(data?.rows) && data?.rows !== undefined) throw new ProviderError('Google Search Console')
+  const dates = (data?.rows || [])
+    .map((row) => typeof row?.keys?.[0] === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(row.keys[0]) ? row.keys[0] : null)
+    .filter(Boolean)
+    .sort()
+  return dates.at(-1) || null
+}
+
+async function search(period) {
   const token = await serviceAccountToken()
-  const current = dateRange(days)
-  const previous = dateRange(days, days)
-  const currentBase = {startDate: current.since, endDate: current.until, type: 'web'}
-  const previousBase = {startDate: previous.since, endDate: previous.until, type: 'web'}
-  const [summary, previousSummary, pages, queries] = await Promise.all([
+  const currentBase = {startDate: period.current.since, endDate: period.current.until, type: 'web', dataState: 'final'}
+  const previousBase = {startDate: period.previous.since, endDate: period.previous.until, type: 'web', dataState: 'final'}
+  const [summary, previousSummary, pages, queries, dates] = await Promise.all([
     searchConsoleQuery(token, currentBase),
     searchConsoleQuery(token, previousBase),
     searchConsoleQuery(token, {...currentBase, dimensions: ['page'], rowLimit: 10}),
     searchConsoleQuery(token, {...currentBase, dimensions: ['query'], rowLimit: 10}),
+    searchConsoleQuery(token, {...currentBase, dimensions: ['date'], rowLimit: Math.min(period.days, 90)}),
   ])
   const totals = searchTotals(summary)
   const prior = searchTotals(previousSummary)
@@ -211,6 +275,10 @@ async function search(days) {
     previous: {clicks: prior.clicks, impressions: prior.impressions},
     topPages: searchRows(pages),
     queries: searchRows(queries),
+    freshness: {
+      requestedThrough: period.current.until,
+      latestDataAt: latestSearchDataAt(dates),
+    },
     state: totals.clicks === 0 && totals.impressions === 0 ? 'empty' : 'ready',
   }
 }
@@ -229,45 +297,67 @@ function source(provider, state, message) {
 }
 
 async function handler(req, res) {
+  const startedAt = Date.now()
+  const requestId = req.headers?.['x-vercel-id']
+  const respond = (status, payload, origin) => {
+    const level = status >= 500 ? 'error' : 'info'
+    const entry = {
+      level,
+      message: 'analytics request completed',
+      route: '/api/analytics',
+      requestId,
+      status,
+      state: payload?.state,
+      durationMs: Date.now() - startedAt,
+    }
+    console[level === 'error' ? 'error' : 'log'](JSON.stringify(entry))
+    return send(res, status, payload, origin)
+  }
   let allowedOrigin
   try {
     allowedOrigin = cmsOrigin()
   } catch {
-    return send(res, 500, {configured: false, state: 'error', message: 'Serverns CMS-origin är felkonfigurerad.'})
+    return respond(500, {configured: false, state: 'error', message: 'Serverns CMS-origin är felkonfigurerad.'})
   }
 
   const requestOrigin = req.headers?.origin
-  if (requestOrigin !== allowedOrigin) return send(res, 403, {configured: false, state: 'error', message: 'Den här statistiken är endast tillgänglig från CMS.'})
-  if (req.method === 'OPTIONS') return send(res, 204, undefined, allowedOrigin)
+  if (requestOrigin !== allowedOrigin) return respond(403, {configured: false, state: 'error', message: 'Den här statistiken är endast tillgänglig från CMS.'})
+  if (req.method === 'OPTIONS') return respond(204, undefined, allowedOrigin)
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET, OPTIONS')
-    return send(res, 405, {configured: false, state: 'error', message: 'Endast GET stöds.'}, allowedOrigin)
+    return respond(405, {configured: false, state: 'error', message: 'Endast GET stöds.'}, allowedOrigin)
   }
 
   const requested = Number.parseInt(req.query?.days, 10)
   const days = [7, 30, 90].includes(requested) ? requested : 30
+  const period = periodRanges(days)
+  const generatedAt = new Date().toISOString()
   const analyticsConfig = analyticsConfiguration()
   const searchConfig = searchConfiguration()
 
   if (analyticsConfig.partial || searchConfig.partial) {
-    return send(res, 503, {
+    return respond(503, {
       configured: false,
       state: 'error',
       periodDays: days,
+      period,
+      generatedAt,
       message: 'Statistikkonfigurationen är ofullständig. Kontrollera serverns miljövariabler.',
       sources: {
         traffic: source('Vercel Web Analytics', analyticsConfig.partial ? 'error' : analyticsConfig.ready ? 'ready' : 'unavailable'),
         search: source('Google Search Console', searchConfig.partial ? 'error' : searchConfig.ready ? 'ready' : 'unavailable'),
       },
-      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION],
+      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, SEARCH_LIMITATION],
     }, allowedOrigin)
   }
 
   if (!analyticsConfig.ready && !searchConfig.ready) {
-    return send(res, 200, {
+    return respond(200, {
       configured: false,
       state: 'unavailable',
       periodDays: days,
+      period,
+      generatedAt,
       message: 'Vercel Web Analytics och Google Search Console är inte anslutna. Inga siffror visas förrän serverkonfigurationen är klar.',
       traffic: null,
       search: null,
@@ -275,21 +365,23 @@ async function handler(req, res) {
         traffic: source('Vercel Web Analytics', 'unavailable', 'Kontoaktivering och server-token återstår.'),
         search: source('Google Search Console', 'unavailable', 'Produktionsdomänens egendom och servernyckel återstår.'),
       },
-      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION],
+      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, SEARCH_LIMITATION],
     }, allowedOrigin)
   }
 
   try {
     const [trafficData, searchData] = await Promise.all([
-      analyticsConfig.ready ? traffic(days) : Promise.resolve(null),
-      searchConfig.ready ? search(days) : Promise.resolve(null),
+      analyticsConfig.ready ? traffic(period) : Promise.resolve(null),
+      searchConfig.ready ? search(period) : Promise.resolve(null),
     ])
     const trafficState = trafficData?.state || 'unavailable'
     const searchState = searchData?.state || 'unavailable'
-    return send(res, 200, {
+    return respond(200, {
       configured: true,
       state: trafficState === 'ready' || searchState === 'ready' ? 'ready' : 'empty',
       periodDays: days,
+      period,
+      generatedAt,
       traffic: trafficData,
       search: searchData,
       sources: {
@@ -297,23 +389,25 @@ async function handler(req, res) {
         search: source('Google Search Console', searchState, searchData ? undefined : 'Produktionsdomänens egendom är inte ansluten.'),
       },
       observations: observations(searchData),
-      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION],
+      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, SEARCH_LIMITATION],
     }, allowedOrigin)
   } catch (error) {
     const provider = error instanceof ProviderError ? error.message : 'Statistiken kunde inte hämtas.'
-    return send(res, 502, {
-      configured: false,
+    return respond(502, {
+      configured: analyticsConfig.ready || searchConfig.ready,
       state: 'error',
       periodDays: days,
+      period,
+      generatedAt,
       message: provider,
       sources: {
         traffic: source('Vercel Web Analytics', analyticsConfig.ready ? 'error' : 'unavailable'),
         search: source('Google Search Console', searchConfig.ready ? 'error' : 'unavailable'),
       },
-      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION],
+      limitations: [RETURNING_VISITORS_LIMITATION, CONSENT_LIMITATION, SEARCH_LIMITATION],
     }, allowedOrigin)
   }
 }
 
 module.exports = handler
-module.exports._internals = {dateRange, traffic, vercelCount, vercelTopPages}
+module.exports._internals = {dateRange, periodRanges, traffic, vercelSummary, vercelTopPages}
