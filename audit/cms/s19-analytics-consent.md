@@ -9,7 +9,8 @@ Required model/effort: GPT-5.6 Sol / xhigh
 Branch: `codex/worker-d-s19`
 Verified starting HEAD: `7235840205326c453518fc30cabbed91ec5e003f`
 Initial PASS commit: `6f346c802d295e4a81d3ad450a77a985360c5c4c` (`CMS-S19 PASS: add consent-gated analytics workspace`).
-Corrective follow-up: a separate fix commit preserves the initial commit; its SHA is reported in the final handoff.
+Retention/visitor-sum fix: `aae5248819cdc8b68bd4d0f4b0bfa133e2d93ff0` (`CMS-S19 FIX: enforce consent expiry and clarify visitor sum`).
+Response-contract follow-up: this separate fix commit preserves both earlier commits; its SHA is reported in the final handoff.
 
 ## Outcome
 
@@ -22,7 +23,7 @@ This is an engineering PASS, not legal certification. No controller identity, pu
 ## Implemented scope
 
 - `cms/studio/features/analytics/AnalyticsConsentFeature.tsx`: accessible real-data-only dashboard and engineering/legal-status summary.
-- `cms/studio/features/analytics/analyticsClient.ts`: exact HTTPS endpoint validation, `credentials: 'omit'`, no browser authorization header, timeout, and response-shape gate.
+- `cms/studio/features/analytics/analyticsClient.ts`, `analyticsContract.ts` and `analyticsClient.test.ts`: exact HTTPS endpoint validation, `credentials: 'omit'`, no browser authorization header, timeout, strict nested response validation, and focused fail-closed fixtures.
 - `cms/studio/features/analytics/analyticsFeature.css`: Studio-token-aware responsive cards/tables, 375 px reflow, focus-compatible native controls, numeric alignment, and reduced-motion handling.
 - `cms/studio/features/analytics/types.ts` and `index.ts`: isolated S20 integration contract.
 - `api/analytics.js`: strict CMS origin, server-only Vercel/Search Console credentials, sanitised logs/errors, explicit `dailyVisitorsSum` for current/previous traffic, top pages, source freshness, and unavailable/empty/error states.
@@ -64,6 +65,7 @@ All commands ran locally without Sanity writes, deployment, provider activation,
 | `node --test orchestration/status.test.mjs` | PASS; 11/11 tests |
 | `node scripts/check-consent.js` | PASS; 56 generated pages plus pre-consent, symmetry, accept/reject, withdrawal/reopen, version/storage, deterministic expiry boundary, future/invalid clock, CSP, origin, explicit daily visitor sum, fail-closed provider, secret isolation, idempotence, and S11 fixtures |
 | `corepack pnpm run check-analytics` | PASS; 56 pages and strict origin/unavailable/empty/error/provider-schema/secret-isolation checks |
+| `npm exec tsx -- features/analytics/analyticsClient.test.ts` (Studio) | PASS; complete ready/unavailable/empty/error positives and 21 malformed nested contracts rejected fail-closed |
 | `npm exec tsc -- --noEmit` (Studio) | PASS |
 | `npm exec eslint -- features/analytics --max-warnings=0` | PASS |
 | `npm --prefix cms/studio run build` | PASS with Sanity 6.10.1 |
@@ -84,6 +86,10 @@ The 2026-08-23 W0 review identified and this follow-up corrected two accuracy ga
 2. The sum of Vercel day rows is now `dailyVisitorsSum` / **Summa dagliga besökare**. The API, Studio card, comparison, type contract, fixtures, and limitations state that the same person may be counted on multiple days. Top-page visitor values remain source-labelled row values and are not added into a period-unique total.
 
 Corrective reruns passed: `node scripts/check-consent.js`; `corepack pnpm run check-analytics`; Studio `tsc --noEmit`, feature ESLint and `sanity build`; all 30 Studio safeguards; full root build; standalone image quality; and a normalized no-diff gate for `public/**` and `public/assets/**`. No external provider or Sanity write occurred.
+
+### W0 final response-contract correction
+
+The initial Studio client checked only the response envelope, so malformed nested provider data could pass the claimed shape gate and fail during rendering. The final corrective commit moves validation to `analyticsContract.ts` and verifies every consumed nested field, allowed state, supported period, contiguous date range, source identity, row, freshness value, state relationship, string list and finite non-negative metric; CTR is bounded to 0–1. Complete provider error envelopes keep their sanitised message, while malformed data produces the existing safe error and no values. The focused suite covers four valid states and 21 negative mutations; W0 independently reran it together with Studio TypeScript and feature ESLint.
 
 ## Primary official sources reviewed
 

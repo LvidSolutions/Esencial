@@ -1,4 +1,5 @@
 import type {AnalyticsResponse} from './types'
+import {isAnalyticsResponse} from './analyticsContract'
 
 const studioEnvironment = (import.meta as ImportMeta & {
   env?: Record<string, string | undefined>
@@ -27,21 +28,7 @@ function analyticsEndpoint() {
   return endpoint.toString()
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return Boolean(value) && typeof value === 'object' && !Array.isArray(value)
-}
-
-function isAnalyticsResponse(value: unknown): value is AnalyticsResponse {
-  if (!isRecord(value)) return false
-  if (typeof value.configured !== 'boolean' || typeof value.state !== 'string') return false
-  if (typeof value.periodDays !== 'number' || typeof value.generatedAt !== 'string') return false
-  if (!isRecord(value.period) || !isRecord(value.sources) || !Array.isArray(value.limitations)) {
-    return false
-  }
-  return true
-}
-
-export async function fetchAnalytics(days: 7 | 30 | 90, signal?: AbortSignal) {
+export async function fetchAnalytics(days: 7 | 30 | 90, signal?: AbortSignal): Promise<AnalyticsResponse> {
   const endpoint = new URL(analyticsEndpoint(), window.location.origin)
   endpoint.searchParams.set('days', String(days))
 

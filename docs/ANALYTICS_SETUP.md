@@ -80,8 +80,11 @@ Studio byggs efter S20 med den publika endpointadressen `SANITY_STUDIO_ANALYTICS
 - Vercel-token skickas endast i serverns `Authorization`-header till `api.vercel.com`. Google-nyckeln används endast server-side för en kortlivad OAuth-token. Ingen hemlighet placeras i URL, CORS-svar eller CMS-data.
 - Saknad leverantörsautentisering ger `unavailable`; partiella hemligheter ger HTTP 503; nekad/felaktig providerautentisering ger sanitiserat HTTP 502.
 - Alla anrop har 8 sekunders timeout och kontrollerar dokumenterad svarsversion, datatyper och icke-negativa tal.
+- Studio godtar inte API-svaret enbart utifrån top-level-fält. Den lokala kontraktsvakten kontrollerar tillåtna lägen, exakt 7/30/90-dagars period och sammanhängande datumintervall, kanoniska tidsstämplar, de två förväntade källorna, lägesöverensstämmelse, stränglistor, kompletta trafik-/sökrader, färskhet samt ändliga icke-negativa tal; CTR måste ligga mellan 0 och 1. Ett saknat, ofullständigt eller feltypat underfält ger det säkra felet utan att någon statistik renderas.
+- Strukturerade HTTP 503/502-svar innehåller uttryckligen `traffic: null` och `search: null`, så ett legitimt konfigurations-/leverantörsfel kan visas sanitiserat samtidigt som ett felaktigt svar fortfarande nekas.
 - `traffic.dailyVisitorsSum` är summan av dagradernas `visitors`, inte ett periodunikt personmått. Begränsningen finns både i API-svaret och direkt vid Studio-måttet. Jämförelsen använder samma dagliga summa för båda perioderna.
 - Svaret innehåller vald/föregående period, genereringstid och senaste verkliga mätpunkt per källa. Tom källa visas som `empty`, aldrig som ett gammalt cachevärde.
+- Studio validerar hela svarskontraktet före rendering: tillåtna lägen och perioder, sammanhängande datumintervall, källor, begränsningar, observationer, nästlade trafik-/sökfält, rader, freshness och ändliga icke-negativa mått. Felaktiga eller ofullständiga svar stoppas utan att gamla eller delvisa siffror visas.
 - Funktionsloggen innehåller bara route, request-id, status, källäge och tid. Ingen token, provider-body eller statistikrad loggas.
 
 ## Content Security Policy
@@ -99,11 +102,18 @@ Ingen blockerande CSP läggs till i S19: den befintliga statiska frontendens all
 ```powershell
 node scripts/check-consent.js
 corepack pnpm run check-analytics
+Push-Location cms/studio
+npm exec tsx -- features/analytics/analyticsClient.test.ts
+npm exec tsc -- --noEmit
+npm exec eslint -- features/analytics --max-warnings=0
+Pop-Location
 npm --prefix cms/studio run build
 corepack pnpm run build
 ```
 
 `check-consent.js` har positiva och negativa fixtures för pre-consent-blockering, likvärdiga val, accept, avvisning, återöppning, återkallelse, versionsbyte, lokal lagring, exakt utgångsgräns, framtida/ogiltiga datum, providerfel, kontraktet för summa dagliga besökare, CSP-hash, CMS-origin, browser-secret-isolering, idempotent injektion och S11-regression. Klockan är deterministisk i fixtures. Fixture-värden är uttryckligen testdata och används inte i byggd publik output.
+
+`analyticsClient.test.ts` använder lokala assertions och den installerade `tsx`-köraren, så samma fil både typkontrolleras av Studio och kan köras direkt. Positiva fixtures täcker `ready`, `unavailable`, `empty` och ett komplett sanitiserat `error`-svar. Tjugoen negativa fixtures för top-level- och nästlade lägen, perioder, källor, begränsningar/observationer, trafik, sökrader, färskhet, ofullständiga fält, `NaN`/`Infinity`, negativa tal och CTR utanför intervallet visar att klienten failar stängt med det säkra felet. Testet kontrollerar även `credentials: omit` och att ingen browser-`Authorization` skickas.
 
 ## Mänskliga och externa blockerare
 

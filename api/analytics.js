@@ -344,6 +344,8 @@ async function handler(req, res) {
       period,
       generatedAt,
       message: 'Statistikkonfigurationen är ofullständig. Kontrollera serverns miljövariabler.',
+      traffic: null,
+      search: null,
       sources: {
         traffic: source('Vercel Web Analytics', analyticsConfig.partial ? 'error' : analyticsConfig.ready ? 'ready' : 'unavailable'),
         search: source('Google Search Console', searchConfig.partial ? 'error' : searchConfig.ready ? 'ready' : 'unavailable'),
@@ -401,6 +403,8 @@ async function handler(req, res) {
       period,
       generatedAt,
       message: provider,
+      traffic: null,
+      search: null,
       sources: {
         traffic: source('Vercel Web Analytics', analyticsConfig.ready ? 'error' : 'unavailable'),
         search: source('Google Search Console', searchConfig.ready ? 'error' : 'unavailable'),
