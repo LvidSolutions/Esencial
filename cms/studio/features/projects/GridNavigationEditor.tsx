@@ -41,6 +41,17 @@ const emptySettings: SettingsPatch = {
   gridEntries: [],
 }
 
+function loadedSettings(settings?: NavigationSettings): SettingsPatch {
+  return {
+    enabled: settings?.enabled === true,
+    headingSv: settings?.headingSv || '',
+    headingEn: settings?.headingEn || '',
+    allLabelSv: settings?.allLabelSv || '',
+    allLabelEn: settings?.allLabelEn || '',
+    gridEntries: settings?.gridEntries || [],
+  }
+}
+
 export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: Props) {
   const [draft, setDraft] = useState<SettingsPatch>(emptySettings)
   const [pairToAdd, setPairToAdd] = useState('')
@@ -50,25 +61,11 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
   const allSvId = useId()
   const allEnId = useId()
   const addId = useId()
+  const loadedDraft = useMemo(() => loadedSettings(settings), [settings])
 
   useEffect(() => {
-    setDraft({
-      enabled: settings?.enabled === true,
-      headingSv: settings?.headingSv || '',
-      headingEn: settings?.headingEn || '',
-      allLabelSv: settings?.allLabelSv || '',
-      allLabelEn: settings?.allLabelEn || '',
-      gridEntries: settings?.gridEntries || [],
-    })
-  }, [
-    settings?._id,
-    settings?.allLabelEn,
-    settings?.allLabelSv,
-    settings?.enabled,
-    settings?.gridEntries,
-    settings?.headingEn,
-    settings?.headingSv,
-  ])
+    setDraft(loadedDraft)
+  }, [loadedDraft])
 
   const pairsByReference = useMemo(() => {
     const result = new Map<string, ProjectPair>()
@@ -129,6 +126,21 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
     !draft.gridEntries.some((entry) => entry.includeInGrid === true) &&
       'minst ett uttryckligen inkluderat projektpar',
   ].filter(Boolean)
+  const hasUnsavedChanges = Boolean(
+    settings
+      ? draft.enabled !== (settings.enabled === true) ||
+          draft.headingSv !== (settings.headingSv || '') ||
+          draft.headingEn !== (settings.headingEn || '') ||
+          draft.allLabelSv !== (settings.allLabelSv || '') ||
+          draft.allLabelEn !== (settings.allLabelEn || '') ||
+          JSON.stringify(draft.gridEntries) !== JSON.stringify(settings.gridEntries || [])
+      : draft.enabled ||
+          draft.headingSv ||
+          draft.headingEn ||
+          draft.allLabelSv ||
+          draft.allLabelEn ||
+          draft.gridEntries.length,
+  )
 
   return (
     <Card padding={[3, 4]} radius={2} border>
@@ -268,7 +280,8 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
                     <Button
                       mode="ghost"
                       tone="critical"
-                      text="Ta bort"
+                      text="Ta bort från kladd"
+                      aria-label={`Ta bort ${pair ? pairLabel(pair) : `position ${index + 1}`} från kladd`}
                       onClick={() => removeEntry(index)}
                     />
                   </Inline>
@@ -291,6 +304,27 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
           </Card>
         )}
 
+        {hasUnsavedChanges && (
+          <Card padding={3} radius={2} border className="esencial-projects-feature__unsaved">
+            <Stack space={2}>
+              <Text size={1} role="status">
+                Rutnätet har osparade ändringar. Den publicerade webbplatsen är oförändrad.
+              </Text>
+              <Box>
+                <Button
+                  mode="ghost"
+                  text="Återställ laddat rutnät"
+                  aria-label="Återställ rutnät och filteretiketter till senast laddade värden"
+                  onClick={() => {
+                    setDraft(loadedDraft)
+                    setPairToAdd('')
+                  }}
+                />
+              </Box>
+            </Stack>
+          </Card>
+        )}
+
         <Inline space={2} className="esencial-projects-feature__actions">
           <Button
             text="Spara rutnät som kladd"
@@ -308,7 +342,7 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
           <Button
             mode="ghost"
             text="Öppna validering och publicering"
-            disabled={!settings}
+            disabled={!settings || hasUnsavedChanges || saving}
             onClick={onOpen}
           />
         </Inline>

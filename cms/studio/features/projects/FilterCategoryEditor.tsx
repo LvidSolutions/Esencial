@@ -86,6 +86,15 @@ export function FilterCategoryEditor({
   const canSave = Boolean(
     category && labelSv.trim() && labelEn.trim() && validOrder && projectRefs.length,
   )
+  const hasUnsavedChanges = Boolean(
+    category &&
+    (labelSv !== (category.labelSv || '') ||
+      labelEn !== (category.labelEn || '') ||
+      order !== String(category.order ?? 0) ||
+      visible !== (category.visible === true) ||
+      JSON.stringify(projectRefs) !==
+        JSON.stringify((category.projectRefs || []).map(canonicalDocumentId))),
+  )
 
   return (
     <Card padding={[3, 4]} radius={2} border>
@@ -100,7 +109,11 @@ export function FilterCategoryEditor({
               ska senare användas av både filternavigering och rutnät.
             </Text>
           </Box>
-          <Button text="Skapa tom filterkategori" onClick={onCreate} />
+          <Button
+            text="Skapa tom filterkategori"
+            disabled={hasUnsavedChanges || saving}
+            onClick={onCreate}
+          />
         </Flex>
 
         {categories.length && category ? (
@@ -114,6 +127,7 @@ export function FilterCategoryEditor({
               <Select
                 id={categorySelectId}
                 value={category._id}
+                disabled={hasUnsavedChanges || saving}
                 onChange={(event) => onSelect(event.currentTarget.value)}
               >
                 {categories.map((candidate) => (
@@ -123,6 +137,30 @@ export function FilterCategoryEditor({
                   </option>
                 ))}
               </Select>
+              {hasUnsavedChanges && (
+                <Card padding={3} radius={2} border className="esencial-projects-feature__unsaved">
+                  <Stack space={2}>
+                    <Text size={1} role="status">
+                      Osparade filterändringar finns. Spara eller återställ fälten innan du byter
+                      kategori eller skapar en ny.
+                    </Text>
+                    <Box>
+                      <Button
+                        mode="ghost"
+                        text="Återställ laddat filter"
+                        aria-label="Återställ filterkategorin till senast laddade värden"
+                        onClick={() => {
+                          setLabelSv(category.labelSv || '')
+                          setLabelEn(category.labelEn || '')
+                          setOrder(String(category.order ?? 0))
+                          setVisible(category.visible === true)
+                          setProjectRefs((category.projectRefs || []).map(canonicalDocumentId))
+                        }}
+                      />
+                    </Box>
+                  </Stack>
+                </Card>
+              )}
             </Stack>
 
             <Card padding={3} radius={2} border>
@@ -242,6 +280,7 @@ export function FilterCategoryEditor({
               <Button
                 mode="ghost"
                 text="Öppna validering och publicering"
+                disabled={hasUnsavedChanges || saving}
                 onClick={() => onOpen(category)}
               />
             </Inline>

@@ -61,6 +61,11 @@
   line-height: 1.5;
 }
 
+.esencial-projects-feature__unsaved {
+  color: var(--esencial-workspace-draft-ink);
+  line-height: 1.5;
+}
+
 @media (max-width: 56rem) {
   .esencial-projects-feature__language-grid,
   .esencial-projects-feature__form-grid,

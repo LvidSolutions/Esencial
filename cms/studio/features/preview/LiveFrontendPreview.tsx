@@ -2,6 +2,7 @@ import {
   type CSSProperties,
   type ReactNode,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -434,9 +435,10 @@ export function LiveFrontendPreview() {
 }
 
 function Control({label, children}: {label: string; children: ReactNode}) {
+  const labelId = useId()
   return (
-    <Stack space={3} className="esencial-preview-control">
-      <Text as="p" size={1} weight="semibold">
+    <Stack aria-labelledby={labelId} role="group" space={3} className="esencial-preview-control">
+      <Text as="p" id={labelId} size={1} weight="semibold">
         {label}
       </Text>
       {children}

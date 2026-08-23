@@ -29,8 +29,15 @@ export function ProjectHeadingEditor({
 
   useEffect(() => {
     setTitleSv(pair?.sv?.title || '')
+  }, [pair?.sv?._id, pair?.sv?.title])
+
+  useEffect(() => {
     setTitleEn(pair?.en?.title || '')
-  }, [pair?.en?._id, pair?.en?.title, pair?.sv?._id, pair?.sv?.title])
+  }, [pair?.en?._id, pair?.en?.title])
+
+  const hasUnsavedHeading =
+    titleSv.trim() !== (pair?.sv?.title || '').trim() ||
+    titleEn.trim() !== (pair?.en?.title || '').trim()
 
   return (
     <Card padding={[3, 4]} radius={2} border>
@@ -46,8 +53,17 @@ export function ProjectHeadingEditor({
             </Text>
           </Box>
           <Inline space={2} className="esencial-projects-feature__actions">
-            <Button text="Nytt svenskt projekt" onClick={() => onCreate('sv')} />
-            <Button mode="ghost" text="New English project" onClick={() => onCreate('en')} />
+            <Button
+              text="Nytt svenskt projekt"
+              disabled={hasUnsavedHeading || saving}
+              onClick={() => onCreate('sv')}
+            />
+            <Button
+              mode="ghost"
+              text="New English project"
+              disabled={hasUnsavedHeading || saving}
+              onClick={() => onCreate('en')}
+            />
           </Inline>
         </Flex>
 
@@ -61,6 +77,7 @@ export function ProjectHeadingEditor({
             <Select
               id={`${swedishId}-pair`}
               value={pair?.key || ''}
+              disabled={hasUnsavedHeading || saving}
               onChange={(event) => onSelect(event.currentTarget.value)}
             >
               {pairs.map((candidate) => (
@@ -69,6 +86,28 @@ export function ProjectHeadingEditor({
                 </option>
               ))}
             </Select>
+
+            {hasUnsavedHeading && (
+              <Card padding={3} radius={2} border className="esencial-projects-feature__unsaved">
+                <Stack space={2}>
+                  <Text size={1} role="status">
+                    Osparade rubrikändringar finns. Spara eller återställ fälten innan du byter
+                    projektpar.
+                  </Text>
+                  <Box>
+                    <Button
+                      mode="ghost"
+                      text="Återställ laddade rubriker"
+                      aria-label="Återställ båda rubrikerna till senast laddade värden"
+                      onClick={() => {
+                        setTitleSv(pair?.sv?.title || '')
+                        setTitleEn(pair?.en?.title || '')
+                      }}
+                    />
+                  </Box>
+                </Stack>
+              </Card>
+            )}
 
             {!pair?.complete && (
               <Card padding={3} radius={2} border role="status">
@@ -87,6 +126,7 @@ export function ProjectHeadingEditor({
                 original={pair?.sv?.title || ''}
                 project={pair?.sv}
                 saving={saving}
+                navigationBlocked={hasUnsavedHeading}
                 onChange={setTitleSv}
                 onSave={onSaveTitle}
                 onOpen={onOpen}
@@ -98,6 +138,7 @@ export function ProjectHeadingEditor({
                 original={pair?.en?.title || ''}
                 project={pair?.en}
                 saving={saving}
+                navigationBlocked={hasUnsavedHeading}
                 onChange={setTitleEn}
                 onSave={onSaveTitle}
                 onOpen={onOpen}
@@ -119,6 +160,7 @@ function LanguageHeadingField({
   original,
   project,
   saving,
+  navigationBlocked,
   onChange,
   onSave,
   onOpen,
@@ -129,6 +171,7 @@ function LanguageHeadingField({
   original: string
   project?: ProjectSummary
   saving: boolean
+  navigationBlocked: boolean
   onChange: (value: string) => void
   onSave: (project: ProjectSummary, value: string) => Promise<void>
   onOpen: (project: ProjectSummary) => void
@@ -164,6 +207,7 @@ function LanguageHeadingField({
             <Button
               mode="ghost"
               text="Öppna fullständig dokumentvy"
+              disabled={navigationBlocked}
               onClick={() => onOpen(project)}
             />
           </Inline>

@@ -1,80 +1,80 @@
-# Esencial CMS user guide
+# Esencial CMS – kort redaktörsguide
 
-This guide covers the repository content files and the protected Sanity Studio workflow. Neither route changes the current live domain by itself.
+## Börja i Arbetsyta
 
-## Before editing
+`Arbetsyta` är den dagliga redaktörsvyn. Läs den uppifrån och ned:
 
-Only use approved facts and media. Confirm client confidentiality, project names and locations, collaborators, photographer/source credits, and publication rights. Missing information is an editor task; never invent it to clear a validation message.
+1. **Projekt och filter**
+2. **Live preview**
+3. **Analys och samtycke**
 
-The Studio browser bundle must never receive `SANITY_API_TOKEN` or another provider credential. The read-only CMS build token belongs only in the CI secret store. Account, dataset, role, webhook, Studio deployment, and production-content changes are external owner actions.
+Använd länkarna högst upp för att hoppa till ett avsnitt. Allt går att använda med tangentbord. En blå fokusram visar vilket fält eller vilken knapp som är aktiv.
 
-## One bilingual project
+## Kladd är inte publicering
 
-Each project has exactly one Swedish document and one English document.
+Knappar som heter **Spara … som kladd** ändrar bara ett Sanity-kladd. Den publicerade webbplatsen påverkas inte.
 
-- `Permanent webbadress` / `slug` is the stable URL segment. Use lowercase letters, numbers, and single hyphens. Both languages use the same value. A published value is locked in Studio; changing it requires a written redirect plan and a deliberate return to an earlier workflow state.
-- `Språkkoppling` / `translationKey` joins the two documents. Use the same lowercase key with underscores in both, for example `mitt_projekt`. Never reuse it for another project.
-- `Översättningsstatus` must be `Godkänd` only after both versions have been reviewed. Machine translation is not approval.
-- `Projektnamn`, `Kort projektintroduktion`, `Titel i Google`, and `Beskrivning i Google` are written and reviewed in the document language. Google titles are at most 60 characters and descriptions at most 160.
-- Optional project facts such as year, client, team, typology, and services are published only when verified.
+När en ändring finns i formuläret men ännu inte är sparad visas texten **Osparade … ändringar finns**. Då är byte av projekt eller kategori och länken till publiceringsvyn tillfälligt spärrade, så att inget tappas bort.
 
-For the repository fallback, the matching records live in `content/projects/sv.json` and `content/projects/en.json`. They must use the same `id` and `slug`; generated files under `public/projekt/` and `public/projects/` are never edited by hand.
+- Välj **Spara … som kladd** för att behålla ändringen.
+- Välj **Återställ laddade …** för att gå tillbaka till de senast inlästa värdena. Det fungerar även om ett obligatoriskt fält har blivit tomt och därför inte kan sparas.
+- **Läs om kladdar** hämtar innehållet på nytt efter ett läs- eller anslutningsfel.
 
-## Media placement
+Slutlig publicering sker separat i Sanitys fullständiga dokumentvy. Lös alla valideringsfel och gör faktakontroll, språkgranskning och stagingkontroll innan Sanitys vanliga publiceringsknapp används.
 
-The media fields are intentionally separate:
+## Projektrubriker
 
-- `Huvudbild` is the project-page hero and project-card image.
-- `Projektgalleri` contains ordinary project photographs/visualisations in editorial order. `Visa inte publikt` keeps an item out of the exported gallery.
-- `Planritningar` contains only plans, sections, elevations, or site plans. A floor-plan asset must never also be exported as hero/gallery media.
-- `Bilder från tidigare webbplats` is a read-only migration queue. Move each item to the correct modern field before CMS publication.
+Välj ett befintligt svenskt/engelskt projektpar. Redigera bara rubriken för det språk som fältet gäller. Arbetsytan skapar inte översättningar, språkpar eller projektfakta.
 
-Every publishable image, including a floor plan, needs a meaningful alt text, photographer/source credit, and confirmed rights. The project-level rights checkbox and the four-item publication checklist must also be complete. An empty alt is only appropriate for truly decorative interface imagery, not portfolio media.
+Om ett språk saknas öppnar du den fullständiga dokumentvyn och kopplar ett redan godkänt underlag. Gissa aldrig en översättning eller ett projektnamn för att komma förbi en varning.
 
-## Draft, review, and publication
+## Filter, medlemskap och ordning
 
-Sanity draft state and the project’s `Publiceringsläge` serve different purposes:
+Filter kräver en godkänd svensk etikett, engelsk etikett, unik ordning och minst ett bekräftat publicerat språkpar. Medlemskap skapas bara genom dina uttryckliga val.
 
-1. Edit in `Arbetsyta`. Autosave writes only to the `drafts.` document; the published Sanity document is not patched.
-2. Use `Under arbete` while facts, media, SEO, or translations are incomplete.
-3. Choose `Klar att publicera` when both language documents, media, SEO, rights, and checklist are ready.
-4. Resolve every item under `Åtgärda före publicering`.
-5. Open `Slutlig kontroll och publicering`. The native Sanity document view runs the complete schema validation and performs the explicit publish action.
-6. Inspect the resulting staging build on desktop and mobile. A failed CMS export/build leaves the prior staging content in place.
+I projektrutnätet:
 
-The workspace preview is an authenticated draft preview, clearly labelled as non-public. It is not a staging URL and must not be shared as proof of publication. The current live domain changes only after a separate written launch decision.
+- **Visa** bestämmer om paret ingår i kladdkonfigurationen.
+- **Upp** och **Ned** ändrar ordning och fungerar med tangentbord.
+- **Ta bort från kladd** tar bara bort raden ur den lokala kladdkonfigurationen. Det raderar inget projekt och publicerar ingenting.
+- **Återställ laddat rutnät** återgår till senast inlästa inställningar.
 
-## Export and local validation
+Slå inte på den redaktionella konfigurationen förrän rubriker, etiketter, medlemskap och hela ordningen är granskade. Om konfigurationen saknas, är avstängd eller ogiltig används den befintliga webbplatsen oförändrad.
 
-The server-side exporter requests Sanity’s `published` perspective and filters to project status `published`. It collects and validates the complete bilingual snapshot and home-page references before replacing local generated JSON. It stops on zero projects, a missing language pair, an unstable/mismatched slug, incomplete SEO, invalid publication state, unresolved home reference, incomplete media metadata/rights, or floor-plan/media mixing.
+## Live preview
 
-Local commands:
+Välj innehållsvy, rutt och fast bredd för dator, platta eller mobil. Ett breddbyte startar en ny kontroll av den skyddade sessionen.
 
-```text
-corepack pnpm run check-content
-corepack pnpm run check-studio-workspace
-node scripts/check-cms-content.js --fixtures
-node scripts/fetch-sanity-content.js --fixtures
-corepack pnpm run build
-```
+Texten **Lokal layoutfixtur – inte autentiserad frontendpreview** betyder att vyn bara kan hjälpa till att hitta enkla text- och mediaproblem. Den bevisar inte verklig staging, riktig DOM/CSS, bilder eller autentisering och får aldrig godkännas som preview.
 
-To prepare a local NDJSON review file, run `npm run prepare:import` inside `cms/studio`. It creates draft documents only and never contacts Sanity. Importing a dataset is intentionally not scripted; dataset selection and import remain a separately approved owner action.
+Redaktionellt godkännande kräver att en behörig redaktör använder en skyddad stagingmiljö och ser **Skyddad session verifierad**. Kontrollera verkliga svenska och engelska sidor i dator-, platt- och mobilbredder samt vid 200 % zoom. Klippning, överlappning, horisontell sidscroll, trasig media eller annan blockerande diagnostik måste lösas.
 
-## Error and empty states
+## Analys och samtycke
 
-- A Studio load/save/upload error is shown as an error and states that no published document changed. Reload, verify the connection, then inspect the native document view.
-- An empty public project export is an error, not a blank-site success.
-- A missing home-page singleton is represented as an explicit empty featured-project list; invalid or unresolved references fail the build.
-- Validation messages identify the language/project and field to fix. Do not bypass them by changing schema rules or inserting placeholder facts.
+Statistikvyn visar bara strikt kontrollerad verklig leverantörsdata. **Inte ansluten**, **ingen data** och **fel** är riktiga lägen; gamla värden, exempel och uppskattningar används inte som reserv.
 
-## Developer-controlled boundaries
+**Summa dagliga besökare** är summan av dagarnas värden. Samma person kan räknas flera dagar, så måttet är inte periodunika personer. Återkommande besökare är inte tillgängligt med den valda integritetsnivån.
 
-Editors do not manually change canonical links, `hreflang`, JSON-LD, sitemap/robots generation, consent-controlled analytics, deployment rules, redirects, domains, or DNS. The full root build rechecks these shared contracts so the S8 structured-data and S11 consent behavior cannot silently regress.
+Aktivera inte statistik eller samtyckestjänst innan behörig ägare/jurist har godkänt personuppgiftsansvarig, ändamål, kategorier, leverantörer, svensk och engelsk information samt lagringstid. CORS är inte inloggning eller API-autentisering.
 
-## External/manual gates
+## Om något går fel
 
-- Sanity owner approves roles, dataset, and any import.
-- An editor pilots one Swedish/English pair through draft, review, native publication, and staging verification.
-- The owner supplies verified legacy image credits/rights or approves migration to modern media fields.
-- A developer creates any needed redirect before a published slug is changed.
-- Studio/webhook deployment and production launch require separate authorization.
+- **Laddar**: vänta tills läsningen är klar.
+- **Sparar kladd**: låt knappen vara inaktiv tills svaret kommer.
+- **Senaste läsning eller sparning är klar**: serversteget är klart; kontrollera ändå formulärens egna meddelanden om osparade värden.
+- **Fel**: följ återställnings- eller försök-igen-vägen. Felmeddelandet ska säga att ingen publicerad version ändrades.
+- **Blockerad**: den visade orsaken måste lösas före godkännande.
+- **Inte tillgänglig**: extern konfiguration eller behörighet saknas; inga reservvärden ska användas.
+
+Skriv aldrig in token, lösenord eller leverantörsnycklar i Studio, webbadresser, dokument eller supportmeddelanden.
+
+## Mänskliga steg före driftsättning
+
+Följande kan inte godkännas av den lokala testen:
+
+- verklig skyddad stagingpreview med behörig session;
+- slutliga projektfakta, översättningar, filteretiketter och medlemskap;
+- bildkrediter, rättigheter och bildval;
+- personuppgiftsansvarig, juridisk text, kategorier, leverantörer och lagringstid;
+- aktivering av Cookiebot, Vercel Web Analytics eller Search Console;
+- Studio-/webbdeploy och produktionspublicering.

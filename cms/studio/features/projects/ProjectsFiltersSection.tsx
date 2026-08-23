@@ -101,7 +101,7 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
       : saveState === 'saving'
         ? 'Sparar kladd…'
         : saveState === 'saved'
-          ? 'Alla S17-ändringar är sparade som kladd'
+          ? 'Senaste läsning eller sparning är klar'
           : 'Projekt- eller filterkladden kunde inte sparas'
   const status: FeatureStatus = {state: saveState, label: statusLabel}
   useEffect(() => {

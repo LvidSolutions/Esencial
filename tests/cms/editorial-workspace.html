@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Esencial CMS – deterministisk S21-fixtur</title>
+    <link rel="stylesheet" href="/cms/studio/components/workspace-shell/workspaceShell.css" />
+    <link rel="stylesheet" href="/cms/studio/features/projects/projectsFilters.css" />
+    <link rel="stylesheet" href="/cms/studio/features/preview/liveFrontendPreview.css" />
+    <link rel="stylesheet" href="/cms/studio/features/analytics/analyticsFeature.css" />
+    <link rel="stylesheet" href="/tests/cms/editorial-workspace.css" />
+    <script src="/tests/cms/editorial-workspace.js" defer></script>
+  </head>
+  <body>
+    <main class="esencial-workspace-shell" data-testid="workspace">
+      <a class="esencial-workspace-shell__skip" href="#esencial-workspace-projects-filters">
+        Hoppa till arbetsytans innehåll
+      </a>
+      <div class="esencial-workspace-shell__container fixture-container">
+        <header class="esencial-workspace-shell__header">
+          <p class="esencial-workspace-shell__eyebrow">Esencial CMS</p>
+          <div class="fixture-split">
+            <div class="esencial-workspace-shell__intro">
+              <h1 class="esencial-workspace-shell__title">Arbetsyta</h1>
+              <p class="esencial-workspace-shell__subtitle" data-long-copy>
+                En sammanhängande arbetsyta där en redaktör granskar projekt, filter,
+                förhandsvisning och uppföljning i samma stabila ordning.
+              </p>
+            </div>
+            <p class="esencial-workspace-shell__status" role="status" aria-live="polite">
+              <span class="fixture-badge" data-testid="workspace-status">Senaste läsning eller sparning är klar</span>
+            </p>
+          </div>
+          <p class="esencial-workspace-shell__safety fixture-card">
+            <strong>Publiceringsskydd:</strong> Alla redaktionella ändringar sparas som kladd.
+            Publicering görs separat i Sanitys dokumentvy.
+          </p>
+        </header>
+
+        <nav class="esencial-workspace-shell__tabs" aria-label="Arbetsytans avsnitt">
+          <ol>
+            <li><a href="#esencial-workspace-projects-filters"><span aria-hidden="true">01</span><span>Projekt &amp; filter</span></a></li>
+            <li><a href="#esencial-workspace-live-preview"><span aria-hidden="true">02</span><span>Live preview</span></a></li>
+            <li><a href="#esencial-workspace-analytics-consent"><span aria-hidden="true">03</span><span>Analys &amp; samtycke</span></a></li>
+          </ol>
+        </nav>
+
+        <div class="esencial-workspace-shell__flow">
+          <section id="esencial-workspace-projects-filters" class="esencial-workspace-shell__section" tabindex="-1" aria-labelledby="projects-heading">
+            <header class="esencial-workspace-shell__section-header">
+              <p class="esencial-workspace-shell__eyebrow">Avsnitt 01</p>
+              <div><h2 id="projects-heading">Projekt och filter</h2><p class="esencial-workspace-shell__section-summary" data-long-copy>Redigera rubriker, välj medlemskap och bestäm ordning utan att ändra den publicerade webbplatsen.</p></div>
+            </header>
+            <div class="esencial-projects-feature">
+              <div class="fixture-card fixture-stack">
+                <h3>Projektrubriker på svenska och engelska</h3>
+                <label for="project-pair">Projektpar att redigera</label>
+                <select id="project-pair" data-control><option>Stadens längsta bekräftade projektnamn / The city’s longest approved project heading</option></select>
+                <div class="esencial-projects-feature__language-grid">
+                  <div class="fixture-stack"><label for="heading-sv">Projektrubrik på svenska</label><input id="heading-sv" data-control value="En lång svensk projektrubrik med naturliga ordmellanrum" /></div>
+                  <div class="fixture-stack"><label for="heading-en">Project heading in English</label><input id="heading-en" data-control value="A long English project heading with natural word boundaries" /></div>
+                </div>
+                <p class="esencial-projects-feature__unsaved" role="status" data-testid="draft-status">Inga osparade formulärändringar.</p>
+                <div class="esencial-projects-feature__actions"><button type="button" data-control data-action="save">Spara rubrik som kladd</button><button type="button" data-control data-action="reset-headings" aria-label="Återställ båda rubrikerna till senast laddade värden">Återställ laddade rubriker</button><button type="button" data-control data-action="open-validation">Öppna fullständig dokumentvy</button></div>
+              </div>
+
+              <div class="fixture-card fixture-stack" data-testid="filter-editor">
+                <h3>Filterkategorier och navigation</h3>
+                <label for="filter-category">Kategori att redigera</label>
+                <select id="filter-category" data-control><option>Godkänd kategori</option></select>
+                <div class="esencial-projects-feature__form-grid">
+                  <div class="fixture-stack"><label for="filter-sv">Etikett på svenska</label><input id="filter-sv" data-control value="Godkänd kategori" /></div>
+                  <div class="fixture-stack"><label for="filter-en">Label in English</label><input id="filter-en" data-control value="Approved category" /></div>
+                </div>
+                <label for="filter-member" class="esencial-projects-feature__check-row"><input id="filter-member" type="checkbox" checked /><span>Projekt A / Project A</span></label>
+                <p class="esencial-projects-feature__unsaved" role="status" data-testid="filter-status">Inga osparade filterändringar.</p>
+                <div class="esencial-projects-feature__actions"><button type="button" data-control data-action="save-filter">Spara filter som kladd</button><button type="button" data-control data-action="reset-filter" aria-label="Återställ filterkategorin till senast laddade värden">Återställ laddat filter</button><button type="button" data-control data-action="open-filter-validation">Öppna validering och publicering</button></div>
+              </div>
+
+              <div class="fixture-card fixture-stack">
+                <h3>Inkludering och ordning i projektrutnätet</h3>
+                <p data-long-copy>Ordningen ändras med synliga Upp- och Ned-knappar. Att ta bort från kladden publicerar eller raderar ingenting.</p>
+                <div class="fixture-order-list" data-testid="order-list">
+                  <article class="esencial-projects-feature__order-row fixture-order-row" data-project="A"><strong>Projekt A / Project A</strong><button type="button" data-control data-move="up" aria-label="Flytta Projekt A upp">Upp</button><button type="button" data-control data-move="down" aria-label="Flytta Projekt A ned">Ned</button><button type="button" data-control aria-label="Ta bort Projekt A från kladd">Ta bort från kladd</button></article>
+                  <article class="esencial-projects-feature__order-row fixture-order-row" data-project="B"><strong>Projekt B / Project B</strong><button type="button" data-control data-move="up" aria-label="Flytta Projekt B upp">Upp</button><button type="button" data-control data-move="down" aria-label="Flytta Projekt B ned">Ned</button><button type="button" data-control aria-label="Ta bort Projekt B från kladd">Ta bort från kladd</button></article>
+                </div>
+                <p class="esencial-projects-feature__unsaved" role="status" data-testid="order-status">Rutnätsordningen är sparad som kladd.</p>
+                <button type="button" data-control data-action="reset-order" aria-label="Återställ rutnätet till senast laddad ordning">Återställ laddat rutnät</button>
+              </div>
+            </div>
+          </section>
+
+          <section id="esencial-workspace-live-preview" class="esencial-workspace-shell__section" tabindex="-1" aria-labelledby="preview-heading">
+            <header class="esencial-workspace-shell__section-header"><p class="esencial-workspace-shell__eyebrow">Avsnitt 02</p><div><h2 id="preview-heading">Live preview</h2><p class="esencial-workspace-shell__section-summary" data-long-copy>Den lokala fixturen är endast layoutbevis och får aldrig godkännas som skyddad frontendpreview.</p></div></header>
+            <div class="esencial-frontend-preview fixture-stack">
+              <div class="fixture-card esencial-preview-control" role="group" aria-labelledby="viewport-label"><p id="viewport-label"><strong>Viewport</strong></p><div class="esencial-preview-control-row"><button type="button" data-control aria-pressed="true">Dator 1440</button><button type="button" data-control aria-pressed="false">Platta 768</button><button type="button" data-control aria-pressed="false">Mobil 390</button></div></div>
+              <h3>Frontendrenderer</h3>
+              <div class="fixture-card fixture-blocked" role="alert" data-state="blocked"><strong>Granskning blockerad</strong><p>Lokal layoutfixtur – inte autentiserad frontendpreview. Verifierad exakt origin, skyddad session och färsk viewport-handshake saknas.</p></div>
+              <div class="esencial-preview-stage"><div class="esencial-preview-fallback"><header><span>Esencial</span><span>Layoutfixtur</span></header><main><h4 data-long-copy>Det här är inte den riktiga frontendens DOM, CSS, tillgångar eller bildrendering</h4></main></div></div>
+            </div>
+          </section>
+
+          <section id="esencial-workspace-analytics-consent" class="esencial-workspace-shell__section" tabindex="-1" aria-labelledby="analytics-heading">
+            <header class="esencial-workspace-shell__section-header"><p class="esencial-workspace-shell__eyebrow">Avsnitt 03</p><div><h2 id="analytics-heading">Analys och samtycke</h2><p class="esencial-workspace-shell__section-summary" data-long-copy>Endast strikt validerad verklig data visas; komplett ägar- och juridiskt godkännande krävs före aktivering.</p></div></header>
+            <div class="esencial-analytics fixture-stack">
+              <h3>Webbplatsens utveckling</h3>
+              <div class="fixture-card" role="status" data-state="unavailable"><h4>Statistik väntar på anslutning</h4><p>Ingen godkänd leverantör är ansluten. CORS är inte autentisering och inga reservvärden visas.</p></div>
+              <div class="fixture-card esencial-analytics__metric"><p>Summa dagliga besökare</p><strong>Inte tillgängligt</strong><p>Samma person kan räknas på flera dagar; detta är inte periodunika personer.</p></div>
+              <div class="fixture-card fixture-stack"><h4>Tekniska tillstånd</h4><div class="fixture-state-actions"><button type="button" data-control data-state-action="loading">Laddar</button><button type="button" data-control data-state-action="saved">Sparad</button><button type="button" data-control data-state-action="error">Fel</button><button type="button" data-control data-state-action="blocked">Blockerad</button><button type="button" data-control data-state-action="unavailable">Inte tillgänglig</button></div><p role="status" aria-live="polite" data-testid="state-message">Inte tillgänglig: ingen godkänd leverantör är ansluten.</p></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
