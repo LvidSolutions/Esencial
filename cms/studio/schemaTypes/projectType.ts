@@ -71,7 +71,7 @@ export const projectType = defineType({
     {name: 'seo', title: '4. Granskning och sok'},
   ],
   fields: [
-    defineField({name: 'title', title: 'Projektnamn', type: 'string', group: 'basics', validation: (Rule) => Rule.required()}),
+    defineField({name: 'title', title: 'Projektrubrik för vald språkversion', type: 'string', group: 'basics', description: 'Redigera bara den faktiska rubriken för dokumentets valda språk. Skapa eller översätt aldrig den andra språkversionen utan godkänt underlag; språkkoppling, slug och publiceringskontroller gäller fortfarande.', validation: (Rule) => Rule.required()}),
     defineField({name: 'slug', title: 'Permanent webbadress', type: 'slug', group: 'basics', description: 'Samma värde ska användas på svenska och engelska. Ett publicerat värde låses; en ändring kräver först status Under arbete/Klar att publicera och en separat omdirigeringsplan.', options: {source: 'title'}, readOnly: ({document}) => document?.status === 'published', validation: (Rule) => Rule.required().custom((value) => !value?.current || slugPattern.test(value.current) ? true : 'Använd endast små bokstäver, siffror och enkla bindestreck, till exempel “mitt-projekt”.')}),
     defineField({name: 'language', title: 'Sprak', type: 'string', group: 'basics', options: {list: [{title: 'Svenska', value: 'sv'}, {title: 'English', value: 'en'}]}, validation: (Rule) => Rule.required()}),
     defineField({name: 'translationKey', title: 'Språkkoppling', type: 'string', group: 'basics', description: 'Kopiera exakt samma stabila nyckel till svensk och engelsk version, till exempel “mitt_projekt”. Ett publicerat värde är låst.', readOnly: ({document}) => document?.status === 'published', validation: (Rule) => Rule.custom((value, context) => {
