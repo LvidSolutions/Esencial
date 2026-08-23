@@ -340,15 +340,15 @@
       "title": "Integrated CMS workspace and frontend synchronization",
       "ownerLane": "Worker D",
       "dependencies": ["S17", "S18", "S19"],
-      "state": "RUNNING",
-      "stateReason": "Worker D is integrating S17-S19 from clean coordinator commit bdcd64a in isolated branch codex/worker-d-s20; no production, provider, Sanity-write or deployment action is authorized.",
+      "state": "DONE",
+      "stateReason": "Integrated commit 79bc38e composes S17-S19, registers published navigation, synchronizes authored grid/filter/feed behavior and removes dormant Studio paths; W0 independently repeated 14 integration/negative cases, Sanity export fixtures, 30 Studio safeguards, consent/analytics, TypeScript, lint, Studio build and the full 56-page/image-quality build with exact inactive public fallback.",
       "model": "GPT-5.6 Sol",
       "effort": "high",
       "ownedPaths": ["cms/studio/components/studioTools.tsx", "cms/studio/components/studioTools.css", "cms/studio/sanity.config.ts", "cms/studio/deskStructure.ts", "audit/cms/s20-integration.md"],
       "sharedHotspots": ["cms/studio/package.json", "cms/studio/package-lock.json", "cms/studio/schemaTypes/index.ts", "package.json", "scripts/build-project-pages.js"],
       "acceptanceCommands": ["npm --prefix cms/studio run build", "corepack pnpm run check-studio-workspace", "corepack pnpm run build"],
       "reportPaths": ["audit/cms/s20-integration.md"],
-      "evidence": [],
+      "evidence": ["audit/cms/s20-integration.md", "cms/studio/components/studioTools.integration.test.mjs", "scripts/build-project-pages-navigation.test.mjs", "scripts/check-studio-workspace.js"],
       "manualBlockers": ["No production publish, dataset migration or remote Studio deployment without separate authorization."]
     },
     {
