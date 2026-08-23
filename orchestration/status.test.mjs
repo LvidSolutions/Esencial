@@ -74,6 +74,17 @@ test('CMS work unlocks only after S14 and verified Sanity access', () => {
   assert.equal(states.get('S16'), 'READY');
 });
 
+test('Studio preview and final correction cannot bypass specialist stages', () => {
+  const registry = clone(sourceRegistry);
+  registry.stages.find((stage) => stage.id === 'S27').dependencies = ['S23'];
+  registry.stages.find((stage) => stage.id === 'S28').dependencies = ['S27'];
+  const errors = validate(registry).errors.join('\n');
+  assert.match(errors, /S27 must depend on S24/);
+  assert.match(errors, /S27 must depend on S25/);
+  assert.match(errors, /S28 must depend on S24/);
+  assert.match(errors, /S28 must depend on S26/);
+});
+
 test('DONE without evidence is rejected', () => {
   const registry = clone(sourceRegistry);
   const stage = registry.stages.find((candidate) => candidate.id === 'S8');

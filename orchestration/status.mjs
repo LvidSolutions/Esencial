@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const EXPECTED_STAGE_IDS = Array.from({ length: 23 }, (_, index) => `S${index}`);
+const EXPECTED_STAGE_IDS = Array.from({ length: 29 }, (_, index) => `S${index}`);
 const ACTIVE_OWNERSHIP_STATES = new Set(['READY', 'RUNNING', 'TESTING']);
 const ACTIVE_WORK_STATES = new Set(['RUNNING', 'TESTING']);
 const WORKER_LANES = new Set(['Worker A', 'Worker B', 'Worker C', 'Worker D']);
@@ -30,6 +30,12 @@ const MODEL_MATRIX = {
   S20: ['GPT-5.6 Sol', 'high'],
   S21: ['GPT-5.6 Sol', 'high'],
   S22: ['GPT-5.6 Sol', 'xhigh'],
+  S23: ['GPT-5.6 Sol', 'xhigh'],
+  S24: ['GPT-5.6 Sol', 'xhigh'],
+  S25: ['GPT-5.6 Sol', 'xhigh'],
+  S26: ['GPT-5.6 Sol', 'high'],
+  S27: ['GPT-5.6 Sol', 'xhigh'],
+  S28: ['GPT-5.6 Sol', 'xhigh'],
 };
 
 const DEPENDENCY_GUARDS = {
@@ -41,6 +47,12 @@ const DEPENDENCY_GUARDS = {
   S20: ['S17', 'S18', 'S19'],
   S21: ['S20'],
   S22: ['S21'],
+  S23: ['S22'],
+  S24: ['S23'],
+  S25: ['S23'],
+  S26: ['S23'],
+  S27: ['S24', 'S25'],
+  S28: ['S24', 'S25', 'S26', 'S27'],
 };
 
 function readJson(filePath) {

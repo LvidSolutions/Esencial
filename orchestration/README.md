@@ -1,6 +1,6 @@
 # Esencial orchestration bootstrap
 
-This directory is the read-only control plane for five Codex contexts: one coordinator and four workers. The SEO plan is S0–S14; the post-SEO Sanity extension is S15–S22 and is specified in `CMS_EXTENSION_PLAN.md`.
+This directory is the control plane for five Codex contexts: one coordinator and four workers. The SEO plan is S0–S14, the first Sanity extension is S15–S22, and the Studio correction is S23–S28 in `STUDIO_POLISH_EXTENSION_PLAN.md`.
 
 ## Commands
 
@@ -16,7 +16,7 @@ The status command validates structure, dependencies, evidence, model settings, 
 
 ## Five-context allocation
 
-- Coordinator: shared files, integration, S0/S14, Sanity access gate S15 and final CMS validation S22.
+- Coordinator: shared files, integration, S0/S14, Sanity access gate S15, final CMS validation S22, report architecture S23 and Studio correction validation S28.
 - Worker A: parity, semantics, accessibility, CMS visual system and editorial QA.
 - Worker B: technical/international SEO, structured data, projects and filter taxonomy.
 - Worker C: project/image SEO, performance and live frontend preview.

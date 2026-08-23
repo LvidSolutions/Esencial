@@ -26,8 +26,8 @@
     "updatedAt": { "type": "string", "minLength": 10 },
     "stages": {
       "type": "array",
-      "minItems": 23,
-      "maxItems": 23,
+      "minItems": 29,
+      "maxItems": 29,
       "items": { "$ref": "#/$defs/stage" }
     }
   },
@@ -57,7 +57,7 @@
         "manualBlockers"
       ],
       "properties": {
-        "id": { "type": "string", "pattern": "^S(?:[0-9]|1[0-9]|2[0-2])$" },
+        "id": { "type": "string", "pattern": "^S(?:[0-9]|1[0-9]|2[0-8])$" },
         "title": { "type": "string", "minLength": 1 },
         "ownerLane": { "enum": ["Coordinator", "Worker A", "Worker B", "Worker C", "Worker D"] },
         "dependencies": { "$ref": "#/$defs/stringArray" },
