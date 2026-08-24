@@ -469,7 +469,7 @@
       "ownerLane": "Coordinator",
       "dependencies": ["S24", "S25", "S26", "S27"],
       "state": "BLOCKED_HUMAN",
-      "stateReason": "S24-S26 are integrated and passed the complete local release suite. Git main push and Vercel build are the authorised release action; S27 exact-preview acceptance remains an explicit external human gate.",
+      "stateReason": "S24-S26 are integrated and passed the complete local release suite. GitHub main and both Git-connected Vercel projects are READY at 69db1e9; S27 exact-preview acceptance remains an explicit external human gate.",
       "model": "GPT-5.6 Sol",
       "effort": "xhigh",
       "ownedPaths": ["audit/cms/s28-studio-correction-validation.md", "docs/CMS_USER_GUIDE.md", "orchestration/**"],

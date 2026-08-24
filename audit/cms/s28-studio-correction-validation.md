@@ -27,4 +27,4 @@ Exact draft preview requires an approved HTTPS staging origin/session and server
 
 ## Release result
 
-The committed repository is ready for the authorised Git `main` push and Vercel Git-connected build. Local validation ran on Node 24 because Node 22 was unavailable on this workstation; the repository/CI engine contract remains Node 22 and Vercel must be checked after deployment.
+GitHub `main` and both Git-connected Vercel projects are `READY` at `69db1e9` (2026-08-24): production `https://esencial-c05g6coht-lvid-s-projects.vercel.app` and staging `https://esencial-staging-cmtcpoey8-lvid-s-projects.vercel.app`. Vercel's protected deployment URLs intentionally return `noindex`; the public domain must remain the indexing target. Local validation ran on Node 24 because Node 22 was unavailable on this workstation; Vercel correctly used the repository's Node 22 contract.
