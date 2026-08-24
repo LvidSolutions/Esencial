@@ -405,9 +405,12 @@ function injectAnalytics(directory = publicDirectory, environment = process.env)
 
 if (require.main === module) {
   const changed = injectAnalytics()
-  const enabled = Boolean(consentConfiguration())
-  console.log(enabled
+  const legacyId = legacyCookiebotId()
+  const fullConfiguration = legacyId ? null : consentConfiguration()
+  console.log(fullConfiguration
     ? `Injected versioned consent controls and consent-gated Vercel Web Analytics into ${changed} pages.`
+    : legacyId
+      ? `Injected Cookiebot-controlled, consent-gated Vercel Web Analytics into ${changed} pages.`
     : `Disabled analytics on ${changed} pages because approved consent configuration is not complete.`)
 }
 
