@@ -1,4 +1,13 @@
 export const WORKSPACE_SECTION_CONTRACTS = {
+  'content-media': {
+    id: 'content-media',
+    navigationLabel: 'Redigera innehåll',
+    heading: 'Projektinnehåll och bilder',
+    ownerStage: 'S25',
+    featureBoundary: 'cms/studio/features/content/**',
+    purpose:
+      'Draft-only project text, SEO, media review and category membership with safe recovery.',
+  },
   'projects-filters': {
     id: 'projects-filters',
     navigationLabel: 'Redigera projekt',
@@ -32,6 +41,7 @@ export type WorkspaceSectionId = keyof typeof WORKSPACE_SECTION_CONTRACTS
 export type WorkspaceSectionContract = (typeof WORKSPACE_SECTION_CONTRACTS)[WorkspaceSectionId]
 
 export const WORKSPACE_SECTION_ORDER = [
+  'content-media',
   'projects-filters',
   'live-preview',
   'analytics-consent',

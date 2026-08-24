@@ -16,12 +16,11 @@
     "sanity"
   ],
   "dependencies": {
-    "@sanity/dashboard": "6.0.18",
+    "@sanity/ui": "^3.3.5",
     "@sanity/vision": "6.10.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "sanity": "6.10.1",
-    "sanity-plugin-dashboard-widget-document-list": "^3.0.9",
     "styled-components": "^6.1.18"
   },
   "devDependencies": {

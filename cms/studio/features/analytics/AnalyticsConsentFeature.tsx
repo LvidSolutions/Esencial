@@ -200,7 +200,7 @@ function Dashboard({data}: {data: AnalyticsResponse}) {
 function MetricGrid({data}: {data: AnalyticsResponse}) {
   const metrics = [
     {
-      label: 'Besökare, dagsumma',
+      label: 'Summa dagliga besökare',
       value: data.traffic ? numberFormatter.format(data.traffic.dailyVisitorsSum) : 'Inte tillgängligt',
       definition: 'Antalet besökare per dag, summerat för perioden. Samma person kan räknas på flera dagar.',
       note: data.traffic ? comparison(data.traffic.dailyVisitorsSum, data.traffic.previous.dailyVisitorsSum) : undefined,
@@ -212,8 +212,7 @@ function MetricGrid({data}: {data: AnalyticsResponse}) {
       note: data.traffic ? comparison(data.traffic.pageviews, data.traffic.previous.pageviews) : undefined,
     },
     {
-      label: 'Återkommande besökare',
-      value: 'Inte tillgängligt',
+      label: 'Återkommande besökare', value: 'Inte tillgängligt',
       definition: 'Om samma person kom tillbaka vid ett senare tillfälle.',
       note: 'Kan inte mätas med den valda integritetsnivån.',
     },

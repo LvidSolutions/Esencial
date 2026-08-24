@@ -116,7 +116,7 @@ export function WorkspaceShell({
 
           <EditorialStatusOverview />
 
-          <nav className="esencial-workspace-shell__tabs" aria-label="Arbetsytans tre steg">
+          <nav className="esencial-workspace-shell__tabs" aria-label="Arbetsytans steg">
             <ol>
               {orderedSections.map((section, index) => {
                 const contract = WORKSPACE_SECTION_CONTRACTS[section.id]

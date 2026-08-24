@@ -4,9 +4,10 @@
 
 `Arbetsyta` är den dagliga redaktörsvyn. Läs den uppifrån och ned:
 
-1. **Projekt och filter**
-2. **Live preview**
-3. **Analys och samtycke**
+1. **Redigera innehåll**
+2. **Projekt och filter**
+3. **Live preview**
+4. **Analys och samtycke**
 
 Använd länkarna högst upp för att hoppa till ett avsnitt. Allt går att använda med tangentbord. En blå fokusram visar vilket fält eller vilken knapp som är aktiv.
 
@@ -21,6 +22,14 @@ När en ändring finns i formuläret men ännu inte är sparad visas texten **Os
 - **Läs om kladdar** hämtar innehållet på nytt efter ett läs- eller anslutningsfel.
 
 Slutlig publicering sker separat i Sanitys fullständiga dokumentvy. Lös alla valideringsfel och gör faktakontroll, språkgranskning och stagingkontroll innan Sanitys vanliga publiceringsknapp används.
+
+## Projektinnehåll och bilder
+
+Välj först projekt och språkversion i **Redigera innehåll**. Vanliga projektfält, kort introduktion och SEO-fält kan ändras direkt och sparas tillsammans som kladd.
+
+Varje bild visar förhandsvisning, alt-text, kredit, rättigheter, asset och dimensioner. Välj **Ersätt eller redigera via Sanity** för att använda Sanitys vanliga bildväljare/uppladdning. Välj **Ta bort referensen från kladden** endast när bilden inte längre ska användas i projektet: originalasseten och den publicerade versionen raderas inte, och **Återställ** finns tills en senare kladdändring har gjorts.
+
+Längre formaterad text, relaterade projekt och avancerade bildinställningar öppnas i Sanitys native-formulär. Det bevarar validering och är den tydliga reservvägen, inte något du behöver lära dig för vanlig redigering.
 
 ## Projektrubriker
 

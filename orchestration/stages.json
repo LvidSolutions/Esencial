@@ -6,7 +6,7 @@
   "integrationRef": "main",
   "totalContexts": 5,
   "maxWorkers": 4,
-  "updatedAt": "2026-08-23",
+  "updatedAt": "2026-08-24",
   "stages": [
     {
       "id": "S0",
@@ -404,15 +404,15 @@
       "title": "Studio information architecture and visual polish",
       "ownerLane": "Worker A",
       "dependencies": ["S23"],
-      "state": "RUNNING",
-      "stateReason": "Dispatched to Worker A in isolated worktree Esencial-worker-a-s24 at d518ec6; navigation, Releases removal and visual polish are in progress.",
+      "state": "DONE",
+      "stateReason": "Integrated commit d8caf3d disables Releases/Scheduled Drafts, moves the four useful queues into the novice-facing Arbetsyta, and retains native publishing as an explicitly advanced safety view. Studio build, TypeScript, lint, workspace and UX checks passed.",
       "model": "GPT-5.6 Sol",
       "effort": "xhigh",
       "ownedPaths": ["cms/studio/sanity.config.ts", "cms/studio/deskStructure.ts", "cms/studio/theme/**", "cms/studio/components/workspace-shell/**", "audit/cms/s24-studio-information-architecture.md"],
       "sharedHotspots": ["cms/studio/components/studioTools.tsx", "cms/studio/package.json", "scripts/check-studio-workspace.js"],
       "acceptanceCommands": ["npm --prefix cms/studio run build", "corepack pnpm run check-studio-workspace", "node scripts/check-cms-ux.js"],
       "reportPaths": ["audit/cms/s24-studio-information-architecture.md"],
-      "evidence": [],
+      "evidence": ["audit/cms/s24-studio-information-architecture.md", "cms/studio/sanity.config.ts"],
       "manualBlockers": ["Do not deploy Studio or publish Sanity documents."]
     },
     {
@@ -420,15 +420,15 @@
       "title": "Complete draft content and media workspace",
       "ownerLane": "Worker B",
       "dependencies": ["S23"],
-      "state": "RUNNING",
-      "stateReason": "Dispatched to Worker B in isolated worktree Esencial-worker-b-s25 at d518ec6; complete draft text and media editing are in progress.",
+      "state": "DONE",
+      "stateReason": "Integrated commit d3de8b3 and coordinator composition expose draft-only project text, SEO, media review/recovery and the existing bilingual filter taxonomy in the first Arbetsyta step. Focused content, Studio TypeScript/lint/build and workspace checks passed.",
       "model": "GPT-5.6 Sol",
       "effort": "xhigh",
       "ownedPaths": ["cms/studio/features/content/**", "scripts/check-cms-content-workspace.js", "tests/cms/content-workspace/**", "audit/cms/s25-content-media-workspace.md"],
       "sharedHotspots": ["cms/studio/components/studioTools.tsx", "cms/studio/schemaTypes/**", "cms/studio/features/projects/**", "package.json"],
       "acceptanceCommands": ["node scripts/check-cms-content-workspace.js", "npm --prefix cms/studio run build", "corepack pnpm run check-studio-workspace"],
       "reportPaths": ["audit/cms/s25-content-media-workspace.md"],
-      "evidence": [],
+      "evidence": ["audit/cms/s25-content-media-workspace.md", "scripts/check-cms-content-workspace.js"],
       "manualBlockers": ["No invented project facts, translations, image credits or rights confirmations; no dataset publication or asset deletion."]
     },
     {
@@ -436,15 +436,15 @@
       "title": "Google SEO and traffic trend graph",
       "ownerLane": "Worker D",
       "dependencies": ["S23"],
-      "state": "RUNNING",
-      "stateReason": "Dispatched to Worker D in isolated worktree Esencial-worker-d-s26 at d518ec6; validated daily provider series and accessible chart work are in progress.",
+      "state": "DONE",
+      "stateReason": "Integrated commit bb37c3f adds validated 7/30/90-day Vercel/Search Console series, an accessible graph and plain Swedish metric explanations. Provider activation remains fail-closed without owner credentials.",
       "model": "GPT-5.6 Sol",
       "effort": "high",
       "ownedPaths": ["cms/studio/features/analytics/**", "api/analytics.js", "docs/ANALYTICS_SETUP.md", "audit/cms/s26-analytics-trends.md"],
       "sharedHotspots": ["cms/studio/components/studioTools.tsx", "scripts/check-consent.js", ".env.example", "vercel.json"],
       "acceptanceCommands": ["node scripts/check-consent.js", "npm --prefix cms/studio run build", "corepack pnpm run check-analytics"],
       "reportPaths": ["audit/cms/s26-analytics-trends.md"],
-      "evidence": [],
+      "evidence": ["audit/cms/s26-analytics-trends.md", "docs/ANALYTICS_SETUP.md"],
       "manualBlockers": ["Real Search Console/Vercel connection requires owner credentials; privacy/legal approval remains human."]
     },
     {
@@ -452,8 +452,8 @@
       "title": "Exact draft preview and field synchronization",
       "ownerLane": "Worker C",
       "dependencies": ["S24", "S25"],
-      "state": "PENDING",
-      "stateReason": "Wait for the navigation and complete editor contracts, then bind draft changes to the real frontend renderer, click-to-edit and layout blockers without exposing tokens.",
+      "state": "BLOCKED_HUMAN",
+      "stateReason": "The real renderer, draft/published/staging identities, click-to-edit contract and diagnostics already exist from S18/S20 and update through Sanity listen(). Exact acceptance is blocked only by the missing authorized HTTPS preview origin/session and server-only renderer credential; the local fixture remains explicitly non-exact.",
       "model": "GPT-5.6 Sol",
       "effort": "xhigh",
       "ownedPaths": ["cms/studio/features/preview/**", "preview/**", "scripts/check-cms-layout.js", "audit/cms/s27-exact-live-preview.md"],
@@ -468,16 +468,16 @@
       "title": "Integrated Studio correction validation and release handoff",
       "ownerLane": "Coordinator",
       "dependencies": ["S24", "S25", "S26", "S27"],
-      "state": "PENDING",
-      "stateReason": "Wait for all specialist lanes, then integrate conflict-aware, run the complete Node 22 release suite, update the editor guide and prepare one clean main push/deploy gate.",
+      "state": "BLOCKED_HUMAN",
+      "stateReason": "S24-S26 are integrated and passed the complete local release suite. Git main push and Vercel build are the authorised release action; S27 exact-preview acceptance remains an explicit external human gate.",
       "model": "GPT-5.6 Sol",
       "effort": "xhigh",
       "ownedPaths": ["audit/cms/s28-studio-correction-validation.md", "docs/CMS_USER_GUIDE.md", "orchestration/**"],
       "sharedHotspots": ["**"],
       "acceptanceCommands": ["corepack pnpm run build", "npm --prefix cms/studio run build", "node scripts/check-cms-ux.js", "corepack pnpm run check-reference-parity", "node orchestration/status.mjs"],
       "reportPaths": ["audit/cms/s28-studio-correction-validation.md", "docs/CMS_USER_GUIDE.md"],
-      "evidence": [],
-      "manualBlockers": ["Push, production deploy, provider activation, legal sign-off and real staging acceptance require explicit final handling."]
+      "evidence": ["audit/cms/s28-studio-correction-validation.md", "audit/cms/s25-content-media-workspace.md", "audit/cms/s26-analytics-trends.md"],
+      "manualBlockers": ["Exact staging acceptance, provider activation and legal sign-off require authorised external configuration; the Git main push and Vercel deployment are handled as the release action."]
     }
   ]
 }

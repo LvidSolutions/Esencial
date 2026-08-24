@@ -10,6 +10,7 @@ import {createProjectsFiltersSection} from '../features/projects/ProjectsFilters
 import type {FeatureStatus} from '../features/projects/types'
 import {LiveFrontendPreview} from '../features/preview/LiveFrontendPreview'
 import {AnalyticsConsentFeature} from '../features/analytics/AnalyticsConsentFeature'
+import {createContentMediaWorkspace, type ContentMediaStatus} from '../features/content'
 
 export function composeWorkspaceSections(
   sections: readonly WorkspaceSectionDefinition[],
@@ -18,12 +19,30 @@ export function composeWorkspaceSections(
 }
 
 export function VisualWorkspaceTool() {
+  const [contentStatus, setContentStatus] = useState<ContentMediaStatus>({
+    state: 'loading',
+    label: 'Laddar innehåll och bilder…',
+  })
   const [projectStatus, setProjectStatus] = useState<FeatureStatus>({
     state: 'loading',
     label: 'Laddar projekt och filter…',
   })
-  const workspaceStatus: WorkspaceShellStatus = projectStatus
+  const workspaceStatus: WorkspaceShellStatus =
+    contentStatus.state === 'error' || projectStatus.state === 'error'
+      ? contentStatus.state === 'error'
+        ? contentStatus
+        : projectStatus
+      : contentStatus.state === 'saving' || projectStatus.state === 'saving'
+        ? contentStatus.state === 'saving'
+          ? contentStatus
+          : projectStatus
+        : contentStatus.state === 'loading' || projectStatus.state === 'loading'
+          ? contentStatus.state === 'loading'
+            ? contentStatus
+            : projectStatus
+          : contentStatus
   const sections = composeWorkspaceSections([
+    createContentMediaWorkspace(setContentStatus),
     createProjectsFiltersSection(setProjectStatus),
     {
       id: 'live-preview',
@@ -42,7 +61,7 @@ export function VisualWorkspaceTool() {
   return (
     <WorkspaceShell
       title="Arbetsyta"
-      subtitle="En sammanhängande arbetsyta för projekt, filter, förhandsvisning och uppföljning. Avsnitten följer samma ordning på stor och liten skärm."
+      subtitle="Redigera innehåll och bilder, ordna projekt och kategorier, kontrollera sidan och följ resultatet – i samma enkla arbetsflöde."
       safetyNotice="Alla redaktionella ändringar sparas som kladd. Endast validerade, native-publicerade dokument får nå ett godkänt stagingbygge; analys och preview förblir blockerade tills deras externa skydd är verifierade."
       status={workspaceStatus}
       sections={sections}
