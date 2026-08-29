@@ -172,7 +172,8 @@ function validateCmsWorkflow(source) {
   errorIf(!/name: Verify CMS build scope[\s\S]*?git diff --exit-code/.test(validate), errors, `${filename}: CMS build scope check is required before publication`)
   errorIf(!/name: Upload validated website/.test(validate), errors, `${filename}: validated website artifact upload is required`)
   errorIf(!/^    needs: validate$/m.test(publish), errors, `${filename}: publish job must require completed validation`)
-  errorIf(!/^    if: github\.event_name == 'workflow_dispatch' && inputs\.authorize_publish == true && github\.ref == 'refs\/heads\/main'$/m.test(publish), errors, `${filename}: publish must require a separate manual authorization on main`)
+  const publishCondition = "(github.event_name == 'repository_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.authorize_publish == true)) && github.ref == 'refs/heads/main'"
+  errorIf(!new RegExp(`^    if: ${publishCondition.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'm').test(publish), errors, `${filename}: publish must allow only the signed repository dispatch or a separately authorized manual run on main`)
   errorIf(!/^    permissions:\n      contents: write$/m.test(publish), errors, `${filename}: write permission must be isolated to publish`)
   errorIf(/secrets\./.test(publish), errors, `${filename}: write-capable publish job must not receive repository secrets`)
   errorIf(!/name: Download validated website/.test(publish), errors, `${filename}: publish job must consume the validated artifact`)
@@ -235,7 +236,7 @@ function runFixtures(seoSource, cmsSource, packageSource) {
   }
   const cmsFixtures = [
     ['missing CMS integrated build', removeStep(cmsSource, 'Run complete integrated release gates on CMS content'), 'required gate is missing'],
-    ['automatic CMS publication', cmsSource.replace("    if: github.event_name == 'workflow_dispatch' && inputs.authorize_publish == true && github.ref == 'refs/heads/main'", "    if: github.ref == 'refs/heads/main'"), 'separate manual authorization'],
+    ['unguarded CMS publication', cmsSource.replace("    if: (github.event_name == 'repository_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.authorize_publish == true)) && github.ref == 'refs/heads/main'", "    if: github.ref == 'refs/heads/main'"), 'signed repository dispatch'],
   ]
   for (const [label, source, expected] of cmsFixtures) {
     const errors = validateCmsWorkflow(source)

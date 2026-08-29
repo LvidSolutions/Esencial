@@ -38,6 +38,7 @@ export function createPreviewPresentationPlugins() {
         initial: previewOrigin.origin,
         previewMode: {
           enable: PREVIEW_ENABLE_PATH,
+          disable: '/api/draft-mode/disable',
           shareAccess: false,
         },
       },

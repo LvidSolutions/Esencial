@@ -128,7 +128,7 @@ jobs:
             done
             if [[ -z "$first_failure" ]]; then
               echo ""
-              echo "Published CMS content passed the complete release gate. Repository-dispatch runs stop here; a separate manual run with authorize_publish=true is required before any push."
+              echo "Published CMS content passed the complete release gate. A signed Sanity repository-dispatch may publish only this validated artifact; manual runs still require authorize_publish=true."
             else
               echo ""
               echo "First actionable failure: **${first_failure}**. Open that step and fix its first reported error. No website artifact was eligible for publication."
@@ -137,7 +137,7 @@ jobs:
 
   publish:
     needs: validate
-    if: github.event_name == 'workflow_dispatch' && inputs.authorize_publish == true && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'repository_dispatch' || (github.event_name == 'workflow_dispatch' && inputs.authorize_publish == true)) && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

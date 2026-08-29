@@ -3,6 +3,16 @@
   "buildCommand": "npm run build",
   "outputDirectory": "public",
   "trailingSlash": true,
+  "rewrites": [
+    {
+      "source": "/__preview/render",
+      "destination": "/api/preview-render"
+    },
+    {
+      "source": "/__preview/render/",
+      "destination": "/api/preview-render"
+    }
+  ],
   "redirects": [
     {
       "source": "/:path*",
@@ -44,6 +54,15 @@
   ],
   "functions": {
     "api/analytics.js": {
+      "maxDuration": 10
+    },
+    "api/preview-render.js": {
+      "maxDuration": 10
+    },
+    "api/draft-mode/enable.js": {
+      "maxDuration": 10
+    },
+    "api/sanity-publish.js": {
       "maxDuration": 10
     }
   }
