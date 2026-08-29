@@ -114,9 +114,10 @@ function decoratePreviewHtml(html, {documentId, parentOrigin, perspective, route
 }
 
 async function renderProjectPreview({perspective, route}) {
-  // Keep the credential server-side while supporting private datasets in both
-  // published and draft views. Draft rendering still requires it below.
-  const token = process.env.SANITY_PREVIEW_TOKEN
+  // Published content is intentionally fetched without credentials. That
+  // keeps the ordinary preview usable even if a draft token has expired or is
+  // misconfigured; drafts still require the server-only credential below.
+  const token = perspective === 'drafts' ? process.env.SANITY_PREVIEW_TOKEN : undefined
   if (perspective === 'drafts' && !token) throw new Error('Preview credentials are unavailable.')
   const client = configuredClient({perspective: perspective === 'staging' ? 'published' : perspective, token})
   const [rawProjects, navigation] = await Promise.all([client.fetch(projectQuery), client.fetch(navigationQuery)])
