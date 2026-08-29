@@ -1,39 +1,54 @@
 # CMS deployment setup
 
-This is the handover checklist for the two connections that cannot be safely created in source code: the read-only Sanity credential and the publishing webhook.
+The code is on `main`. Preview and publication stay closed until the following owner-only secrets are configured.
 
-## Create a read-only build token
+## 1. GitHub build reader
 
-In Sanity Manage for project `g6xm8j7l`, create a robot token with read access to dataset `production`. Name it `GitHub published site build`.
+In Sanity Manage, project `g6xm8j7l` → API → Tokens, create a least-privilege **Viewer** token for dataset `production` named `GitHub published site build`.
 
-Add its value in GitHub repository settings under `Secrets and variables` > `Actions` as `SANITY_API_TOKEN`. Never put this token in a file, commit, Studio field, screenshot, or chat message.
+In GitHub → `LvidSolutions/Esencial` → Settings → Secrets and variables → Actions, add it as `SANITY_API_TOKEN`. The workflow reads only published content and publishes only its validated generated artifact.
 
-The workflow `.github/workflows/cms-build.yml` uses the token only to read documents whose status is `published`.
+## 2. Draft preview
 
-## Test a manual CMS build
+In Vercel project **esencial-staging** → Settings → Environment Variables, set:
 
-In GitHub Actions, select `CMS production build` and choose `Run workflow`. A successful run will:
+| Name | Purpose |
+| --- | --- |
+| `SANITY_PREVIEW_TOKEN` | Sanity Viewer token used only by the server to render drafts. |
+| `CMS_ORIGIN` | `https://esencial-cms.sanity.studio` |
 
-1. Fetch published Swedish and English projects from Sanity.
-2. Reject missing facts, image descriptions, duplicate URLs, or a missing language version.
-3. Generate project pages, sitemap, metadata, language links, and structured data.
-4. Run the existing SEO and internal-link checks.
-5. Commit only changed generated website files to `main`.
+Use the Production environment for this staging project because its production alias is the protected preview host. Do not add either value to the public **esencial** project.
 
-The live domain is not changed by this workflow. Hosting and DNS remain a separate launch decision.
+Open Studio → **Frontendpreview**. It calls `/api/draft-mode/enable`, sets an HTTP-only preview cookie, then opens the same Esencial layout at `https://esencial-staging.vercel.app`. Project pages and the project grid are available. The preview response is private and `noindex`; the normal public site never receives draft data.
 
-## Add automatic publishing
+## 3. Automatic publish after Sanity Publish
 
-After the manual test is reliable, create a Sanity webhook:
+Create a fine-grained GitHub token limited to repository `LvidSolutions/Esencial` with **Contents: Read and write**. Do not use your personal token or expose it in Studio, Git, chat, or source code.
 
-- Dataset: `production`
-- Trigger: document create, update, and delete
-- Filter: `_type == "project" && status == "published"`
-- URL: GitHub repository dispatch endpoint
-- Event type: `sanity-published`
+Generate and securely store one independent random webhook secret. In **esencial-staging** Vercel environment variables, add:
 
-The GitHub request needs a fine-grained GitHub token with permission to dispatch workflows for this repository. Store it only in Sanity's webhook configuration. Use a webhook secret and verify its signature in a small proxy when a hosting provider is selected; direct GitHub dispatch is acceptable only for a restricted, private Sanity project during the initial rollout.
+| Name | Value |
+| --- | --- |
+| `GITHUB_DISPATCH_TOKEN` | The fine-grained GitHub token above. |
+| `SANITY_WEBHOOK_SECRET` | The same independent secret entered in Sanity's webhook. |
 
-## Preview and launch remain protected
+In Sanity Manage → API → Webhooks, create:
 
-The repository deliberately does not expose draft content. The Presentation Tool needs a selected preview host, authenticated draft endpoint, and CORS origin. Configure those only after choosing Cloudflare Pages, Netlify, or Vercel. Until then, the Studio and production build operate safely without a public preview URL.
+| Setting | Value |
+| --- | --- |
+| Dataset | `production` |
+| URL | `https://esencial-staging.vercel.app/api/sanity-publish/` |
+| Trigger | Create, update, delete |
+| Filter | `_type in ["project", "filterCategory", "navigationSettings", "homePage"] && !(_id in path("drafts.**"))` |
+| Secret | Exactly the `SANITY_WEBHOOK_SECRET` value |
+
+The receiver verifies Sanity's raw-body HMAC signature, rejects stale or duplicate deliveries, then sends `sanity-published` to GitHub. GitHub runs every CMS/SEO/Playwright gate before it commits only the validated `public/` artifact to `main`; Vercel then deploys it. Any missing or invalid secret returns an error and cannot publish.
+
+## 4. Final proof
+
+1. Publish a harmless project text correction in Studio.
+2. Confirm a `CMS staging build` run appears in GitHub Actions and passes.
+3. Confirm its generated-site commit lands on `main`.
+4. Confirm Vercel deploys that commit; test the staging URL first, then the public production alias.
+
+No DNS or custom-domain change is part of this setup.
