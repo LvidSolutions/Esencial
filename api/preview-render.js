@@ -10,7 +10,8 @@ module.exports = async function handler(req, res) {
   try {
     const {html, project} = await renderProjectPreview({perspective: requestedPerspective, route})
     return send(res, 200, decoratePreviewHtml(html, {documentId: project?._originalId || project?._id, parentOrigin: process.env.CMS_ORIGIN || STUDIO_ORIGIN, perspective: requestedPerspective, route}))
-  } catch {
+  } catch (error) {
+    console.error(JSON.stringify({route: '/__preview/render', message: 'preview render failed', reason: error instanceof Error ? error.message : 'unknown'}))
     return send(res, 502, '<h1>Preview could not be rendered safely</h1>')
   }
 }
