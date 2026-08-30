@@ -14,6 +14,6 @@ const relatedEnglish = { ...relatedSwedish, title: "Related project", location: 
 const translations = { sv: new Map([["fixture", swedish], ["related", relatedSwedish]]), en: new Map([["fixture", english], ["related", relatedEnglish]]) };
 
 const html = pageHtml(swedish, "sv", translations, translations.sv);
-for (const expected of ["<dt>År</dt><dd>2024</dd>", "<dt>Typologi</dt><dd>Kultur</dd>", "A. Arkitekt, B. Formgivare", "<section class=\"project-narrative\"", "Första bekräftade stycket.", "<section class=\"project-related\"", "href=\"/projekt/related/\""]) assert.ok(html.includes(expected), `Missing expected project-page architecture output: ${expected}`);
+for (const expected of ["<dt>Byggnadsår</dt><dd>2024</dd>", "<dt>Typologi</dt><dd>Kultur</dd>", "A. Arkitekt, B. Formgivare", "<section class=\"project-narrative\"", "Första bekräftade stycket.", "<section class=\"project-related\"", "href=\"/projekt/related/\""]) assert.ok(html.includes(expected), `Missing expected project-page architecture output: ${expected}`);
 assert.ok(!pageHtml({ ...swedish, body: undefined, relatedProjectIds: [] }, "sv", translations, translations.sv).includes('class="project-narrative"'), "An empty optional narrative must be omitted.");
 console.log("Project-page architecture fixture passed: facts, narrative, and editorial related-project links render only from confirmed source data.");
