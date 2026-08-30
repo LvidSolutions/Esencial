@@ -21,6 +21,7 @@ type CategoryPatch = {
   order: number
   visible: boolean
   projectRefs: string[]
+  projectOrder: string[]
 }
 
 type Props = {
@@ -50,6 +51,8 @@ export function FilterCategoryEditor({
   const [order, setOrder] = useState('0')
   const [visible, setVisible] = useState(false)
   const [projectRefs, setProjectRefs] = useState<string[]>([])
+  const [projectOrder, setProjectOrder] = useState<string[]>([])
+  const [draggingReference, setDraggingReference] = useState('')
   const categorySelectId = useId()
   const labelSvId = useId()
   const labelEnId = useId()
@@ -62,12 +65,14 @@ export function FilterCategoryEditor({
     setOrder(String(category?.order ?? 0))
     setVisible(category?.visible === true)
     setProjectRefs((category?.projectRefs || []).map(canonicalDocumentId))
+    setProjectOrder((category?.projectOrder || category?.projectRefs || []).map(canonicalDocumentId))
   }, [
     category?._id,
     category?.labelEn,
     category?.labelSv,
     category?.order,
     category?.projectRefs,
+    category?.projectOrder,
     category?.visible,
   ])
 
@@ -77,11 +82,38 @@ export function FilterCategoryEditor({
   const togglePair = (pair: ProjectPair) => {
     const reference = canonicalDocumentId(pair.sv?._id)
     if (!reference || !pair.selectable) return
-    setProjectRefs((current) =>
-      current.includes(reference)
+    setProjectRefs((current) => {
+      const next = current.includes(reference)
         ? current.filter((id) => id !== reference)
-        : [...current, reference],
-    )
+        : [...current, reference]
+      setProjectOrder((order) => {
+        const retained = order.filter((id) => next.includes(id))
+        return next.includes(reference) && !retained.includes(reference) ? [...retained, reference] : retained
+      })
+      return next
+    })
+  }
+  const moveProject = (reference: string, direction: -1 | 1) => {
+    setProjectOrder((current) => {
+      const index = current.indexOf(reference)
+      const nextIndex = index + direction
+      if (index < 0 || nextIndex < 0 || nextIndex >= current.length) return current
+      const next = [...current]
+      ;[next[index], next[nextIndex]] = [next[nextIndex], next[index]]
+      return next
+    })
+  }
+  const moveProjectTo = (reference: string, destination: string) => {
+    if (reference === destination) return
+    setProjectOrder((current) => {
+      const from = current.indexOf(reference)
+      const to = current.indexOf(destination)
+      if (from < 0 || to < 0) return current
+      const next = [...current]
+      next.splice(from, 1)
+      next.splice(to, 0, reference)
+      return next
+    })
   }
   const canSave = Boolean(
     category && labelSv.trim() && labelEn.trim() && validOrder && projectRefs.length,
@@ -93,7 +125,9 @@ export function FilterCategoryEditor({
       order !== String(category.order ?? 0) ||
       visible !== (category.visible === true) ||
       JSON.stringify(projectRefs) !==
-        JSON.stringify((category.projectRefs || []).map(canonicalDocumentId))),
+        JSON.stringify((category.projectRefs || []).map(canonicalDocumentId)) ||
+      JSON.stringify(projectOrder) !==
+        JSON.stringify((category.projectOrder || category.projectRefs || []).map(canonicalDocumentId))),
   )
 
   return (
@@ -153,8 +187,9 @@ export function FilterCategoryEditor({
                           setLabelSv(category.labelSv || '')
                           setLabelEn(category.labelEn || '')
                           setOrder(String(category.order ?? 0))
-                          setVisible(category.visible === true)
-                          setProjectRefs((category.projectRefs || []).map(canonicalDocumentId))
+                      setVisible(category.visible === true)
+                      setProjectRefs((category.projectRefs || []).map(canonicalDocumentId))
+                      setProjectOrder((category.projectOrder || category.projectRefs || []).map(canonicalDocumentId))
                         }}
                       />
                     </Box>
@@ -263,6 +298,42 @@ export function FilterCategoryEditor({
               )}
             </fieldset>
 
+            {projectOrder.length > 0 && (
+              <fieldset className="esencial-projects-feature__fieldset">
+                <legend>Ordning i detta filter</legend>
+                <Text size={1} muted>
+                  Projekt 1 visas uppe till vänster, projekt 2 till höger och projekt 3 under projekt 1.
+                  Dra en rad till en annan position. Upp/Ned fungerar alltid med tangentbord.
+                </Text>
+                <ol className="esencial-projects-feature__order-list">
+                  {projectOrder.map((reference, index) => {
+                    const pair = pairs.find((candidate) => canonicalDocumentId(candidate.sv?._id) === reference)
+                    return (
+                      <li
+                        key={reference}
+                        className="esencial-projects-feature__order-row"
+                        data-dragging={draggingReference === reference || undefined}
+                        draggable={!saving}
+                        onDragEnd={() => setDraggingReference('')}
+                        onDragOver={(event) => event.preventDefault()}
+                        onDragStart={() => setDraggingReference(reference)}
+                        onDrop={() => {
+                          moveProjectTo(draggingReference, reference)
+                          setDraggingReference('')
+                        }}
+                      >
+                        <Text size={1} weight="semibold">{index + 1}. {pair ? pairLabel(pair) : 'Projekt saknas'}</Text>
+                        <Inline space={1} className="esencial-projects-feature__actions">
+                          <Button mode="ghost" text="Upp" disabled={saving || index === 0} onClick={() => moveProject(reference, -1)} />
+                          <Button mode="ghost" text="Ned" disabled={saving || index === projectOrder.length - 1} onClick={() => moveProject(reference, 1)} />
+                        </Inline>
+                      </li>
+                    )
+                  })}
+                </ol>
+              </fieldset>
+            )}
+
             <Inline space={2} className="esencial-projects-feature__actions">
               <Button
                 text="Spara filter som kladd"
@@ -274,6 +345,7 @@ export function FilterCategoryEditor({
                     order: normalizedOrder,
                     visible,
                     projectRefs,
+                    projectOrder,
                   })
                 }
               />

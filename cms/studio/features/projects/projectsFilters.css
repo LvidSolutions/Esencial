@@ -47,8 +47,30 @@
 }
 
 .esencial-projects-feature__order-row {
+  display: flex;
+  min-height: 52px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--esencial-workspace-border);
   background: var(--esencial-workspace-paper);
+}
+
+.esencial-projects-feature__order-list {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 32rem) {
+  .esencial-projects-feature__order-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }
 
 .esencial-projects-feature__status {

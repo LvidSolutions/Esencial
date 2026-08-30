@@ -33,6 +33,14 @@ export type ProjectEditableSnapshot = {
   year?: number
   typology?: string
   client?: string
+  architect?: string
+  projectManager?: string
+  collaborators?: string[]
+  landscape?: string
+  photography?: string
+  artwork?: string
+  grossArea?: string
+  cardBackgroundPreset?: string
   team?: string[]
   services?: string[]
   status?: string
@@ -53,6 +61,14 @@ export type ProjectContentPatch = {
   year?: number
   typology?: string
   client?: string
+  architect?: string
+  projectManager?: string
+  collaborators: string[]
+  landscape?: string
+  photography?: string
+  artwork?: string
+  grossArea?: string
+  cardBackgroundPreset?: string
   team: string[]
   services: string[]
   status: string
@@ -75,6 +91,14 @@ type EditorDraft = {
   year: string
   typology: string
   client: string
+  architect: string
+  projectManager: string
+  collaborators: string
+  landscape: string
+  photography: string
+  artwork: string
+  grossArea: string
+  cardBackgroundPreset: string
   status: string
   summary: string
   seoTitle: string
@@ -103,6 +127,23 @@ const publicationStatuses = [
   {value: 'published', title: 'Publicerad i innehållsmodellen'},
   {value: 'archived', title: 'Arkiverad'},
 ]
+const cardBackgroundOptions = [
+  {value: 'warm-paper', title: 'Varmt papper'},
+  {value: 'cool-blue', title: 'Ljus blågrå'},
+  {value: 'pale-green', title: 'Ljust grönt'},
+  {value: 'soft-blush', title: 'Varm vit'},
+  {value: 'mist-blue', title: 'Disigt blått'},
+  {value: 'pale-peach', title: 'Ljus persika'},
+  {value: 'pale-rose', title: 'Ljus rosé'},
+  {value: 'pale-periwinkle', title: 'Ljus periwinkle'},
+  {value: 'ice', title: 'Isblå'},
+  {value: 'lavender', title: 'Ljus lavendel'},
+  {value: 'sun', title: 'Ljust gult'},
+  {value: 'lilac', title: 'Ljus lila'},
+  {value: 'stone', title: 'Varm grå'},
+  {value: 'sky', title: 'Ljus himmelsblå'},
+  {value: 'cloud', title: 'Kall vit'},
+]
 
 const optional = (value: string) => value.trim() || undefined
 const lines = (value: string) =>
@@ -122,6 +163,14 @@ function loadedDraft(project: ProjectEditableSnapshot): EditorDraft {
     year: project.year === undefined ? '' : String(project.year),
     typology: project.typology || '',
     client: project.client || '',
+    architect: project.architect || '',
+    projectManager: project.projectManager || '',
+    collaborators: (project.collaborators || []).join('\n'),
+    landscape: project.landscape || '',
+    photography: project.photography || '',
+    artwork: project.artwork || '',
+    grossArea: project.grossArea || '',
+    cardBackgroundPreset: project.cardBackgroundPreset || '',
     team: (project.team || []).join('\n'),
     services: (project.services || []).join('\n'),
     status: project.status || 'draft',
@@ -149,6 +198,14 @@ function normalizedPatch(draft: EditorDraft): ProjectContentPatch {
     year: draft.year === '' ? undefined : Number(draft.year),
     typology: optional(draft.typology),
     client: optional(draft.client),
+    architect: optional(draft.architect),
+    projectManager: optional(draft.projectManager),
+    collaborators: lines(draft.collaborators),
+    landscape: optional(draft.landscape),
+    photography: optional(draft.photography),
+    artwork: optional(draft.artwork),
+    grossArea: optional(draft.grossArea),
+    cardBackgroundPreset: optional(draft.cardBackgroundPreset),
     team: lines(draft.team),
     services: lines(draft.services),
     status: draft.status,
@@ -259,7 +316,7 @@ export function ProjectContentEditor({
           <div className="esencial-content-media__form-grid">
             <StringField
               id={`${prefix}-title`}
-              label="Projektrubrik"
+              label="Projektnamn"
               value={draft.title}
               required
               error={showErrors ? errors.title : undefined}
@@ -309,13 +366,13 @@ export function ProjectContentEditor({
             />
             <StringField
               id={`${prefix}-location`}
-              label="Publicerad plats"
+              label="Plats"
               value={draft.location || ''}
               onChange={(value) => set('location', value)}
             />
             <StringField
               id={`${prefix}-year`}
-              label="År"
+              label="Byggnadsår"
               type="number"
               value={draft.year}
               error={showErrors ? errors.year : undefined}
@@ -329,7 +386,7 @@ export function ProjectContentEditor({
             />
             <StringField
               id={`${prefix}-client`}
-              label="Beställare"
+              label="Byggherre"
               value={draft.client || ''}
               helper="Ange endast namn som får publiceras."
               onChange={(value) => set('client', value)}
@@ -342,19 +399,66 @@ export function ProjectContentEditor({
               helper="Detta publicerar inte dokumentet. Sanitys native publiceringsknapp är alltid ett separat steg."
               onChange={(value) => set('status', value)}
             />
+            <StringField
+              id={`${prefix}-architect`}
+              label="Arkitekt"
+              value={draft.architect}
+              onChange={(value) => set('architect', value)}
+            />
+            <StringField
+              id={`${prefix}-projectManager`}
+              label="Handläggare"
+              value={draft.projectManager}
+              onChange={(value) => set('projectManager', value)}
+            />
+            <StringField
+              id={`${prefix}-landscape`}
+              label="Landskap"
+              value={draft.landscape}
+              onChange={(value) => set('landscape', value)}
+            />
+            <StringField
+              id={`${prefix}-photography`}
+              label="Foto"
+              value={draft.photography}
+              helper="Övergripande kredit; ange också korrekt kredit för varje bild."
+              onChange={(value) => set('photography', value)}
+            />
+            <StringField
+              id={`${prefix}-artwork`}
+              label="Konstnärlig utsmyckning"
+              value={draft.artwork}
+              onChange={(value) => set('artwork', value)}
+            />
+            <StringField
+              id={`${prefix}-grossArea`}
+              label="Bruttoarea"
+              value={draft.grossArea}
+              helper="Ange gärna enhet, till exempel 2 450 m²."
+              onChange={(value) => set('grossArea', value)}
+            />
+            <SelectField
+              id={`${prefix}-cardBackgroundPreset`}
+              label="Kortbakgrund"
+              value={draft.cardBackgroundPreset}
+              disabled={project.language === 'en'}
+              helper={project.language === 'en' ? 'Delat kortfält: ändra i Svenska.' : 'Påverkar enbart ytan bakom kortets bilder och text.'}
+              options={cardBackgroundOptions}
+              onChange={(value) => set('cardBackgroundPreset', value)}
+            />
           </div>
           <div className="esencial-content-media__form-grid">
             <AreaField
               id={`${prefix}-team`}
-              label="Arkitekt / team"
-              value={draft.team}
+              label="Medarbetare"
+              value={draft.collaborators}
               rows={4}
               helper="En godkänd person eller roll per rad."
-              onChange={(value) => set('team', value)}
+              onChange={(value) => set('collaborators', value)}
             />
             <AreaField
               id={`${prefix}-services`}
-              label="Uppdrag / omfattning"
+              label="Uppdrag / omfattning (äldre fält)"
               value={draft.services}
               rows={4}
               helper="En bekräftad tjänst per rad."
@@ -366,7 +470,7 @@ export function ProjectContentEditor({
         <EditorGroup heading="Projektinnehåll" id={`${prefix}-content`}>
           <AreaField
             id={`${prefix}-summary`}
-            label="Kort projektintroduktion"
+            label="Löptext"
             value={draft.summary}
             rows={6}
             required
@@ -616,6 +720,7 @@ function SelectField({
   value,
   options,
   onChange,
+  disabled,
   helper,
   error,
 }: {
@@ -624,6 +729,7 @@ function SelectField({
   value: string
   options: Array<{value: string; title: string}>
   onChange: (value: string) => void
+  disabled?: boolean
   helper?: string
   error?: string
 }) {
@@ -637,6 +743,7 @@ function SelectField({
       <Select
         id={id}
         value={value}
+        disabled={disabled}
         aria-invalid={Boolean(error)}
         aria-describedby={
           [helper && `${id}-helper`, error && `${id}-error`].filter(Boolean).join(' ') || undefined

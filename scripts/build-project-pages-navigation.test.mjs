@@ -79,6 +79,27 @@ test('published configured navigation controls approved heading, filters, member
   assert.match(output, /css__feed__container feed-dn">[\s\S]*Feed B/)
 })
 
+test('a filter emits its own deterministic row-major order without changing membership', () => {
+  const orderedSettings = {
+    ...settings,
+    gridProjects: undefined,
+    gridEntries: [
+      {projectRef: 'project-sv-b', includeInGrid: true},
+      {projectRef: 'project-sv-a', includeInGrid: true},
+    ],
+  }
+  const orderedCategories = [{
+    ...categories[0],
+    projectRefs: ['project-sv-b', 'project-sv-a'],
+    projectOrder: ['project-sv-a', 'project-sv-b'],
+  }]
+  const output = render({categories: orderedCategories, settings: orderedSettings, malformed: false})
+  assert.match(output, /name="B"[^>]*data-esencial-order-featured="2"/)
+  assert.match(output, /name="A"[^>]*data-esencial-order-featured="1"/)
+  assert.match(output, /name="B"[^>]*featured=""/)
+  assert.match(output, /name="A"[^>]*featured=""/)
+})
+
 test('missing, disabled and explicitly malformed navigation preserve the exact legacy output', () => {
   assert.strictEqual(render(undefined), legacy)
   assert.strictEqual(render({categories: [], settings: {enabled: false}, malformed: false}), legacy)

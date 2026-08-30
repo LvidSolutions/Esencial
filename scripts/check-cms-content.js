@@ -5,6 +5,12 @@ const { ROOT } = require("./recovery-utils");
 const LANGUAGES = ["sv", "en"];
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const PLAN_TYPES = new Set(["planlosning", "situationsplan", "sektion", "fasad", "annat"]);
+// These are the original Esencial card surfaces extracted from the recovered
+// frontend. A CMS value is a preset, never free-form CSS.
+const CARD_BACKGROUND_PRESETS = new Set([
+  "warm-paper", "cool-blue", "pale-green", "soft-blush", "mist-blue", "pale-peach",
+  "pale-rose", "pale-periwinkle", "ice", "lavender", "sun", "lilac", "stone", "sky", "cloud",
+]);
 
 function nonEmpty(value) {
   return typeof value === "string" && value.trim().length > 0;
@@ -70,17 +76,36 @@ function validateProjectSet(projectsByLanguage, { requireCmsFields = false } = {
       }
 
       const legacyImages = Array.isArray(project.legacyImages) ? project.legacyImages : [];
-      if (!project.heroImage && !legacyImages.length) problems.push(`${label}: a main image is required; migrate legacy media or add heroImage`);
-      if (project.heroImage) problems.push(...validateImage(project.heroImage, `${label}: main image`, { requireCreditAndRights: true }));
-      for (const [imageIndex, image] of (project.galleryImages || []).entries()) {
-        problems.push(...validateImage(image, `${label}: gallery image ${imageIndex + 1}`, { requireCreditAndRights: true }));
-      }
+       const cardImages = Array.isArray(project.cardImages) ? project.cardImages : [];
+       const slideshowImages = Array.isArray(project.slideshowImages) ? project.slideshowImages : [];
+       const usesCardImageModel = cardImages.length > 0 || slideshowImages.length > 0;
+       if (project.cardBackgroundPreset !== undefined && !CARD_BACKGROUND_PRESETS.has(project.cardBackgroundPreset)) {
+         problems.push(`${label}: card background must use an existing Esencial card preset`);
+       }
+       if (usesCardImageModel && cardImages.length !== 2) {
+         problems.push(`${label}: exactly two card images are required when using the new image model`);
+       }
+       if (!usesCardImageModel && !project.heroImage && !legacyImages.length) problems.push(`${label}: a main image is required; migrate legacy media or add heroImage`);
+       if (project.heroImage) problems.push(...validateImage(project.heroImage, `${label}: main image`, { requireCreditAndRights: true }));
+       for (const [imageIndex, image] of cardImages.entries()) {
+         problems.push(...validateImage(image, `${label}: card image ${imageIndex + 1}`, { requireCreditAndRights: true }));
+       }
+       for (const [imageIndex, image] of (project.galleryImages || []).entries()) {
+         problems.push(...validateImage(image, `${label}: gallery image ${imageIndex + 1}`, { requireCreditAndRights: true }));
+       }
+       for (const [imageIndex, image] of slideshowImages.entries()) {
+         problems.push(...validateImage(image, `${label}: slideshow image ${imageIndex + 1}`, { requireCreditAndRights: true }));
+       }
       for (const [imageIndex, image] of legacyImages.entries()) {
         problems.push(...validateImage(image, `${label}: legacy image ${imageIndex + 1}`, { requireCreditAndRights: true }));
       }
 
       const publicSources = new Set((project.images || []).map((image) => image?.src).filter(Boolean));
-      if (project.heroImage?.src && project.images?.[0]?.src !== project.heroImage.src) problems.push(`${label}: main image must be the first public image`);
+       if (usesCardImageModel) {
+         for (const [imageIndex, image] of cardImages.entries()) {
+           if (project.images?.[imageIndex]?.src !== image.src) problems.push(`${label}: card image ${imageIndex + 1} must keep its public slideshow position`);
+         }
+       } else if (project.heroImage?.src && project.images?.[0]?.src !== project.heroImage.src) problems.push(`${label}: main image must be the first public image`);
       for (const [planIndex, plan] of (project.floorPlans || []).entries()) {
         const planLabel = `${label}: floor plan ${planIndex + 1}`;
         if (!nonEmpty(plan?.name)) problems.push(`${planLabel}: name is missing`);
@@ -133,7 +158,7 @@ function validFixtureProject(language) {
     imageRightsConfirmed: true,
     publishChecklist: { factsConfirmed: true, languageChecked: true, seoChecked: true, imagesChecked: true },
     heroImage: { src: "/hero.jpg", alt: "Project exterior", credit: "Fixture photographer", rightsConfirmed: true },
-    galleryImages: [],
+     galleryImages: [],
     floorPlans: [{ name: "Ground floor", planType: "planlosning", image: { src: "/floor.png", alt: "Ground floor plan", credit: "Fixture architect", rightsConfirmed: true } }],
     images: [{ src: "/hero.jpg", alt: "Project exterior", credit: "Fixture photographer", rightsConfirmed: true }],
   };
@@ -154,6 +179,8 @@ function runNegativeFixtures() {
     ["missing rights", { ...valid, en: [{ ...valid.en[0], heroImage: { ...valid.en[0].heroImage, rightsConfirmed: false } }] }, "publication rights are not confirmed"],
     ["legacy credit gap", { ...valid, en: [{ ...valid.en[0], heroImage: undefined, legacyImages: [{ src: "/legacy.jpg", alt: "Legacy project photograph", rightsConfirmed: true }], images: [{ src: "/legacy.jpg", alt: "Legacy project photograph" }] }] }, "legacy image 1: photographer or source credit is missing"],
     ["mixed floor-plan media", { ...valid, en: [{ ...valid.en[0], floorPlans: [{ ...valid.en[0].floorPlans[0], image: { ...valid.en[0].floorPlans[0].image, src: "/hero.jpg" } }] }] }, "must not be exported as a hero or gallery image"],
+    ["invalid card background", { ...valid, en: [{ ...valid.en[0], cardBackgroundPreset: "url(javascript:alert(1))" }] }, "must use an existing Esencial card preset"],
+    ["incomplete card image pair", { ...valid, en: [{ ...valid.en[0], cardImages: [valid.en[0].heroImage], slideshowImages: [] }] }, "exactly two card images are required"],
   ];
   for (const [name, fixture, expected] of cases) {
     const output = validateProjectSet(fixture, { requireCmsFields: true }).join("\n");

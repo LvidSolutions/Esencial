@@ -5,6 +5,26 @@ optimizeFeaturedImages();
 
 $( document ).ready(function() {
 
+  // CMS-controlled positions are emitted as numeric data attributes during the
+  // static build. Sorting existing nodes preserves the original layout,
+  // keyboard controls and filter semantics without introducing new markup.
+  function applyConfiguredProjectOrder(tagKey) {
+    var attributeName = 'data-esencial-order-' + tagKey;
+    $('.css_grid_container, .css__feed__container').each(function() {
+      var parent = this;
+      var items = $(parent).children('.css_grid_card_container, .css_feed_project_container').get();
+      if (!items.length) return;
+      items.sort(function(left, right) {
+        var leftOrder = Number(left.getAttribute(attributeName));
+        var rightOrder = Number(right.getAttribute(attributeName));
+        if (!Number.isFinite(leftOrder)) leftOrder = Number.MAX_SAFE_INTEGER;
+        if (!Number.isFinite(rightOrder)) rightOrder = Number.MAX_SAFE_INTEGER;
+        return leftOrder - rightOrder;
+      });
+      $.each(items, function(_, item) { parent.appendChild(item); });
+    });
+  }
+
   checkSize();
   $(window).resize(checkSize);
 
@@ -52,6 +72,7 @@ $( document ).ready(function() {
       $('.css_grid_card_container, .css_feed_project_container').removeClass('tag-dn')
       $(this).removeClass('css_tag_item_inactive').addClass('css_tag_item_active');
       var tagTextItem = $(this).data('tag')
+      applyConfiguredProjectOrder(tagTextItem)
       // console.log(tagTextItem)
       $('.css_grid_card_container:not([' + tagTextItem + '])').addClass('tag-dn')
       $('.css_feed_project_container:not([' + tagTextItem + '])').addClass('tag-dn')
@@ -67,6 +88,7 @@ $( document ).ready(function() {
       $(".css_tag_item_active").removeClass('css_tag_item_active').addClass('css_tag_item_inactive');
       // $('.css_grid_card_container').removeClass('tag-dn')
       $('.css_grid_card_container, .css_feed_project_container').removeClass('tag-dn')
+      applyConfiguredProjectOrder('all')
       $(window).scrollTop(0)
       $(".css_feed_project_container").find(".css_feed_text_container").css('display','none');
       $(".css_feed_project_container").find('.css_feed_photo_container').removeClass("feed-dn");

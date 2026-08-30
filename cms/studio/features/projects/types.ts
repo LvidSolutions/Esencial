@@ -27,6 +27,7 @@ export type FilterCategory = {
   order?: number
   visible?: boolean
   projectRefs: string[]
+  projectOrder?: string[]
 }
 
 export type GridProjectEntry = {

@@ -73,6 +73,7 @@ test('schema contract exposes every required category and navigation field', () 
     'order',
     'visible',
     'projects',
+    'projectOrder',
   ])
   assert.deepEqual(NAVIGATION_SETTINGS_SCHEMA_FIELDS, [
     'enabled',

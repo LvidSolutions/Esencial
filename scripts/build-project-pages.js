@@ -11,9 +11,18 @@ const LANGUAGE_CONFIG = {
   en: { source: path.join("projects", "index.html"), overview: "/projects/", directory: "projects", lang: "en", overviewLabel: "Projects", about: "/about/", aboutLabel: "About" }
 };
 const FACT_LABELS = {
-  sv: { location: "Plats", year: "År", typology: "Typologi", client: "Beställare", team: "Arkitekt/team", services: "Uppdrag" },
-  en: { location: "Location", year: "Year", typology: "Typology", client: "Client", team: "Architects / team", services: "Scope" }
+  sv: { location: "Plats", year: "Byggnadsår", typology: "Typologi", client: "Byggherre", architect: "Arkitekt", projectManager: "Handläggare", collaborators: "Medarbetare", landscape: "Landskap", photography: "Foto", artwork: "Konstnärlig utsmyckning", grossArea: "Bruttoarea", team: "Arkitekt/team", services: "Uppdrag" },
+  en: { location: "Location", year: "Year built", typology: "Typology", client: "Client", architect: "Architect", projectManager: "Project lead", collaborators: "Contributors", landscape: "Landscape", photography: "Photography", artwork: "Public art", grossArea: "Gross floor area", team: "Architects / team", services: "Scope" }
 };
+// Stable CMS names map only to surfaces already present in the recovered
+// Esencial cards. Values are never accepted as arbitrary CSS.
+const CARD_BACKGROUND_PRESETS = Object.freeze({
+  "warm-paper": "#fffbf5", "cool-blue": "#f7fafd", "pale-green": "#f9fff9",
+  "soft-blush": "#fff7f7", "mist-blue": "#f2f9f9", "pale-peach": "#fef9f6",
+  "pale-rose": "#fffbf9", "pale-periwinkle": "#f7f7ff", "ice": "#f8fbfc",
+  "lavender": "#fdf9ff", "sun": "#fffef5", "lilac": "#fafbff",
+  "stone": "#f8f7f5", "sky": "#fbfdff", "cloud": "#fafcfe",
+});
 
 function readFile(file) {
   return fs.readFileSync(file, "utf8");
@@ -114,11 +123,20 @@ function bodyParagraphs(body) {
 function factEntries(project, language) {
   const labels = FACT_LABELS[language];
   return [
-    [labels.location, textValue(project.location)],
     [labels.year, Number.isInteger(project.year) ? String(project.year) : ""],
-    [labels.typology, textValue(project.typology)],
+    [labels.location, textValue(project.location)],
     [labels.client, textValue(project.client)],
-    [labels.team, textValue(project.team)],
+    [labels.architect, textValue(project.architect)],
+    [labels.projectManager, textValue(project.projectManager)],
+    [labels.collaborators, textValue(project.collaborators)],
+    [labels.landscape, textValue(project.landscape)],
+    [labels.photography, textValue(project.photography)],
+    [labels.artwork, textValue(project.artwork)],
+    [labels.grossArea, textValue(project.grossArea)],
+    // Existing migrated content continues to use these only when the matching
+    // new field is absent. This prevents duplicated public facts.
+    [labels.typology, textValue(project.typology)],
+    [labels.team, textValue(project.architect) ? "" : textValue(project.team)],
     [labels.services, textValue(project.services)]
   ].filter(([, value]) => value);
 }
@@ -282,6 +300,129 @@ function replaceProjectFeeds(html, feeds) {
   return html.replace(feed.match[0], `${feed.match[1]}${feeds.join("")}${feed.match[3]}`);
 }
 
+function normalizedCardBackground(value, fallback = "#fffbf5") {
+  return typeof value === "string" && CARD_BACKGROUND_PRESETS[value] ? CARD_BACKGROUND_PRESETS[value] : fallback;
+}
+
+function cardBackgroundFromMarkup(card) {
+  const match = card.match(/css_grid_card_wrapper " style="background-color:([^";]+)/i);
+  return normalizedCardBackground(match?.[1]?.trim());
+}
+
+function cardImagesForProject(project) {
+  const configured = Array.isArray(project.cardImages) ? project.cardImages.filter((image) => image?.src) : [];
+  if (configured.length === 2) return configured;
+  return (project.images || []).filter((image) => image?.src).slice(0, 2);
+}
+
+function usesCardImageModel(project) {
+  return Array.isArray(project.cardImages) && project.cardImages.filter((image) => image?.src).length === 2;
+}
+
+function overviewImageMarkup(image, index, priority) {
+  const responsive = responsiveImageAttributes(image, index);
+  const loading = priority ? "eager" : "lazy";
+  const fetchPriority = priority ? " fetchpriority=\"high\"" : "";
+  return `<div class=" css_grid_photo_container "><div class=" css_grid_photo_wrapper "><div class=" css_grid_photo_item " style="background-image:url(${escapeHtml(image.src)})"><img data-seo-image="grid" src="${escapeHtml(image.src)}"${responsive.srcset} alt="${escapeHtml(image.alt)}" width="${escapeHtml(String(responsive.width))}" height="${escapeHtml(String(responsive.height))}" loading="${loading}"${fetchPriority} decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></div></div></div>`;
+}
+
+function projectCardMarkup(project, language, {background, priority = false} = {}) {
+  const images = cardImagesForProject(project);
+  if (images.length !== 2) return null;
+  const pairKey = project.translationKey || project.id;
+  const cardBackground = normalizedCardBackground(project.cardBackgroundPreset, background);
+  const description = project.description || projectDescription(project, language);
+  return `<div class=" css_grid_card_container " name="${escapeHtml(project.slug)}" role="listitem" aria-labelledby="project-${escapeHtml(pairKey)}-title"><div class=" css_grid_card_wrapper " style="background-color:${cardBackground}">
+${overviewImageMarkup(images[0], 0, priority)}
+${overviewImageMarkup(images[1], 1, false)}
+<div class=" css_grid_text_container " style="background-color:${cardBackground}">
+<div class=" css_grid_text_top_wrapper ">
+<div class=" css_grid_text_name " id="project-${escapeHtml(pairKey)}-title"><a href="${projectUrl(language, project)}" style="color:inherit;text-decoration:none">${escapeHtml(project.title)}</a></div>
+<div class=" css_grid_text_location ">${escapeHtml(textValue(project.location))}</div>
+</div>
+<div class=" css_grid_text_bottom_wrapper "><div class=" css_grid_text_description "><p>${escapeHtml(description)}</p></div></div>
+</div>
+</div></div>`;
+}
+
+function feedFactsMarkup(project, language) {
+  const projectNameLabel = language === "sv" ? "PROJEKTNAMN" : "PROJECT NAME";
+  return [`<p><strong>${projectNameLabel}</strong><br>${escapeHtml(project.title)}</p>`, ...factEntries(project, language).map(([label, value]) => `<p><strong>${escapeHtml(label.toUpperCase())}</strong><br>${escapeHtml(value)}</p>`)].join("\n");
+}
+
+function projectFeedMarkup(project, language, {background} = {}) {
+  const images = (project.images || []).filter((image) => image?.src);
+  if (!images.length) return null;
+  const cardBackground = normalizedCardBackground(project.cardBackgroundPreset, background);
+  const primary = images[0];
+  const secondary = images[1] || primary;
+  const paragraphs = bodyParagraphs(project.body);
+  const description = paragraphs.length ? paragraphs : [project.description].filter(Boolean);
+  const dots = images.map((_, index) => `<div class=" css_feed_footer_item${index === 0 ? "_current" : ""} ">•</div>`).join("");
+  return `<div class=" css_feed_project_container " name="${escapeHtml(project.slug)}" id="${escapeHtml(project.slug)}">
+<div class=" css_feed_photo_container "><div class=" css_feed_photo_wrapper ">
+<div class=" css_feed_photo_item " style="background-image:url(${escapeHtml(primary.src)})" id="photograph"></div>
+<div class=" css_feed_photo_preload " style="background-image:url(${escapeHtml(secondary.src)})"></div>
+<div class=" css_feed_footer_container "><div class=" css_feed_footer_wrapper ">${dots}</div></div>
+</div></div>
+<div class=" css_feed_draw_container " style="background-color:${cardBackground}"><div class=" css_feed_draw_wrapper ">
+<div class=" css_feed_draw_item " style="background-image:url(${escapeHtml(secondary.src)})" id="drawing"></div>
+<div class=" css_feed_draw_preload " style="background-image:url(${escapeHtml(primary.src)})"></div>
+<div class=" css_feed_footer_container "><div class=" css_feed_footer_wrapper ">${dots}</div></div>
+</div></div>
+<div class=" css_feed_text_container "><div class=" css_feed_text_wrapper " style="background-color:${cardBackground}">
+<div class=" css_feed_text_info_container "><div class=" css_feed_text_info_wrapper "><div class=" css_feed_text_info_item "><div class=" css_feed_text_info_item_entry ">${feedFactsMarkup(project, language)}</div></div></div></div>
+<div class=" css_feed_text_description_container "><div class=" css_feed_text_description_item ">${description.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}</div></div>
+<div class=" css_feed_text_footer_container "></div>
+</div></div>
+</div>`;
+}
+
+function withProjectOrderAttributes(tag, project, navigation, language) {
+  const pairKey = project.translationKey || project.id;
+  const attributes = [` data-esencial-order-all="${navigation.projectsByLanguage[language].findIndex((item) => (item.translationKey || item.id) === pairKey) + 1}"`];
+  for (const category of navigation.categories) {
+    const positions = category.projectOrderIdsByLanguage?.[language] || category.projectIdsByLanguage?.[language] || [];
+    const position = positions.indexOf(String(project._id || ""));
+    if (position >= 0) attributes.push(` data-esencial-order-${escapeHtml(category.key)}="${position + 1}"`);
+  }
+  return tag.replace(/>$/, `${attributes.join("")}>`);
+}
+
+function navigationWithFilterOrders(navigation, sourceCategories, projects) {
+  const byId = new Map(projects.map((project) => [String(project?._id || "").replace(/^drafts\./, ""), project]));
+  const byPair = new Map();
+  for (const project of projects) {
+    const key = project.translationKey || project.id;
+    if (!key) continue;
+    const pair = byPair.get(key) || {};
+    pair[project.language] = project;
+    byPair.set(key, pair);
+  }
+  return {
+    ...navigation,
+    categories: navigation.categories.map((category) => {
+      const source = sourceCategories.find((item) => item?.key === category.key);
+      const orderRefs = Array.isArray(source?.projectOrder) && source.projectOrder.length
+        ? source.projectOrder
+        : source?.projectRefs;
+      const ordered = (orderRefs || [])
+        .map((id) => byId.get(String(id || "").replace(/^drafts\./, "")))
+        .filter(Boolean)
+        .map((project) => byPair.get(project.translationKey || project.id))
+        .filter((pair) => pair?.sv && pair?.en);
+      const pairIds = {
+        sv: ordered.map((pair) => String(pair.sv._id).replace(/^drafts\./, "")),
+        en: ordered.map((pair) => String(pair.en._id).replace(/^drafts\./, "")),
+      };
+      // A malformed optional order cannot change membership or hide projects.
+      const valid = pairIds.sv.length === category.projectIdsByLanguage.sv.length
+        && pairIds.en.length === category.projectIdsByLanguage.en.length;
+      return {...category, projectOrderIdsByLanguage: valid ? pairIds : category.projectIdsByLanguage};
+    }),
+  };
+}
+
 function configuredMembershipTag(tag, categoryKeys, allCategoryKeys) {
   const removableKeys = ["all", ...allCategoryKeys];
   const attributePattern = new RegExp(`\\s(?:${removableKeys.join("|")})=(['\"])\\1`, "g");
@@ -301,22 +442,31 @@ function renderConfiguredOverview(html, language, projects, navigation) {
   const orderedCards = [];
   const orderedFeeds = [];
   const allCategoryKeys = navigation.categories.map((category) => category.key);
-  for (const project of selectedProjects) {
+  for (const [projectIndex, project] of selectedProjects.entries()) {
     const pairKey = project.translationKey || project.id;
     const card = cardsByPair.get(pairKey);
     const projectFeed = feedsByPair.get(pairKey);
-    if (!pairKey || !card || !projectFeed) return null;
+    if (!pairKey) return null;
+    const needsRenderedCard = usesCardImageModel(project) || !card;
+    const needsRenderedFeed = usesCardImageModel(project) || !projectFeed;
+    const effectiveCard = needsRenderedCard
+      ? projectCardMarkup(project, language, {background: card ? cardBackgroundFromMarkup(card) : undefined, priority: projectIndex === 0})
+      : card;
+    const effectiveFeed = needsRenderedFeed
+      ? projectFeedMarkup(project, language, {background: card ? cardBackgroundFromMarkup(card) : undefined})
+      : projectFeed;
+    if (!effectiveCard || !effectiveFeed) return null;
     const documentId = String(project._id || "");
     const categoryKeys = navigation.categories
       .filter((category) => category.projectIdsByLanguage[language].includes(documentId))
       .map((category) => category.key);
-    orderedCards.push(card.replace(
+    orderedCards.push(effectiveCard.replace(
       /^<div class=" css_grid_card_container "[^>]*>/i,
-      (tag) => configuredMembershipTag(tag, categoryKeys, allCategoryKeys),
+      (tag) => withProjectOrderAttributes(configuredMembershipTag(tag, categoryKeys, allCategoryKeys), project, navigation, language),
     ));
-    orderedFeeds.push(projectFeed.replace(
+    orderedFeeds.push(effectiveFeed.replace(
       /^<div class=" css_feed_project_container "[^>]*>/i,
-      (tag) => configuredMembershipTag(tag, categoryKeys, allCategoryKeys),
+      (tag) => withProjectOrderAttributes(configuredMembershipTag(tag, categoryKeys, allCategoryKeys), project, navigation, language),
     ));
   }
   if (orderedCards.length !== selectedProjects.length || orderedFeeds.length !== selectedProjects.length) return null;
@@ -349,7 +499,8 @@ function applyPublishedNavigation(html, language, projects, snapshot, resolvePro
     return legacy.html;
   }
   if (resolved.mode !== "configured") return resolved.data === legacy ? resolved.data.html : legacy.html;
-  return renderConfiguredOverview(html, language, projects, resolved.data) || legacy.html;
+  const navigation = navigationWithFilterOrders(resolved.data, categories, projects);
+  return renderConfiguredOverview(html, language, projects, navigation) || legacy.html;
 }
 
 function updateOverview(html, language, projects, navigationContext) {

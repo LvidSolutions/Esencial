@@ -13,11 +13,18 @@ export const PROJECT_FIELD_GROUPS = Object.freeze([
       {path: 'language', label: 'Språk'},
       {path: 'translationKey', label: 'Språkkoppling'},
       {path: 'translationStatus', label: 'Översättningsstatus'},
-      {path: 'location', label: 'Publicerad plats'},
-      {path: 'year', label: 'År'},
+      {path: 'location', label: 'Plats'},
+      {path: 'year', label: 'Byggnadsår'},
       {path: 'typology', label: 'Typologi'},
-      {path: 'client', label: 'Beställare'},
-      {path: 'team', label: 'Arkitekt / team'},
+      {path: 'client', label: 'Byggherre'},
+      {path: 'architect', label: 'Arkitekt'},
+      {path: 'projectManager', label: 'Handläggare'},
+      {path: 'collaborators', label: 'Medarbetare'},
+      {path: 'landscape', label: 'Landskap'},
+      {path: 'photography', label: 'Foto'},
+      {path: 'artwork', label: 'Konstnärlig utsmyckning'},
+      {path: 'grossArea', label: 'Bruttoarea'},
+      {path: 'cardBackgroundPreset', label: 'Kortbakgrund'},
       {path: 'services', label: 'Uppdrag / omfattning'},
       {path: 'status', label: 'Publiceringsläge'},
     ]),
@@ -26,7 +33,7 @@ export const PROJECT_FIELD_GROUPS = Object.freeze([
     id: 'content',
     title: 'Projektinnehåll',
     fields: Object.freeze([
-      {path: 'summary', label: 'Kort projektintroduktion'},
+      {path: 'summary', label: 'Löptext'},
       {path: 'body', label: 'Längre projektberättelse'},
       {path: 'relatedProjects', label: 'Relaterade projekt'},
     ]),
@@ -53,8 +60,10 @@ export const PROJECT_INLINE_FIELD_PATHS = Object.freeze(
 )
 
 export const PROJECT_MEDIA_FIELDS = Object.freeze([
+  {path: 'cardImages', label: 'Kortbilder', removable: true},
+  {path: 'slideshowImages', label: 'Övriga bilder i bildspelet', removable: true},
   {path: 'heroImage', label: 'Huvudbild', removable: true},
-  {path: 'galleryImages', label: 'Projektgalleri', removable: true},
+  {path: 'galleryImages', label: 'Bildspelsbilder', removable: true},
   {path: 'floorPlans', label: 'Planritningar', removable: true},
   {path: 'images', label: 'Tidigare publicerade bilder', removable: true},
   {path: 'imageRightsConfirmed', label: 'Övergripande bildrättigheter', removable: false},
@@ -123,6 +132,8 @@ export function validateProjectContentPatch(value) {
 const MEDIA_TARGET_FIELDS = Object.freeze({
   hero: 'heroImage',
   gallery: 'galleryImages',
+  cardImage: 'cardImages',
+  slideshowImage: 'slideshowImages',
   floorPlan: 'floorPlans',
   previousImage: 'images',
 })

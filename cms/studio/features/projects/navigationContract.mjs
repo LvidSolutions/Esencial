@@ -7,6 +7,7 @@ export const FILTER_CATEGORY_SCHEMA_FIELDS = Object.freeze([
   'order',
   'visible',
   'projects',
+  'projectOrder',
 ])
 
 export const NAVIGATION_SETTINGS_SCHEMA_FIELDS = Object.freeze([
@@ -105,7 +106,9 @@ export function validateFilterCategoryDocument(category, projects) {
     errors.push('Filter order must be a non-negative integer.')
   }
   if (typeof category?.visible !== 'boolean') errors.push('Filter visibility must be explicit.')
-  const projectRefs = Array.isArray(category?.projectRefs) ? category.projectRefs : []
+  const projectRefs = Array.isArray(category?.projectOrder) && category.projectOrder.length
+    ? category.projectOrder
+    : Array.isArray(category?.projectRefs) ? category.projectRefs : []
   if (!projectRefs.length) errors.push('Filter category must select at least one project pair.')
   errors.push(...validatePairReferences(projectRefs, projects, 'Filter membership').errors)
   return errors
@@ -160,7 +163,10 @@ function configuredData(projects, categories, settings) {
       (left, right) => left.order - right.order || text(left.key).localeCompare(text(right.key)),
     )
     .map((category) => {
-      const pairKeys = category.projectRefs.map((reference) => {
+      const orderedRefs = Array.isArray(category.projectOrder) && category.projectOrder.length
+        ? category.projectOrder
+        : category.projectRefs
+      const pairKeys = orderedRefs.map((reference) => {
         const project = byId.get(canonicalDocumentId(reference))
         return text(project.translationKey)
       })

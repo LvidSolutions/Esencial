@@ -12,6 +12,7 @@ type FilterCategoryDocument = SanityDocument & {
   order?: number
   visible?: boolean
   projects?: ReferenceValue[]
+  projectOrder?: ReferenceValue[]
 }
 type ProjectCandidate = {
   _id: string
@@ -51,6 +52,9 @@ async function validateCategory(
   const projectRefs = (document.projects || [])
     .map((reference) => reference?._ref || '')
     .filter(Boolean)
+  const orderedRefs = (document.projectOrder || [])
+    .map((reference) => reference?._ref || '')
+    .filter(Boolean)
   const projects = await projectCandidates(projectRefs, context)
   const problems = validateFilterCategoryDocument(
     {
@@ -64,6 +68,18 @@ async function validateCategory(
     },
     projects,
   )
+
+  if (orderedRefs.length) {
+    const categoryProjects = new Set(projectRefs.map(canonicalDocumentId))
+    const orderedProjects = new Set(orderedRefs.map(canonicalDocumentId))
+    if (
+      orderedRefs.length !== projectRefs.length ||
+      orderedProjects.size !== categoryProjects.size ||
+      [...orderedProjects].some((id) => !categoryProjects.has(id))
+    ) {
+      problems.push('Projektordningen måste innehålla exakt samma projektpar som kategorin.')
+    }
+  }
 
   const currentId = canonicalDocumentId(document._id || '')
   const client = context.getClient({apiVersion}).withConfig({perspective: 'raw'})
@@ -161,6 +177,21 @@ export const filterCategoryType = defineType({
         },
       ],
       validation: (Rule) => Rule.required().min(1).unique(),
+    }),
+    defineField({
+      name: 'projectOrder',
+      title: 'Projektordning i detta filter',
+      type: 'array',
+      description:
+        'Valfri egen ordning för detta filter. Första projektet visas uppe till vänster, andra uppe till höger, tredje under det första. Om fältet är tomt används ordningen i Projektpar i kategorin.',
+      of: [
+        {
+          type: 'reference',
+          to: [{type: 'project'}],
+          options: {filter: 'language == "sv" && status == "published"'},
+        },
+      ],
+      validation: (Rule) => Rule.unique(),
     }),
   ],
   preview: {

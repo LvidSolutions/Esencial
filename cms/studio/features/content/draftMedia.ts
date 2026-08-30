@@ -11,7 +11,7 @@ export type MediaUndo = {
 }
 
 export type MediaRemovalTarget = {
-  kind: 'hero' | 'gallery' | 'floorPlan' | 'previousImage'
+  kind: 'hero' | 'gallery' | 'cardImage' | 'slideshowImage' | 'floorPlan' | 'previousImage'
   key?: string
   index?: number
 }

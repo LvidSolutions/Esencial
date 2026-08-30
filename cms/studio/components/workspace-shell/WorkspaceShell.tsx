@@ -7,7 +7,6 @@ import {
   type WorkspaceSectionId,
   workspaceSectionDomId,
 } from './contracts'
-import {EditorialStatusOverview} from './EditorialStatusOverview'
 import './workspaceShell.css'
 
 export type WorkspaceShellStatus = {
@@ -114,18 +113,13 @@ export function WorkspaceShell({
             </Card>
           </header>
 
-          <EditorialStatusOverview />
-
           <nav className="esencial-workspace-shell__tabs" aria-label="Arbetsytans steg">
             <ol>
-              {orderedSections.map((section, index) => {
+              {orderedSections.map((section) => {
                 const contract = WORKSPACE_SECTION_CONTRACTS[section.id]
                 return (
                   <li key={section.id}>
                     <a href={`#${workspaceSectionDomId(section.id)}`}>
-                      <span aria-hidden="true" className="esencial-workspace-shell__tab-index">
-                        {String(index + 1).padStart(2, '0')}
-                      </span>
                       <span>{contract.navigationLabel}</span>
                     </a>
                   </li>

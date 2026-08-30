@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useId, useMemo, useRef, useState} from 'react'
-import {Box, Button, Card, Flex, Heading, Inline, Select, Stack, Text} from '@sanity/ui'
+import {Box, Button, Card, Flex, Heading, Inline, Stack, Text, TextInput} from '@sanity/ui'
 import {useClient} from 'sanity'
 import {
   CONTENT_MEDIA_SECTION_ID,
@@ -15,6 +15,7 @@ import {
   type MediaUndo,
 } from './draftMedia'
 import {patchProjectDraftFields} from './draftProject'
+import {createProjectLanguagePair, synchronizeProjectPairSharedFields} from './createProjectLanguagePair'
 import {
   ProjectContentEditor,
   type ProjectContentPatch,
@@ -61,11 +62,16 @@ type ProjectContent = ProjectEditableSnapshot & {
   heroImagePreview?: AssetPreview
   galleryImages?: ImageValue[]
   galleryPreviews?: PreviewEntry[]
+  cardImages?: ImageValue[]
+  cardImagePreviews?: PreviewEntry[]
+  slideshowImages?: ImageValue[]
+  slideshowPreviews?: PreviewEntry[]
   floorPlans?: FloorPlanValue[]
   floorPlanPreviews?: PreviewEntry[]
   images?: ImageValue[]
   previousImagePreviews?: PreviewEntry[]
   legacyImages?: LegacyImageValue[]
+  cardBackgroundPreset?: string
 }
 
 export type ContentMediaStatus = {
@@ -86,12 +92,17 @@ type Props = {
 
 const projectsQuery = `*[_type == "project"] | order(title asc, language asc) {
   _id, _originalId, _rev, title, "slug": slug.current, language, translationKey,
-  translationStatus, location, year, typology, client, team, services, status, summary,
-  seoTitle, seoDescription, reviewNotes, publishChecklist, imageRightsConfirmed,
+  translationStatus, location, year, typology, client, architect, projectManager, collaborators,
+  landscape, photography, artwork, grossArea, team, services, status, summary,
+  seoTitle, seoDescription, reviewNotes, publishChecklist, imageRightsConfirmed, cardBackgroundPreset,
   heroImage,
   "heroImagePreview": heroImage.asset->{_id, url, originalFilename, metadata{dimensions}},
   galleryImages,
   "galleryPreviews": galleryImages[]{_key, "asset": asset->{_id, url, originalFilename, metadata{dimensions}}},
+  cardImages,
+  "cardImagePreviews": cardImages[]{_key, "asset": asset->{_id, url, originalFilename, metadata{dimensions}}},
+  slideshowImages,
+  "slideshowPreviews": slideshowImages[]{_key, "asset": asset->{_id, url, originalFilename, metadata{dimensions}}},
   floorPlans,
   "floorPlanPreviews": floorPlans[]{_key, "asset": image.asset->{_id, url, originalFilename, metadata{dimensions}}},
   images,
@@ -105,9 +116,10 @@ export function ContentMediaWorkspace({onStatusChange}: Props) {
     () => baseClient.withConfig({perspective: 'drafts', useCdn: false}),
     [baseClient],
   )
-  const projectSelectId = useId()
+  const projectSearchId = useId()
   const [projects, setProjects] = useState<ProjectContent[]>([])
   const [selectedId, setSelectedId] = useState('')
+  const [projectSearch, setProjectSearch] = useState('')
   const [saveState, setSaveState] = useState<ContentMediaStatus['state']>('loading')
   const [statusLabel, setStatusLabel] = useState('Laddar projektinnehåll och media…')
   const [error, setError] = useState('')
@@ -131,12 +143,19 @@ export function ContentMediaWorkspace({onStatusChange}: Props) {
       setStatusLabel('Laddar projektinnehåll och media…')
       setError('')
       try {
-        const nextProjects = await client.fetch<ProjectContent[]>(projectsQuery)
+        let nextProjects = await client.fetch<ProjectContent[]>(projectsQuery)
+        const requested = canonicalDocumentId(preferredId || selectedId)
+        const selectedForSync = nextProjects.find(
+          (project) => canonicalDocumentId(project._id) === requested,
+        )
+        if (selectedForSync && (await synchronizeProjectPairSharedFields(client, selectedForSync._id))) {
+          nextProjects = await client.fetch<ProjectContent[]>(projectsQuery)
+        }
         setProjects(nextProjects)
         setSelectedId((current) => {
-          const requested = canonicalDocumentId(preferredId || current)
+          const nextRequested = canonicalDocumentId(preferredId || current)
           const matching = nextProjects.find(
-            (project) => canonicalDocumentId(project._id) === requested,
+            (project) => canonicalDocumentId(project._id) === nextRequested,
           )
           return canonicalDocumentId(matching?._id || nextProjects[0]?._id || '')
         })
@@ -180,6 +199,7 @@ export function ContentMediaWorkspace({onStatusChange}: Props) {
     setError('')
     try {
       await patchProjectDraftFields(client, selectedProject._id, {...patch})
+      await synchronizeProjectPairSharedFields(client, selectedProject._id)
       setContentDirty(false)
       await load(selectedProject._id)
       setStatusLabel('Alla projektfält sparades till kladden')
@@ -190,6 +210,25 @@ export function ContentMediaWorkspace({onStatusChange}: Props) {
         `${caught instanceof Error ? caught.message : 'Sparningen misslyckades.'} Ingen publicerad version ändrades. De osparade fälten finns kvar i formuläret; försök igen eller återställ.`,
       )
       throw caught
+    }
+  }
+
+  const createProjectPair = async () => {
+    if (interactionLocked) return
+    setSaveState('saving')
+    setStatusLabel('Skapar svenskt och engelskt projektpar som kladd…')
+    setError('')
+    try {
+      const pair = await createProjectLanguagePair(client)
+      setProjectSearch('')
+      await load(pair.svId)
+      setStatusLabel('Ett svenskt och engelskt projektpar skapades som kladd')
+    } catch (caught) {
+      setSaveState('error')
+      setStatusLabel('Projektparet kunde inte skapas')
+      setError(
+        `${caught instanceof Error ? caught.message : 'Sparningen misslyckades.'} Inget publicerat projekt ändrades. Försök igen när anslutningen är tillbaka.`,
+      )
     }
   }
 
@@ -281,46 +320,20 @@ export function ContentMediaWorkspace({onStatusChange}: Props) {
         </Card>
       )}
 
-      {saveState !== 'loading' && projects.length > 0 && (
-        <Stack space={2}>
-          <label htmlFor={projectSelectId}>
-            <Text size={1} weight="semibold">
-              Projekt och språkversion
-            </Text>
-          </label>
-          <Select
-            id={projectSelectId}
-            value={selectedId}
-            disabled={interactionLocked}
-            onChange={(event) => {
-              setSelectedId(event.currentTarget.value)
-              setError('')
-            }}
-          >
-            {projects.map((project) => {
-              const id = canonicalDocumentId(project._id)
-              return (
-                <option key={`${id}-${project.language || 'okänt'}`} value={id}>
-                  {project.title || 'Namnlöst projekt'} ·{' '}
-                  {(project.language || 'språk saknas').toUpperCase()} ·{' '}
-                  {project.status || 'status saknas'}
-                </option>
-              )
-            })}
-          </Select>
-          <Text size={1} muted>
-            Byte spärras medan en borttagning väntar på bekräftelse eller återställning, så att en
-            återhämtningsväg aldrig tappas bort.
-          </Text>
-        </Stack>
-      )}
-
-      {saveState !== 'loading' && !projects.length && (
-        <Card padding={3} radius={2} border role="status">
-          <Text size={1}>
-            Inga projekt kunde läsas. Inget exempelprojekt eller innehåll skapas automatiskt.
-          </Text>
-        </Card>
+      {saveState !== 'loading' && (
+        <ProjectPicker
+          disabled={interactionLocked}
+          projects={projects}
+          search={projectSearch}
+          searchId={projectSearchId}
+          selectedId={selectedId}
+          onCreate={() => void createProjectPair()}
+          onSearchChange={setProjectSearch}
+          onSelect={(id) => {
+            void load(id)
+            setError('')
+          }}
+        />
       )}
 
       {pendingRemoval && (
@@ -394,7 +407,7 @@ export function ContentMediaWorkspace({onStatusChange}: Props) {
           />
           <MediaReview
             project={selectedProject}
-            disabled={interactionLocked}
+            disabled={interactionLocked || selectedProject.language === 'en'}
             onOpenField={openField}
             onRequestRemoval={(target, label) => {
               setPendingRemoval({target, label})
@@ -404,6 +417,118 @@ export function ContentMediaWorkspace({onStatusChange}: Props) {
         </>
       )}
     </Stack>
+  )
+}
+
+function ProjectPicker({
+  disabled,
+  projects,
+  search,
+  searchId,
+  selectedId,
+  onCreate,
+  onSearchChange,
+  onSelect,
+}: {
+  disabled: boolean
+  projects: ProjectContent[]
+  search: string
+  searchId: string
+  selectedId: string
+  onCreate: () => void
+  onSearchChange: (value: string) => void
+  onSelect: (id: string) => void
+}) {
+  const normalizedSearch = search.trim().toLocaleLowerCase('sv-SE')
+  const matchingProjects = projects.filter((project) => {
+    if (!normalizedSearch) return true
+    return [project.title, project.slug, project.location, project.language]
+      .filter(Boolean)
+      .some((value) => value?.toLocaleLowerCase('sv-SE').includes(normalizedSearch))
+  })
+
+  return (
+    <section aria-labelledby="esencial-project-picker-heading" className="esencial-content-media__picker">
+      <Stack space={3}>
+        <Flex align={['flex-start', 'center']} direction={['column', 'row']} gap={3} justify="space-between">
+          <Box>
+            <Heading as="h3" id="esencial-project-picker-heading" size={2}>
+              Välj projekt
+            </Heading>
+            <Text as="p" size={1} muted>
+              Välj den språkversion du vill redigera. Text skrivs separat på svenska och English.
+              Bilder, webbadress och kortbakgrund hålls gemensamma för språkparet.
+            </Text>
+          </Box>
+          <Button
+            text="Skapa nytt projekt"
+            disabled={disabled}
+            onClick={onCreate}
+          />
+        </Flex>
+        <Stack space={2}>
+          <label htmlFor={searchId}>
+            <Text size={1} weight="semibold">
+              Sök projekt
+            </Text>
+          </label>
+          <TextInput
+            id={searchId}
+            type="search"
+            value={search}
+            disabled={disabled}
+            placeholder="Sök på projektnamn, plats eller språk"
+            onChange={(event) => onSearchChange(event.currentTarget.value)}
+          />
+        </Stack>
+        {matchingProjects.length ? (
+          <div aria-label="Projekt att redigera" className="esencial-content-media__project-list" role="group">
+            {matchingProjects.map((project) => {
+              const id = canonicalDocumentId(project._id)
+              const selected = id === selectedId
+              return (
+                <button
+                  key={`${id}-${project.language || 'unknown'}`}
+                  aria-pressed={selected}
+                  className="esencial-content-media__project-option"
+                  data-selected={selected || undefined}
+                  disabled={disabled}
+                  type="button"
+                  onClick={() => onSelect(id)}
+                >
+                  <span aria-hidden="true" className="esencial-content-media__project-thumb">
+                    {project.heroImagePreview?.url ? (
+                      <img src={project.heroImagePreview.url} alt="" />
+                    ) : (
+                      <span>Ingen bild</span>
+                    )}
+                  </span>
+                  <span className="esencial-content-media__project-option-copy">
+                    <strong>{project.title || 'Namnlöst projekt'}</strong>
+                    <span>
+                      {(project.language || 'språk saknas').toUpperCase()} ·{' '}
+                      {project.status === 'published' ? 'Publicerat innehåll' : 'Kladd'}
+                    </span>
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        ) : (
+          <Card padding={3} radius={2} border role="status">
+            <Text size={1} muted>
+              {projects.length
+                ? 'Inget projekt matchar din sökning.'
+                : 'Inga projekt finns ännu. Skapa ett nytt språkpar som kladd för att börja.'}
+            </Text>
+          </Card>
+        )}
+        <Text size={1} muted>
+          Projektbyte spärras medan ett formulär eller en bildborttagning har osparade ändringar.
+          “Skapa nytt projekt” gör alltid två dokument: ett svenskt och ett engelskt kladd.
+        </Text>
+      </Stack>
+    </section>
   )
 }
 
@@ -468,75 +593,96 @@ function MediaReview({
   onRequestRemoval: (target: MediaRemovalTarget, label: string) => void
 }) {
   const galleryPreviews = previewMap(project.galleryPreviews)
+  const cardImagePreviews = previewMap(project.cardImagePreviews)
+  const slideshowPreviews = previewMap(project.slideshowPreviews)
   const floorPlanPreviews = previewMap(project.floorPlanPreviews)
   const previousImagePreviews = previewMap(project.previousImagePreviews)
+  const usesCardImageModel = Boolean(project.cardImages?.length || project.slideshowImages?.length)
+  const cardImages = usesCardImageModel
+    ? project.cardImages || []
+    : [project.heroImage, ...(project.galleryImages || []).slice(0, 1)].filter(
+        (image): image is ImageValue => Boolean(image),
+      )
+  const slideshowImages = usesCardImageModel
+    ? project.slideshowImages || []
+    : (project.galleryImages || []).slice(1)
+  const previewForCardImage = (image: ImageValue, index: number) =>
+    usesCardImageModel
+      ? cardImagePreviews.get(image._key || String(index))
+      : index === 0
+        ? project.heroImagePreview
+        : galleryPreviews.get(image._key || '0')
+  const previewForSlideshowImage = (image: ImageValue, index: number) =>
+    usesCardImageModel
+      ? slideshowPreviews.get(image._key || String(index))
+      : galleryPreviews.get(image._key || String(index + 1))
   return (
     <Card padding={[3, 4]} radius={2} border>
       <Stack space={5}>
         <Box>
           <Heading as="h3" size={2}>
-            Aktuell projektmedia
+            Bilder i projektet
           </Heading>
           <Text as="p" size={1} muted>
-            Förhandsvisningen visar kladdens referenser och metadata. Ersätt eller lägg till genom
-            Sanitys inbyggda bildfält, där du kan välja en befintlig asset eller ladda upp en fil.
-            Borttagning här tar bara bort referensen i kladden och raderar aldrig asseten.
+            Kortbild 1 och 2 används i projektets kort på startsidan och blir de två första
+            bilderna i bildspelet. Övriga bilder visas efter dem. Borttagning här lossar bara
+            kladdens referens och raderar aldrig originalasseten.
           </Text>
+          {project.language === 'en' && (
+            <Text as="p" size={1} muted>
+              Kortbilder och bildspelsbilder är gemensamma. Ändra dem i den svenska språkversionen;
+              nästa kladdladdning synkar dem säkert till English.
+            </Text>
+          )}
         </Box>
 
         <MediaSection
-          heading="Huvudbild"
-          actionText={
-            project.heroImage
-              ? 'Byt huvudbild via Sanitys bildväljare'
-              : 'Lägg till huvudbild via Sanitys bildväljare'
-          }
-          actionLabel="Öppna Sanitys inbyggda huvudbildsfält för assetval eller uppladdning"
+          heading="Kortbilder"
+          actionText="Redigera Kortbild 1 och 2 via Sanitys bildväljare"
+          actionLabel="Öppna Sanitys bildfält för Kortbild 1 och 2, assetval eller uppladdning"
           disabled={disabled}
-          onOpen={() => onOpenField('heroImage')}
+          onOpen={() => onOpenField('cardImages')}
         >
-          {project.heroImage ? (
-            <MediaCard
-              title="Huvudbild"
-              image={project.heroImage}
-              asset={project.heroImagePreview}
-              rightsFallback={project.imageRightsConfirmed}
-              disabled={disabled}
-              onReplace={() => onOpenField('heroImage')}
-              onRemove={() => onRequestRemoval({kind: 'hero'}, 'huvudbilden')}
-            />
-          ) : (
-            <EmptyMedia text="Kladden har ingen huvudbildsreferens." />
-          )}
+          {[0, 1].map((index) => {
+            const image = cardImages[index]
+            if (!image) return <EmptyMedia key={index} text={`Kortbild ${index + 1} saknas i kladden.`} />
+            return <MediaCard key={image._key || index} title={`Kortbild ${index + 1}`} image={image} asset={previewForCardImage(image, index)} rightsFallback={project.imageRightsConfirmed} disabled={disabled} onReplace={() => onOpenField('cardImages')} onRemove={() => onRequestRemoval(usesCardImageModel ? {kind: 'cardImage', key: image._key, index} : index === 0 ? {kind: 'hero'} : {kind: 'gallery', key: image._key, index: 0}, `Kortbild ${index + 1}`)} />
+          })}
         </MediaSection>
 
         <MediaSection
-          heading="Projektgalleri"
-          actionText="Lägg till galleribild via Sanitys bildväljare"
-          actionLabel="Öppna Sanitys inbyggda projektgalleri för assetval eller uppladdning"
+          heading="Övriga bilder i bildspelet"
+          actionText="Lägg till bild via Sanitys bildväljare"
+          actionLabel="Öppna Sanitys bildfält för fler bildspelsbilder, assetval eller uppladdning"
           disabled={disabled}
-          onOpen={() => onOpenField('galleryImages')}
+          onOpen={() => onOpenField('slideshowImages')}
         >
           <div className="esencial-content-media__media-grid">
-            {(project.galleryImages || []).map((image, index) => (
-              <MediaCard
-                key={image._key || index}
-                title={`Galleribild ${index + 1}`}
-                image={image}
-                asset={galleryPreviews.get(image._key || String(index))}
-                rightsFallback={project.imageRightsConfirmed}
-                disabled={disabled}
-                onReplace={() => onOpenField('galleryImages')}
-                onRemove={() =>
-                  onRequestRemoval(
-                    {kind: 'gallery', key: image._key, index},
-                    `galleribild ${index + 1}`,
-                  )
-                }
-              />
-            ))}
+            {slideshowImages.map((image, index) => {
+              return (
+                <MediaCard
+                  key={image._key || index}
+                  title={`Bildspelsbild ${index + 1}`}
+                  image={image}
+                  asset={previewForSlideshowImage(image, index)}
+                  rightsFallback={project.imageRightsConfirmed}
+                  disabled={disabled}
+                  onReplace={() => onOpenField('slideshowImages')}
+                  onRemove={() =>
+                    onRequestRemoval(
+                      usesCardImageModel
+                        ? {kind: 'slideshowImage', key: image._key, index}
+                        : {kind: 'gallery', key: image._key, index: index + 1},
+                      `bildspelsbild ${index + 1}`,
+                    )
+                  }
+                />
+              )
+            })}
           </div>
-          {!project.galleryImages?.length && <EmptyMedia text="Kladden har inga galleribilder." />}
+          {!slideshowImages.length && (
+            <EmptyMedia text="Inga övriga bildspelsbilder finns ännu." />
+          )}
         </MediaSection>
 
         <MediaSection

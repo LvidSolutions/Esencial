@@ -1,8 +1,8 @@
 export const WORKSPACE_SECTION_CONTRACTS = {
   'content-media': {
     id: 'content-media',
-    navigationLabel: 'Redigera innehåll',
-    heading: 'Projektinnehåll och bilder',
+    navigationLabel: 'Projekt',
+    heading: 'Projekt',
     ownerStage: 'S25',
     featureBoundary: 'cms/studio/features/content/**',
     purpose:
@@ -10,8 +10,8 @@ export const WORKSPACE_SECTION_CONTRACTS = {
   },
   'projects-filters': {
     id: 'projects-filters',
-    navigationLabel: 'Redigera projekt',
-    heading: 'Projekt och filter',
+    navigationLabel: 'Filter och ordning',
+    heading: 'Filter och ordning',
     ownerStage: 'S17',
     featureBoundary: 'cms/studio/features/projects/**',
     purpose:
@@ -19,7 +19,7 @@ export const WORKSPACE_SECTION_CONTRACTS = {
   },
   'live-preview': {
     id: 'live-preview',
-    navigationLabel: 'Kontrollera sidan',
+    navigationLabel: 'Förhandsvisning',
     heading: 'Förhandsvisning',
     ownerStage: 'S18',
     featureBoundary: 'cms/studio/features/preview/**',
@@ -28,8 +28,8 @@ export const WORKSPACE_SECTION_CONTRACTS = {
   },
   'analytics-consent': {
     id: 'analytics-consent',
-    navigationLabel: 'Följ resultat',
-    heading: 'Resultat och samtycke',
+    navigationLabel: 'Resultat',
+    heading: 'Resultat',
     ownerStage: 'S19',
     featureBoundary: 'cms/studio/features/analytics/**',
     purpose:

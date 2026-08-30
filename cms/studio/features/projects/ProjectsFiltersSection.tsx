@@ -22,7 +22,8 @@ const projectsQuery = `*[_type == "project"] | order(translationKey asc, languag
   _id, _originalId, title, "slug": slug.current, language, translationKey, status
 }`
 const categoriesQuery = `*[_type == "filterCategory"] | order(order asc, key asc) {
-  _id, _originalId, key, labelSv, labelEn, order, visible, "projectRefs": projects[]._ref
+  _id, _originalId, key, labelSv, labelEn, order, visible, "projectRefs": projects[]._ref,
+  "projectOrder": projectOrder[]._ref
 }`
 const settingsQuery = `*[_type == "navigationSettings" && _id in ["navigationSettings", "drafts.navigationSettings"]] | order(_updatedAt desc)[0] {
   _id, _originalId, enabled, headingSv, headingEn, allLabelSv, allLabelEn,
@@ -67,6 +68,7 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
       const normalizedCategories = nextCategories.map((category) => ({
         ...category,
         projectRefs: category.projectRefs || [],
+        projectOrder: category.projectOrder || category.projectRefs || [],
       }))
       setProjects(nextProjects)
       setCategories(normalizedCategories)
@@ -142,6 +144,7 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
       order: number
       visible: boolean
       projectRefs: string[]
+      projectOrder: string[]
     },
   ) =>
     runSave(async () => {
@@ -151,6 +154,7 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
         order: patch.order,
         visible: patch.visible,
         projects: projectReferences(patch.projectRefs),
+        projectOrder: projectReferences(patch.projectOrder),
       })
       const targetId = canonicalDocumentId(category._id)
       setCategories((current) =>
