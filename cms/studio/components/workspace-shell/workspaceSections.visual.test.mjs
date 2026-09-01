@@ -56,7 +56,10 @@ test('all workspace sections retain a black high-contrast responsive layout', as
         return {
           scrollWidth: Math.max(document.body.scrollWidth, document.documentElement.scrollWidth),
           viewportWidth: document.documentElement.clientWidth,
-          shell: {background: getComputedStyle(shell).backgroundColor, color: getComputedStyle(shell).color},
+          shell: {
+            background: getComputedStyle(shell).backgroundColor,
+            color: getComputedStyle(shell).color,
+          },
           controls: interactive.map((element) => {
             const rect = element.getBoundingClientRect()
             return {
@@ -68,13 +71,41 @@ test('all workspace sections retain a black high-contrast responsive layout', as
               requiresTargetSize: element.tagName !== 'INPUT' || element.type !== 'checkbox',
             }
           }),
+          textRects: [...document.querySelectorAll('*')].flatMap((element) =>
+            [...element.childNodes]
+              .filter((node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim())
+              .flatMap((node) => {
+                const range = document.createRange()
+                range.selectNodeContents(node)
+                const owner =
+                  element.closest('button, a, label, h1, h2, h3, h4, h5, h6, p, legend, li') ||
+                  element
+                return [...range.getClientRects()]
+                  .filter((rect) => rect.width > 1 && rect.height > 1)
+                  .map((rect) => ({
+                    text: node.textContent.trim().slice(0, 48),
+                    owner: [...document.querySelectorAll('*')].indexOf(owner),
+                    left: rect.left,
+                    right: rect.right,
+                    top: rect.top,
+                    bottom: rect.bottom,
+                  }))
+              }),
+          ),
         }
       })
-      assert.equal(report.scrollWidth, report.viewportWidth, `${viewport.name}: horizontal overflow`)
+      assert.equal(
+        report.scrollWidth,
+        report.viewportWidth,
+        `${viewport.name}: horizontal overflow`,
+      )
       assert.equal(report.shell.background, 'rgb(0, 0, 0)', `${viewport.name}: canvas is not black`)
       assert.equal(report.shell.color, 'rgb(255, 255, 255)', `${viewport.name}: text is not white`)
       for (const control of report.controls) {
-        assert(control.left >= -0.5 && control.right <= viewport.width + 0.5, `${viewport.name}: clipped control`)
+        assert(
+          control.left >= -0.5 && control.right <= viewport.width + 0.5,
+          `${viewport.name}: clipped control`,
+        )
         if (control.requiresTargetSize) {
           assert(control.height >= 44, `${viewport.name}: undersized control`)
         }
@@ -83,11 +114,28 @@ test('all workspace sections retain a black high-contrast responsive layout', as
         for (let nextIndex = index + 1; nextIndex < report.controls.length; nextIndex += 1) {
           const first = report.controls[index]
           const second = report.controls[nextIndex]
-          const overlapWidth = Math.min(first.right, second.right) - Math.max(first.left, second.left)
-          const overlapHeight = Math.min(first.bottom, second.bottom) - Math.max(first.top, second.top)
+          const overlapWidth =
+            Math.min(first.right, second.right) - Math.max(first.left, second.left)
+          const overlapHeight =
+            Math.min(first.bottom, second.bottom) - Math.max(first.top, second.top)
           assert(
             overlapWidth <= 1 || overlapHeight <= 1,
             `${viewport.name}: interactive controls overlap`,
+          )
+        }
+      }
+      for (let index = 0; index < report.textRects.length; index += 1) {
+        for (let nextIndex = index + 1; nextIndex < report.textRects.length; nextIndex += 1) {
+          const first = report.textRects[index]
+          const second = report.textRects[nextIndex]
+          if (first.owner === second.owner) continue
+          const overlapWidth =
+            Math.min(first.right, second.right) - Math.max(first.left, second.left)
+          const overlapHeight =
+            Math.min(first.bottom, second.bottom) - Math.max(first.top, second.top)
+          assert(
+            overlapWidth <= 1 || overlapHeight <= 1,
+            `${viewport.name}: visible text overlaps (${first.text} / ${second.text})`,
           )
         }
       }

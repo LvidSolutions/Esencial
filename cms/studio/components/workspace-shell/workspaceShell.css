@@ -99,8 +99,19 @@
   line-height: 1.5;
 }
 
-.esencial-workspace-shell :where(h1, h2, h3, h4, h5, h6, p, span, label, dt, dd, li) {
-  overflow-wrap: anywhere;
+/*
+ * Do not apply arbitrary breaking to every nested span. Sanity's own controls
+ * use spans internally; forcing those fragments to wrap was what made button
+ * labels and field copy look stacked. Long editorial copy may still wrap, but
+ * at normal word boundaries first.
+ */
+.esencial-workspace-shell :where(h1, h2, h3, h4, h5, h6, p, label, dt, dd, li) {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.esencial-workspace-shell :where(input, select, textarea, button, [role='button']) {
+  line-height: 1.35;
 }
 
 .esencial-editorial-status {

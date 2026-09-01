@@ -7,7 +7,19 @@ import {
   useRef,
   useState,
 } from 'react'
-import {Badge, Box, Button, Card, Flex, Grid, Heading, Inline, Select, Stack, Text} from '@sanity/ui'
+import {
+  Badge,
+  Box,
+  Button,
+  Card,
+  Flex,
+  Grid,
+  Heading,
+  Inline,
+  Select,
+  Stack,
+  Text,
+} from '@sanity/ui'
 import {useClient} from 'sanity'
 import {
   buildPreviewRendererUrl,
@@ -18,11 +30,7 @@ import {
   type PreviewPerspective,
   type PreviewViewportId,
 } from './configuration'
-import {
-  isPreviewRendererMessage,
-  type LayoutIssue,
-  type LayoutIssueCode,
-} from './contracts'
+import {isPreviewRendererMessage, type LayoutIssue, type LayoutIssueCode} from './contracts'
 import './liveFrontendPreview.css'
 
 type PreviewProject = {
@@ -92,12 +100,7 @@ function localGuardrailIssues(project: PreviewProject | undefined, route: string
   if (!project) return []
   const issues: LayoutIssue[] = []
   const documentId = canonicalId(project._id)
-  const add = (
-    code: LayoutIssueCode,
-    field: string,
-    message: string,
-    suggestion: string,
-  ) =>
+  const add = (code: LayoutIssueCode, field: string, message: string, suggestion: string) =>
     issues.push({
       code,
       severity: 'blocker',
@@ -110,9 +113,19 @@ function localGuardrailIssues(project: PreviewProject | undefined, route: string
     })
 
   if (!project.title?.trim()) {
-    add('text-overflow', 'title', 'Projektnamnet saknas.', 'Lägg till ett projektnamn och granska den riktiga renderern igen.')
+    add(
+      'text-overflow',
+      'title',
+      'Projektnamnet saknas.',
+      'Lägg till ett projektnamn och granska den riktiga renderern igen.',
+    )
   } else {
-    const longestTitleToken = Math.max(...project.title.trim().split(/\s+/).map((token) => token.length))
+    const longestTitleToken = Math.max(
+      ...project.title
+        .trim()
+        .split(/\s+/)
+        .map((token) => token.length),
+    )
     if (longestTitleToken > 32) {
       add(
         'text-overflow',
@@ -215,7 +228,11 @@ export function LiveFrontendPreview() {
     let pollTimer: ReturnType<typeof setInterval> | undefined
     const liveClient = baseClient.withConfig({perspective: 'raw', useCdn: false})
     const subscription = liveClient
-      .listen('*[_type in ["project", "homePage"]]', {}, {includeResult: false, visibility: 'query'})
+      .listen(
+        '*[_type in ["project", "homePage"]]',
+        {},
+        {includeResult: false, visibility: 'query'},
+      )
       .subscribe({
         next: () => {
           setLiveState('live')
@@ -258,9 +275,20 @@ export function LiveFrontendPreview() {
   }, [perspective, previewOrigin.kind, previewUrl, route])
 
   useEffect(() => {
+    if (previewOrigin.kind !== 'configured' || rendererState !== 'verifying') return undefined
+    const timeout = window.setTimeout(() => {
+      setRendererState((current) => (current === 'verifying' ? 'unauthenticated' : current))
+    }, 6_000)
+    return () => window.clearTimeout(timeout)
+  }, [previewOrigin.kind, rendererState])
+
+  useEffect(() => {
     if (previewOrigin.kind !== 'configured') return undefined
     const handleMessage = (event: MessageEvent<unknown>) => {
-      if (event.origin !== previewOrigin.origin || event.source !== iframeRef.current?.contentWindow) {
+      if (
+        event.origin !== previewOrigin.origin ||
+        event.source !== iframeRef.current?.contentWindow
+      ) {
         return
       }
       if (!isPreviewRendererMessage(event.data)) return
@@ -368,7 +396,8 @@ export function LiveFrontendPreview() {
               ))}
             </Inline>
             <Text as="p" size={1} muted>
-              Fast CSS-viewport {viewport.width} × {viewport.height}; skalas bara visuellt för att rymmas.
+              Fast CSS-viewport {viewport.width} × {viewport.height}; skalas bara visuellt för att
+              rymmas.
             </Text>
           </Control>
         </Grid>
@@ -380,7 +409,12 @@ export function LiveFrontendPreview() {
             Frontendrenderer
           </Heading>
           <Text as="p" size={1} muted className="esencial-preview-route">
-            Rutt: {route} · {perspectiveCopy[perspective].label} · liveuppdatering {liveState === 'live' ? 'ansluten' : liveState === 'polling' ? 'via reservpollning' : 'ansluter'}
+            Rutt: {route} · {perspectiveCopy[perspective].label} · liveuppdatering{' '}
+            {liveState === 'live'
+              ? 'ansluten'
+              : liveState === 'polling'
+                ? 'via reservpollning'
+                : 'ansluter'}
           </Text>
         </Stack>
         <RendererBadge state={rendererState} />
@@ -396,7 +430,7 @@ export function LiveFrontendPreview() {
         </Card>
       ) : (
         <ViewportFrame viewportId={viewportId}>
-          {previewUrl ? (
+          {previewUrl && rendererState !== 'unauthenticated' ? (
             <iframe
               key={viewportId}
               ref={iframeRef}
@@ -409,6 +443,8 @@ export function LiveFrontendPreview() {
               title={`${perspectiveCopy[perspective].label} frontendpreview för ${route}`}
               width={viewport.width}
             />
+          ) : previewUrl ? (
+            <PreviewAccessRequired />
           ) : (
             <LocalFallback project={selected} route={route} routeMode={routeMode} />
           )}
@@ -423,7 +459,8 @@ export function LiveFrontendPreview() {
             </Heading>
             <Text size={1}>{previewOrigin.reason}</Text>
             <Text size={1} muted>
-              Fixturen visar text- och mediavarningar men kan inte bevisa staging, autentisering, verklig CSS eller frontendens bildrendering.
+              Fixturen visar text- och mediavarningar men kan inte bevisa staging, autentisering,
+              verklig CSS eller frontendens bildrendering.
             </Text>
           </Stack>
         </Card>
@@ -431,6 +468,22 @@ export function LiveFrontendPreview() {
 
       <Diagnostics issues={issues} reviewBlocked={reviewBlocked} rendererState={rendererState} />
     </Stack>
+  )
+}
+
+function PreviewAccessRequired() {
+  return (
+    <div className="esencial-preview-access-required" role="status">
+      <Stack space={3}>
+        <Heading as="h4" size={2}>
+          Förhandsvisningen behöver en verifierad session
+        </Heading>
+        <Text size={1}>
+          Ingen frontend visas förrän den skyddade preview-länken har bekräftats. Det förhindrar en
+          vit felsida och räknas inte som ett godkänt preview-resultat.
+        </Text>
+      </Stack>
+    </div>
   )
 }
 
@@ -448,7 +501,8 @@ function Control({label, children}: {label: string; children: ReactNode}) {
 
 function RendererBadge({state}: {state: RendererState}) {
   if (state === 'authenticated') return <Badge tone="positive">Skyddad session verifierad</Badge>
-  if (state === 'unauthenticated') return <Badge tone="critical">Renderer saknar verifierad session</Badge>
+  if (state === 'unauthenticated')
+    return <Badge tone="critical">Renderer saknar verifierad session</Badge>
   if (state === 'verifying') return <Badge tone="caution">Verifierar skyddad renderer</Badge>
   return <Badge tone="caution">Lokal fixtur · ej autentiserad</Badge>
 }
@@ -527,7 +581,8 @@ function LocalFallback({
               </Text>
             </button>
             <div className="esencial-preview-fallback__media">
-              Bildytan återges inte i den lokala fixturen. Frontendens bildkvalitet, beskärning och inramning måste verifieras i den skyddade renderern.
+              Bildytan återges inte i den lokala fixturen. Frontendens bildkvalitet, beskärning och
+              inramning måste verifieras i den skyddade renderern.
             </div>
           </article>
         ) : (
@@ -568,7 +623,8 @@ function Diagnostics({
         </Flex>
         {rendererState !== 'authenticated' ? (
           <Text size={1}>
-            En skyddad frontendrenderer har inte verifierat sessionen. Lokal fixtur eller enbart laddad iframe räknas aldrig som autentiserad preview.
+            En skyddad frontendrenderer har inte verifierat sessionen. Lokal fixtur eller enbart
+            laddad iframe räknas aldrig som autentiserad preview.
           </Text>
         ) : null}
         {issues.length ? (
@@ -596,7 +652,9 @@ function Diagnostics({
               </li>
             ))}
           </ol>
-        ) : authenticatedRendererMessage(rendererState)}
+        ) : (
+          authenticatedRendererMessage(rendererState)
+        )}
       </Stack>
     </Card>
   )
@@ -604,11 +662,16 @@ function Diagnostics({
 
 function authenticatedRendererMessage(rendererState: RendererState) {
   if (rendererState !== 'authenticated') {
-    return <Text size={1} muted>Inga rendererdiagnoser kan godkännas innan den skyddade sessionen är verifierad.</Text>
+    return (
+      <Text size={1} muted>
+        Inga rendererdiagnoser kan godkännas innan den skyddade sessionen är verifierad.
+      </Text>
+    )
   }
   return (
     <Text size={1}>
-      Renderern rapporterar ingen horisontell scroll, klippning, överlappning, trasig media eller osäker radlängd i den valda vyn.
+      Renderern rapporterar ingen horisontell scroll, klippning, överlappning, trasig media eller
+      osäker radlängd i den valda vyn.
     </Text>
   )
 }
