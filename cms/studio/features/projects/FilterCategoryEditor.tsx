@@ -65,7 +65,9 @@ export function FilterCategoryEditor({
     setOrder(String(category?.order ?? 0))
     setVisible(category?.visible === true)
     setProjectRefs((category?.projectRefs || []).map(canonicalDocumentId))
-    setProjectOrder((category?.projectOrder || category?.projectRefs || []).map(canonicalDocumentId))
+    setProjectOrder(
+      (category?.projectOrder || category?.projectRefs || []).map(canonicalDocumentId),
+    )
   }, [
     category?._id,
     category?.labelEn,
@@ -88,7 +90,9 @@ export function FilterCategoryEditor({
         : [...current, reference]
       setProjectOrder((order) => {
         const retained = order.filter((id) => next.includes(id))
-        return next.includes(reference) && !retained.includes(reference) ? [...retained, reference] : retained
+        return next.includes(reference) && !retained.includes(reference)
+          ? [...retained, reference]
+          : retained
       })
       return next
     })
@@ -127,14 +131,16 @@ export function FilterCategoryEditor({
       JSON.stringify(projectRefs) !==
         JSON.stringify((category.projectRefs || []).map(canonicalDocumentId)) ||
       JSON.stringify(projectOrder) !==
-        JSON.stringify((category.projectOrder || category.projectRefs || []).map(canonicalDocumentId))),
+        JSON.stringify(
+          (category.projectOrder || category.projectRefs || []).map(canonicalDocumentId),
+        )),
   )
 
   return (
     <Card padding={[3, 4]} radius={2} border>
       <Stack space={4}>
         <Flex justify="space-between" align="center" wrap="wrap" gap={3}>
-          <Box>
+          <Box className="esencial-projects-feature__heading-block">
             <Heading as="h3" size={2}>
               Filterkategorier och navigation
             </Heading>
@@ -187,9 +193,13 @@ export function FilterCategoryEditor({
                           setLabelSv(category.labelSv || '')
                           setLabelEn(category.labelEn || '')
                           setOrder(String(category.order ?? 0))
-                      setVisible(category.visible === true)
-                      setProjectRefs((category.projectRefs || []).map(canonicalDocumentId))
-                      setProjectOrder((category.projectOrder || category.projectRefs || []).map(canonicalDocumentId))
+                          setVisible(category.visible === true)
+                          setProjectRefs((category.projectRefs || []).map(canonicalDocumentId))
+                          setProjectOrder(
+                            (category.projectOrder || category.projectRefs || []).map(
+                              canonicalDocumentId,
+                            ),
+                          )
                         }}
                       />
                     </Box>
@@ -302,12 +312,15 @@ export function FilterCategoryEditor({
               <fieldset className="esencial-projects-feature__fieldset">
                 <legend>Ordning i detta filter</legend>
                 <Text size={1} muted>
-                  Projekt 1 visas uppe till vänster, projekt 2 till höger och projekt 3 under projekt 1.
-                  Dra en rad till en annan position. Upp/Ned fungerar alltid med tangentbord.
+                  Projekt 1 visas uppe till vänster, projekt 2 till höger och projekt 3 under
+                  projekt 1. Dra en rad till en annan position. Upp/Ned fungerar alltid med
+                  tangentbord.
                 </Text>
                 <ol className="esencial-projects-feature__order-list">
                   {projectOrder.map((reference, index) => {
-                    const pair = pairs.find((candidate) => canonicalDocumentId(candidate.sv?._id) === reference)
+                    const pair = pairs.find(
+                      (candidate) => canonicalDocumentId(candidate.sv?._id) === reference,
+                    )
                     return (
                       <li
                         key={reference}
@@ -322,10 +335,22 @@ export function FilterCategoryEditor({
                           setDraggingReference('')
                         }}
                       >
-                        <Text size={1} weight="semibold">{index + 1}. {pair ? pairLabel(pair) : 'Projekt saknas'}</Text>
+                        <Text size={1} weight="semibold">
+                          {index + 1}. {pair ? pairLabel(pair) : 'Projekt saknas'}
+                        </Text>
                         <Inline space={1} className="esencial-projects-feature__actions">
-                          <Button mode="ghost" text="Upp" disabled={saving || index === 0} onClick={() => moveProject(reference, -1)} />
-                          <Button mode="ghost" text="Ned" disabled={saving || index === projectOrder.length - 1} onClick={() => moveProject(reference, 1)} />
+                          <Button
+                            mode="ghost"
+                            text="Upp"
+                            disabled={saving || index === 0}
+                            onClick={() => moveProject(reference, -1)}
+                          />
+                          <Button
+                            mode="ghost"
+                            text="Ned"
+                            disabled={saving || index === projectOrder.length - 1}
+                            onClick={() => moveProject(reference, 1)}
+                          />
                         </Inline>
                       </li>
                     )

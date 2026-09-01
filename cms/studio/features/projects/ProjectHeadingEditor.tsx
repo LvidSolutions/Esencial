@@ -43,7 +43,7 @@ export function ProjectHeadingEditor({
     <Card padding={[3, 4]} radius={2} border>
       <Stack space={4}>
         <Flex justify="space-between" align="center" wrap="wrap" gap={3}>
-          <Box>
+          <Box className="esencial-projects-feature__heading-block">
             <Heading as="h3" size={2}>
               Projektrubriker på svenska och engelska
             </Heading>

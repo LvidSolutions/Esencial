@@ -2,6 +2,29 @@
   min-width: 0;
 }
 
+/* Text from @sanity/ui can be inline by default. Keep each module heading and
+   its helper copy in a real vertical grid so the two never share a line box. */
+.esencial-projects-feature__heading-block {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+}
+
+.esencial-projects-feature__heading-block > * {
+  min-width: 0;
+}
+
+.esencial-projects-feature__heading-block > :where(h3, h4) {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.esencial-projects-feature__heading-block > :not(h3):not(h4) {
+  display: block;
+  margin: 0;
+  line-height: 1.55;
+}
+
 .esencial-projects-feature__actions {
   flex-wrap: wrap;
   gap: 8px;

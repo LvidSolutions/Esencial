@@ -145,7 +145,7 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
   return (
     <Card padding={[3, 4]} radius={2} border>
       <Stack space={4}>
-        <Box>
+        <Box className="esencial-projects-feature__heading-block">
           <Heading as="h3" size={2}>
             Inkludering och ordning i projektrutnätet
           </Heading>

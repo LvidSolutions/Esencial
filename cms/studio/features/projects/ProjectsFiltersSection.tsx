@@ -189,7 +189,7 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
   return (
     <Stack space={4} className="esencial-projects-feature">
       <Flex justify="space-between" align="center" wrap="wrap" gap={3}>
-        <Box>
+        <Box className="esencial-projects-feature__heading-block">
           <Heading as="h3" size={2}>
             S17 · Projekt, filter och rutnätsnavigation
           </Heading>
