@@ -124,6 +124,9 @@ test('the in-workspace overview has draft-only reads and accessible recovery sta
   }
   assert.doesNotMatch(overview, /client\.(?:create|delete|patch)|\.publish\s*\(/)
   assert.match(shell, /href="#esencial-workspace-status"/)
+  assert.match(shell, /<ThemeProvider scheme="dark" theme=\{esencialStudioTheme\}>/)
+  assert.match(styles, /color-scheme: dark/)
+  assert.doesNotMatch(styles, /color-scheme: light/)
   assert.match(styles, /min-height: 52px/)
   assert.match(styles, /@media \(max-width: 56rem\)/)
   assert.match(styles, /@media \(forced-colors: active\)/)

@@ -1,5 +1,6 @@
 import type {CSSProperties, ReactNode} from 'react'
-import {Badge, Box, Card, Container, Flex, Heading, Stack, Text} from '@sanity/ui'
+import {Badge, Box, Card, Container, Flex, Heading, Stack, Text, ThemeProvider} from '@sanity/ui'
+import {esencialStudioTheme} from '../../theme/esencialTheme'
 import {esencialVisualTokens} from '../../theme/tokens'
 import {
   WORKSPACE_SECTION_CONTRACTS,
@@ -74,11 +75,12 @@ export function WorkspaceShell({
     (section): section is WorkspaceSectionDefinition => Boolean(section),
   )
   return (
-    <main className="esencial-workspace-shell" style={workspaceStyle}>
-      <a className="esencial-workspace-shell__skip" href="#esencial-workspace-status">
-        Hoppa till arbetsytans innehåll
-      </a>
-      <Container width={6} className="esencial-workspace-shell__container">
+    <ThemeProvider scheme="dark" theme={esencialStudioTheme}>
+      <main className="esencial-workspace-shell" style={workspaceStyle}>
+        <a className="esencial-workspace-shell__skip" href="#esencial-workspace-status">
+          Hoppa till arbetsytans innehåll
+        </a>
+        <Container width={6} className="esencial-workspace-shell__container">
         <Stack space={5}>
           <header className="esencial-workspace-shell__header">
             <Text as="p" className="esencial-workspace-shell__eyebrow">
@@ -134,8 +136,9 @@ export function WorkspaceShell({
             ))}
           </div>
         </Stack>
-      </Container>
-    </main>
+        </Container>
+      </main>
+    </ThemeProvider>
   )
 }
 

@@ -4,8 +4,9 @@
   overflow-x: clip;
   background: var(--esencial-workspace-canvas);
   color: var(--esencial-workspace-ink);
-  color-scheme: light;
+  color-scheme: dark;
   font-family: var(--esencial-workspace-font);
+  isolation: isolate;
 }
 
 .esencial-workspace-shell *,
@@ -15,8 +16,9 @@
 }
 
 .esencial-workspace-shell__container {
-  padding-inline: clamp(16px, 4vw, 64px);
-  padding-block: clamp(24px, 4vw, 64px);
+  max-width: 1120px;
+  padding-inline: clamp(16px, 3vw, 40px);
+  padding-block: clamp(20px, 3vw, 40px);
 }
 
 .esencial-workspace-shell__skip {
@@ -38,9 +40,9 @@
 
 .esencial-workspace-shell__header {
   display: grid;
-  gap: 20px;
+  gap: 12px;
   border-top: 4px solid var(--esencial-workspace-ink);
-  padding-block: clamp(16px, 3vw, 40px);
+  padding-block: clamp(14px, 2vw, 28px);
 }
 
 .esencial-workspace-shell__intro {
@@ -55,7 +57,7 @@
 .esencial-workspace-shell__subtitle,
 .esencial-workspace-shell__section-summary {
   max-width: var(--esencial-workspace-measure);
-  margin-top: 12px;
+  margin-top: 8px;
   color: var(--esencial-workspace-muted);
   line-height: var(--esencial-workspace-content-line-height, 1.55);
 }
@@ -79,10 +81,14 @@
 
 .esencial-workspace-shell :where(button, [role='button']) {
   min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .esencial-workspace-shell :where(input:not([type='checkbox']), select, textarea) {
   min-height: 44px;
+  max-width: 100%;
 }
 
 .esencial-workspace-shell__safety {
@@ -91,6 +97,10 @@
   background: var(--esencial-workspace-draft-surface);
   color: var(--esencial-workspace-draft-ink);
   line-height: 1.5;
+}
+
+.esencial-workspace-shell :where(h1, h2, h3, h4, h5, h6, p, span, label, dt, dd, li) {
+  overflow-wrap: anywhere;
 }
 
 .esencial-editorial-status {
@@ -199,7 +209,7 @@
   z-index: 5;
   top: 0;
   border-block: 1px solid var(--esencial-workspace-border-strong);
-  background: var(--esencial-workspace-canvas);
+  background: #000;
 }
 
 .esencial-workspace-shell__tabs ol {
@@ -220,7 +230,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 16px;
+  padding: 10px 12px;
   color: var(--esencial-workspace-ink);
   font-size: 12px;
   font-weight: 600;
@@ -246,7 +256,7 @@
 
 .esencial-workspace-shell__flow {
   display: grid;
-  gap: var(--esencial-workspace-section-space);
+  gap: clamp(36px, 5vw, var(--esencial-workspace-section-space));
   min-width: 0;
 }
 
@@ -254,14 +264,14 @@
   min-width: 0;
   scroll-margin-top: 72px;
   border-top: 1px solid var(--esencial-workspace-border-strong);
-  padding-top: clamp(28px, 4vw, 52px);
+  padding-top: clamp(24px, 3vw, 40px);
 }
 
 .esencial-workspace-shell__section-header {
   display: grid;
   grid-template-columns: minmax(140px, 0.32fr) minmax(0, 1fr);
-  gap: clamp(20px, 4vw, 64px);
-  margin-bottom: clamp(24px, 4vw, 48px);
+  gap: clamp(16px, 3vw, 40px);
+  margin-bottom: clamp(20px, 3vw, 32px);
 }
 
 .esencial-workspace-shell__section h2,
@@ -293,12 +303,19 @@
   }
 
   .esencial-workspace-shell__tabs ol {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .esencial-workspace-shell__tabs li + li {
-    border-top: 1px solid var(--esencial-workspace-border);
+    border-left: 1px solid var(--esencial-workspace-border);
+  }
+
+  .esencial-workspace-shell__tabs li:nth-child(odd) {
     border-left: 0;
+  }
+
+  .esencial-workspace-shell__tabs li:nth-child(n + 3) {
+    border-top: 1px solid var(--esencial-workspace-border);
   }
 
   .esencial-workspace-shell__section {
@@ -318,6 +335,12 @@
 
   .esencial-workspace-shell :where(input, select, textarea) {
     font-size: 16px;
+  }
+
+  .esencial-workspace-shell__tabs a {
+    min-height: 48px;
+    padding-inline: 8px;
+    font-size: 11px;
   }
 }
 

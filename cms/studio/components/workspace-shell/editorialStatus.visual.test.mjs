@@ -6,17 +6,17 @@ import {chromium} from 'playwright'
 const shellCss = readFileSync(new globalThis.URL('./workspaceShell.css', import.meta.url), 'utf8')
 
 const variables = `
-  --esencial-workspace-ink: #1f1f1d;
-  --esencial-workspace-muted: #5b5b55;
-  --esencial-workspace-paper: #fff;
-  --esencial-workspace-canvas: #fbfbfa;
-  --esencial-workspace-wash: #f5f5f1;
-  --esencial-workspace-border: #d1d1ca;
-  --esencial-workspace-border-strong: #8a8a82;
-  --esencial-workspace-focus: #005fcc;
-  --esencial-workspace-focus-soft: #dbeaff;
-  --esencial-workspace-draft-border: #8a6b00;
-  --esencial-workspace-critical-ink: #8c2f1c;
+  --esencial-workspace-ink: #ffffff;
+  --esencial-workspace-muted: #c9c9c9;
+  --esencial-workspace-paper: #121212;
+  --esencial-workspace-canvas: #000000;
+  --esencial-workspace-wash: #1b1b1b;
+  --esencial-workspace-border: #474747;
+  --esencial-workspace-border-strong: #777777;
+  --esencial-workspace-focus: #ffd54a;
+  --esencial-workspace-focus-soft: #4a3b00;
+  --esencial-workspace-draft-border: #d8bb32;
+  --esencial-workspace-critical-ink: #ffc1b8;
   --esencial-workspace-font: Roboto, Arial, sans-serif;
   --esencial-workspace-measure: 68ch;
   --esencial-workspace-heading-tracking: -0.025em;
@@ -44,7 +44,7 @@ const html = `<!doctype html>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
       :root {${variables}}
-      html, body {margin: 0; background: var(--esencial-workspace-canvas);}
+      html, body {margin: 0; background: var(--esencial-workspace-canvas); color: var(--esencial-workspace-ink);}
       ${shellCss}
       .fixture-container {width: min(100%, 1280px); margin-inline: auto;}
       .fixture-card {padding: 16px; border: 1px solid var(--esencial-workspace-border);}
@@ -102,6 +102,10 @@ test('editorial overview reflows, preserves 44px targets, and exposes keyboard f
             globalThis.document.body.scrollWidth,
           ),
           columns: globalThis.getComputedStyle(grid).gridTemplateColumns.split(' ').length,
+          colors: {
+            canvas: globalThis.getComputedStyle(globalThis.document.querySelector('.esencial-workspace-shell')).backgroundColor,
+            ink: globalThis.getComputedStyle(globalThis.document.querySelector('.esencial-workspace-shell')).color,
+          },
           targets: targets.map((target) => {
             const rect = target.getBoundingClientRect()
             return {height: rect.height, left: rect.left, right: rect.right}
@@ -115,6 +119,8 @@ test('editorial overview reflows, preserves 44px targets, and exposes keyboard f
         `${fixture.name}: horizontal scroll`,
       )
       assert.equal(inspection.columns, fixture.columns, `${fixture.name}: unexpected column count`)
+      assert.equal(inspection.colors.canvas, 'rgb(0, 0, 0)', `${fixture.name}: canvas must be black`)
+      assert.equal(inspection.colors.ink, 'rgb(255, 255, 255)', `${fixture.name}: base text must be white`)
       for (const target of inspection.targets) {
         assert(target.height >= 44, `${fixture.name}: control is shorter than 44px`)
         assert(
