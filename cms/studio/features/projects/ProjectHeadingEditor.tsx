@@ -43,7 +43,7 @@ export function ProjectHeadingEditor({
     <Card padding={[3, 4]} radius={2} border>
       <Stack space={4}>
         <Flex justify="space-between" align="center" wrap="wrap" gap={3}>
-          <Box className="esencial-projects-feature__heading-block">
+          <div className="esencial-projects-feature__heading-block">
             <Heading as="h3" size={2}>
               Projektrubriker på svenska och engelska
             </Heading>
@@ -51,7 +51,7 @@ export function ProjectHeadingEditor({
               Varje fält sparar endast den befintliga språkversionens kladd. Inga rubriker,
               översättningar, fakta eller språkpar skapas automatiskt.
             </Text>
-          </Box>
+          </div>
           <Inline space={2} className="esencial-projects-feature__actions">
             <Button
               text="Nytt svenskt projekt"

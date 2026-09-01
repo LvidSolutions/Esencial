@@ -145,7 +145,7 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
   return (
     <Card padding={[3, 4]} radius={2} border>
       <Stack space={4}>
-        <Box className="esencial-projects-feature__heading-block">
+        <div className="esencial-projects-feature__heading-block">
           <Heading as="h3" size={2}>
             Inkludering och ordning i projektrutnätet
           </Heading>
@@ -153,7 +153,7 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
             Projekt läggs till ett i taget genom ett uttryckligt val. Ordningen ändras med synliga
             Upp/Ned-knappar; ingen redaktör behöver använda dra och släpp.
           </Text>
-        </Box>
+        </div>
 
         {!settings && (
           <Card padding={3} radius={2} border role="status">

@@ -81,61 +81,61 @@ export function WorkspaceShell({
           Hoppa till arbetsytans innehåll
         </a>
         <Container width={6} className="esencial-workspace-shell__container">
-        <Stack space={5}>
-          <header className="esencial-workspace-shell__header">
-            <Text as="p" className="esencial-workspace-shell__eyebrow">
-              Esencial CMS
-            </Text>
-            <Flex
-              align={['flex-start', 'center']}
-              direction={['column', 'row']}
-              gap={4}
-              justify="space-between"
-            >
-              <Box className="esencial-workspace-shell__intro">
-                <Heading as="h1" size={5} className="esencial-workspace-shell__title">
-                  {title}
-                </Heading>
-                <Text as="p" size={2} className="esencial-workspace-shell__subtitle">
-                  {subtitle}
-                </Text>
-              </Box>
-              <Box
-                aria-live={status.state === 'error' ? 'assertive' : 'polite'}
-                className="esencial-workspace-shell__status"
-                role="status"
-              >
-                <Badge tone={badgeTone[status.state]}>{status.label}</Badge>
-              </Box>
-            </Flex>
-            <Card className="esencial-workspace-shell__safety" padding={3} radius={2}>
-              <Text as="p" size={1}>
-                <strong>Publiceringsskydd:</strong> {safetyNotice}
+          <Stack space={5}>
+            <header className="esencial-workspace-shell__header">
+              <Text as="p" className="esencial-workspace-shell__eyebrow">
+                Esencial CMS
               </Text>
-            </Card>
-          </header>
+              <Flex
+                align={['flex-start', 'center']}
+                direction={['column', 'row']}
+                gap={4}
+                justify="space-between"
+              >
+                <Box className="esencial-workspace-shell__intro">
+                  <Heading as="h1" size={5} className="esencial-workspace-shell__title">
+                    {title}
+                  </Heading>
+                  <Text as="p" size={2} className="esencial-workspace-shell__subtitle">
+                    {subtitle}
+                  </Text>
+                </Box>
+                <Box
+                  aria-live={status.state === 'error' ? 'assertive' : 'polite'}
+                  className="esencial-workspace-shell__status"
+                  role="status"
+                >
+                  <Badge tone={badgeTone[status.state]}>{status.label}</Badge>
+                </Box>
+              </Flex>
+              <Card className="esencial-workspace-shell__safety" padding={3} radius={2}>
+                <Text as="p" size={1}>
+                  <strong>Publiceringsskydd:</strong> {safetyNotice}
+                </Text>
+              </Card>
+            </header>
 
-          <nav className="esencial-workspace-shell__tabs" aria-label="Arbetsytans steg">
-            <ol>
-              {orderedSections.map((section) => {
-                const contract = WORKSPACE_SECTION_CONTRACTS[section.id]
-                return (
-                  <li key={section.id}>
-                    <a href={`#${workspaceSectionDomId(section.id)}`}>
-                      <span>{contract.navigationLabel}</span>
-                    </a>
-                  </li>
-                )
-              })}
-            </ol>
-          </nav>
+            <nav className="esencial-workspace-shell__tabs" aria-label="Arbetsytans steg">
+              <ol>
+                {orderedSections.map((section) => {
+                  const contract = WORKSPACE_SECTION_CONTRACTS[section.id]
+                  return (
+                    <li key={section.id}>
+                      <a href={`#${workspaceSectionDomId(section.id)}`}>
+                        <span>{contract.navigationLabel}</span>
+                      </a>
+                    </li>
+                  )
+                })}
+              </ol>
+            </nav>
 
-          <div className="esencial-workspace-shell__flow">
-            {orderedSections.map((section, index) => (
-              <WorkspaceSection key={section.id} section={section} index={index} />
-            ))}
-          </div>
-        </Stack>
+            <div className="esencial-workspace-shell__flow">
+              {orderedSections.map((section, index) => (
+                <WorkspaceSection key={section.id} section={section} index={index} />
+              ))}
+            </div>
+          </Stack>
         </Container>
       </main>
     </ThemeProvider>
@@ -160,14 +160,14 @@ function WorkspaceSection({section, index}: {section: WorkspaceSectionDefinition
         <Text as="p" className="esencial-workspace-shell__eyebrow">
           Steg {String(index + 1).padStart(2, '0')}
         </Text>
-        <Box>
+        <div className="esencial-workspace-shell__section-heading-copy">
           <Heading as="h2" id={headingId} size={4}>
             {contract.heading}
           </Heading>
           <Text as="p" size={2} className="esencial-workspace-shell__section-summary">
             {section.summary}
           </Text>
-        </Box>
+        </div>
       </header>
       <div className="esencial-workspace-shell__section-content">{section.children}</div>
     </section>

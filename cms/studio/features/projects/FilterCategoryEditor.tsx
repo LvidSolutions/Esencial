@@ -140,7 +140,7 @@ export function FilterCategoryEditor({
     <Card padding={[3, 4]} radius={2} border>
       <Stack space={4}>
         <Flex justify="space-between" align="center" wrap="wrap" gap={3}>
-          <Box className="esencial-projects-feature__heading-block">
+          <div className="esencial-projects-feature__heading-block">
             <Heading as="h3" size={2}>
               Filterkategorier och navigation
             </Heading>
@@ -148,7 +148,7 @@ export function FilterCategoryEditor({
               En kategori får endast de projektpar som redaktören markerar. Samma publicerade källa
               ska senare användas av både filternavigering och rutnät.
             </Text>
-          </Box>
+          </div>
           <Button
             text="Skapa tom filterkategori"
             disabled={hasUnsavedChanges || saving}

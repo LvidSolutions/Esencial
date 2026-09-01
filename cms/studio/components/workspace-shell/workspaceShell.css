@@ -306,6 +306,25 @@
   margin-bottom: clamp(20px, 3vw, 32px);
 }
 
+.esencial-workspace-shell__section-heading-copy {
+  display: grid;
+  min-width: 0;
+  gap: 12px;
+}
+
+.esencial-workspace-shell__section-heading-copy > * {
+  min-width: 0;
+}
+
+.esencial-workspace-shell__section-heading-copy > h2 {
+  margin: 0;
+}
+
+.esencial-workspace-shell__section-heading-copy > .esencial-workspace-shell__section-summary {
+  display: block;
+  margin: 0;
+}
+
 .esencial-workspace-shell__section h2,
 .esencial-editorial-status h2 {
   line-height: 1.16;
