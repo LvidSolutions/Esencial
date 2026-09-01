@@ -1,5 +1,5 @@
-import {useCallback, useEffect, useId, useMemo, useRef, useState} from 'react'
-import {Box, Button, Card, Flex, Heading, Inline, Stack, Text, TextInput} from '@sanity/ui'
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react'
+import {Box, Button, Card, Flex, Heading, Inline, Select, Stack, Text} from '@sanity/ui'
 import {useClient} from 'sanity'
 import {
   CONTENT_MEDIA_SECTION_ID,
@@ -116,10 +116,8 @@ export function ContentMediaWorkspace({onStatusChange}: Props) {
     () => baseClient.withConfig({perspective: 'drafts', useCdn: false}),
     [baseClient],
   )
-  const projectSearchId = useId()
   const [projects, setProjects] = useState<ProjectContent[]>([])
   const [selectedId, setSelectedId] = useState('')
-  const [projectSearch, setProjectSearch] = useState('')
   const [saveState, setSaveState] = useState<ContentMediaStatus['state']>('loading')
   const [statusLabel, setStatusLabel] = useState('Laddar projektinnehåll och media…')
   const [error, setError] = useState('')
@@ -220,7 +218,6 @@ export function ContentMediaWorkspace({onStatusChange}: Props) {
     setError('')
     try {
       const pair = await createProjectLanguagePair(client)
-      setProjectSearch('')
       await load(pair.svId)
       setStatusLabel('Ett svenskt och engelskt projektpar skapades som kladd')
     } catch (caught) {
@@ -324,11 +321,8 @@ export function ContentMediaWorkspace({onStatusChange}: Props) {
         <ProjectPicker
           disabled={interactionLocked}
           projects={projects}
-          search={projectSearch}
-          searchId={projectSearchId}
           selectedId={selectedId}
           onCreate={() => void createProjectPair()}
-          onSearchChange={setProjectSearch}
           onSelect={(id) => {
             void load(id)
             setError('')
@@ -423,30 +417,16 @@ export function ContentMediaWorkspace({onStatusChange}: Props) {
 function ProjectPicker({
   disabled,
   projects,
-  search,
-  searchId,
   selectedId,
   onCreate,
-  onSearchChange,
   onSelect,
 }: {
   disabled: boolean
   projects: ProjectContent[]
-  search: string
-  searchId: string
   selectedId: string
   onCreate: () => void
-  onSearchChange: (value: string) => void
   onSelect: (id: string) => void
 }) {
-  const normalizedSearch = search.trim().toLocaleLowerCase('sv-SE')
-  const matchingProjects = projects.filter((project) => {
-    if (!normalizedSearch) return true
-    return [project.title, project.slug, project.location, project.language]
-      .filter(Boolean)
-      .some((value) => value?.toLocaleLowerCase('sv-SE').includes(normalizedSearch))
-  })
-
   return (
     <section aria-labelledby="esencial-project-picker-heading" className="esencial-content-media__picker">
       <Stack space={3}>
@@ -466,67 +446,35 @@ function ProjectPicker({
             onClick={onCreate}
           />
         </Flex>
-        <Stack space={2}>
-          <label htmlFor={searchId}>
+        <div className="esencial-content-media__project-select">
+          <label htmlFor="esencial-project-picker-select">
             <Text size={1} weight="semibold">
-              Sök projekt
+              Projekt att redigera
             </Text>
           </label>
-          <TextInput
-            id={searchId}
-            type="search"
-            value={search}
+          <Select
+            id="esencial-project-picker-select"
+            aria-describedby="esencial-project-picker-help"
+            value={selectedId}
             disabled={disabled}
-            placeholder="Sök på projektnamn, plats eller språk"
-            onChange={(event) => onSearchChange(event.currentTarget.value)}
-          />
-        </Stack>
-        {matchingProjects.length ? (
-          <div aria-label="Projekt att redigera" className="esencial-content-media__project-list" role="group">
-            {matchingProjects.map((project) => {
+            onChange={(event) => onSelect(event.currentTarget.value)}
+          >
+            {projects.map((project) => {
               const id = canonicalDocumentId(project._id)
-              const selected = id === selectedId
               return (
-                <button
-                  key={`${id}-${project.language || 'unknown'}`}
-                  aria-pressed={selected}
-                  className="esencial-content-media__project-option"
-                  data-selected={selected || undefined}
-                  disabled={disabled}
-                  type="button"
-                  onClick={() => onSelect(id)}
-                >
-                  <span aria-hidden="true" className="esencial-content-media__project-thumb">
-                    {project.heroImagePreview?.url ? (
-                      <img src={project.heroImagePreview.url} alt="" />
-                    ) : (
-                      <span>Ingen bild</span>
-                    )}
-                  </span>
-                  <span className="esencial-content-media__project-option-copy">
-                    <strong>{project.title || 'Namnlöst projekt'}</strong>
-                    <span>
-                      {(project.language || 'språk saknas').toUpperCase()} ·{' '}
-                      {project.status === 'published' ? 'Publicerat innehåll' : 'Kladd'}
-                    </span>
-                  </span>
-                </button>
+                <option key={`${id}-${project.language || 'unknown'}`} value={id}>
+                  {project.title || 'Namnlöst projekt'} · {(project.language || 'språk saknas').toUpperCase()} ·{' '}
+                  {project.status === 'published' ? 'Publicerat' : 'Kladd'}
+                </option>
               )
             })}
-          </div>
-        ) : (
-          <Card padding={3} radius={2} border role="status">
-            <Text size={1} muted>
-              {projects.length
-                ? 'Inget projekt matchar din sökning.'
-                : 'Inga projekt finns ännu. Skapa ett nytt språkpar som kladd för att börja.'}
-            </Text>
-          </Card>
-        )}
-        <Text size={1} muted>
-          Projektbyte spärras medan ett formulär eller en bildborttagning har osparade ändringar.
-          “Skapa nytt projekt” gör alltid två dokument: ett svenskt och ett engelskt kladd.
-        </Text>
+          </Select>
+          <Text as="p" id="esencial-project-picker-help" size={1} muted>
+            {projects.length
+              ? 'Byt projekt här. Valet spärras bara när du har osparade ändringar eller en bildåtgärd väntar på bekräftelse.'
+              : 'Inga projekt finns ännu. Skapa ett nytt språkpar som kladd för att börja.'}
+          </Text>
+        </div>
       </Stack>
     </section>
   )
@@ -751,6 +699,14 @@ function MediaReview({
                   title={`Migreringsreferens ${index + 1}`}
                   image={image}
                   rightsConfirmed={project.imageRightsConfirmed}
+                  disabled={disabled}
+                  onReplace={() => onOpenField('legacyImages')}
+                  onRemove={() =>
+                    onRequestRemoval(
+                      {kind: 'legacyImage', key: image._key, index},
+                      `migreringsreferens ${index + 1}`,
+                    )
+                  }
                 />
               ))}
             </div>
@@ -907,10 +863,16 @@ function LegacyMediaCard({
   title,
   image,
   rightsConfirmed,
+  disabled,
+  onReplace,
+  onRemove,
 }: {
   title: string
   image: LegacyImageValue
   rightsConfirmed?: boolean
+  disabled: boolean
+  onReplace: () => void
+  onRemove: () => void
 }) {
   return (
     <Card padding={3} radius={2} border className="esencial-content-media__media-card">
@@ -924,7 +886,7 @@ function LegacyMediaCard({
             />
           </div>
         )}
-        <Text weight="semibold">{title} · skrivskyddad</Text>
+        <Text weight="semibold">{title}</Text>
         <dl className="esencial-content-media__metadata">
           <Metadata label="Alt-text" value={image.alt} missing="Saknas" />
           <Metadata label="Kredit" value={image.credit} missing="Saknas" />
@@ -934,6 +896,23 @@ function LegacyMediaCard({
           />
           <Metadata label="Befintlig bildadress" value={image.url} missing="Saknas" />
         </dl>
+        <Inline space={2} className="esencial-content-media__actions">
+          <Button
+            mode="ghost"
+            text="Byt bildadress via Sanity"
+            aria-label={`Öppna ${title} för att ersätta dess bildadress i kladden`}
+            disabled={disabled}
+            onClick={onReplace}
+          />
+          <Button
+            mode="ghost"
+            tone="critical"
+            text="Ta bort referensen från kladden…"
+            aria-label={`Ta bort referensen till ${title} från kladden; originalfilen raderas inte`}
+            disabled={disabled}
+            onClick={onRemove}
+          />
+        </Inline>
       </Stack>
     </Card>
   )

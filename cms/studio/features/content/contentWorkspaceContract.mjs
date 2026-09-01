@@ -66,12 +66,11 @@ export const PROJECT_MEDIA_FIELDS = Object.freeze([
   {path: 'galleryImages', label: 'Bildspelsbilder', removable: true},
   {path: 'floorPlans', label: 'Planritningar', removable: true},
   {path: 'images', label: 'Tidigare publicerade bilder', removable: true},
+  {path: 'legacyImages', label: 'Bilder från tidigare webbplats', removable: true},
   {path: 'imageRightsConfirmed', label: 'Övergripande bildrättigheter', removable: false},
 ])
 
-export const PROJECT_REVIEW_ONLY_FIELDS = Object.freeze([
-  {path: 'legacyImages', label: 'Bilder från tidigare webbplats'},
-])
+export const PROJECT_REVIEW_ONLY_FIELDS = Object.freeze([])
 
 export function canonicalDocumentId(id = '') {
   return String(id).replace(/^drafts\./, '')
@@ -136,6 +135,7 @@ const MEDIA_TARGET_FIELDS = Object.freeze({
   slideshowImage: 'slideshowImages',
   floorPlan: 'floorPlans',
   previousImage: 'images',
+  legacyImage: 'legacyImages',
 })
 
 function clone(value) {

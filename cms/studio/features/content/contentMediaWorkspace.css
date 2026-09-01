@@ -21,6 +21,20 @@
   background: var(--esencial-workspace-paper);
 }
 
+.esencial-content-media__project-select {
+  display: grid;
+  min-width: 0;
+  max-width: 48rem;
+  gap: 8px;
+}
+
+.esencial-content-media__project-select select {
+  width: 100%;
+  min-height: 48px;
+  padding-inline: 12px 40px;
+  font-size: 16px;
+}
+
 .esencial-content-media__project-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
