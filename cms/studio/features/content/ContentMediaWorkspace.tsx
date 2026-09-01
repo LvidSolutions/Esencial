@@ -15,7 +15,10 @@ import {
   type MediaUndo,
 } from './draftMedia'
 import {patchProjectDraftFields} from './draftProject'
-import {createProjectLanguagePair, synchronizeProjectPairSharedFields} from './createProjectLanguagePair'
+import {
+  createProjectLanguagePair,
+  synchronizeProjectPairSharedFields,
+} from './createProjectLanguagePair'
 import {
   ProjectContentEditor,
   type ProjectContentPatch,
@@ -146,7 +149,10 @@ export function ContentMediaWorkspace({onStatusChange}: Props) {
         const selectedForSync = nextProjects.find(
           (project) => canonicalDocumentId(project._id) === requested,
         )
-        if (selectedForSync && (await synchronizeProjectPairSharedFields(client, selectedForSync._id))) {
+        if (
+          selectedForSync &&
+          (await synchronizeProjectPairSharedFields(client, selectedForSync._id))
+        ) {
           nextProjects = await client.fetch<ProjectContent[]>(projectsQuery)
         }
         setProjects(nextProjects)
@@ -428,9 +434,17 @@ function ProjectPicker({
   onSelect: (id: string) => void
 }) {
   return (
-    <section aria-labelledby="esencial-project-picker-heading" className="esencial-content-media__picker">
+    <section
+      aria-labelledby="esencial-project-picker-heading"
+      className="esencial-content-media__picker"
+    >
       <Stack space={3}>
-        <Flex align={['flex-start', 'center']} direction={['column', 'row']} gap={3} justify="space-between">
+        <Flex
+          align={['flex-start', 'center']}
+          direction={['column', 'row']}
+          gap={3}
+          justify="space-between"
+        >
           <Box>
             <Heading as="h3" id="esencial-project-picker-heading" size={2}>
               Välj projekt
@@ -440,11 +454,7 @@ function ProjectPicker({
               Bilder, webbadress och kortbakgrund hålls gemensamma för språkparet.
             </Text>
           </Box>
-          <Button
-            text="Skapa nytt projekt"
-            disabled={disabled}
-            onClick={onCreate}
-          />
+          <Button text="Skapa nytt projekt" disabled={disabled} onClick={onCreate} />
         </Flex>
         <div className="esencial-content-media__project-select">
           <label htmlFor="esencial-project-picker-select">
@@ -463,7 +473,8 @@ function ProjectPicker({
               const id = canonicalDocumentId(project._id)
               return (
                 <option key={`${id}-${project.language || 'unknown'}`} value={id}>
-                  {project.title || 'Namnlöst projekt'} · {(project.language || 'språk saknas').toUpperCase()} ·{' '}
+                  {project.title || 'Namnlöst projekt'} ·{' '}
+                  {(project.language || 'språk saknas').toUpperCase()} ·{' '}
                   {project.status === 'published' ? 'Publicerat' : 'Kladd'}
                 </option>
               )
@@ -567,14 +578,14 @@ function MediaReview({
   return (
     <Card padding={[3, 4]} radius={2} border>
       <Stack space={5}>
-        <Box>
+        <div className="esencial-content-media__heading-block">
           <Heading as="h3" size={2}>
             Bilder i projektet
           </Heading>
           <Text as="p" size={1} muted>
-            Kortbild 1 och 2 används i projektets kort på startsidan och blir de två första
-            bilderna i bildspelet. Övriga bilder visas efter dem. Borttagning här lossar bara
-            kladdens referens och raderar aldrig originalasseten.
+            Kortbild 1 och 2 används i projektets kort på startsidan och blir de två första bilderna
+            i bildspelet. Övriga bilder visas efter dem. Borttagning här lossar bara kladdens
+            referens och raderar aldrig originalasseten.
           </Text>
           {project.language === 'en' && (
             <Text as="p" size={1} muted>
@@ -582,7 +593,7 @@ function MediaReview({
               nästa kladdladdning synkar dem säkert till English.
             </Text>
           )}
-        </Box>
+        </div>
 
         <MediaSection
           heading="Kortbilder"
@@ -593,8 +604,29 @@ function MediaReview({
         >
           {[0, 1].map((index) => {
             const image = cardImages[index]
-            if (!image) return <EmptyMedia key={index} text={`Kortbild ${index + 1} saknas i kladden.`} />
-            return <MediaCard key={image._key || index} title={`Kortbild ${index + 1}`} image={image} asset={previewForCardImage(image, index)} rightsFallback={project.imageRightsConfirmed} disabled={disabled} onReplace={() => onOpenField('cardImages')} onRemove={() => onRequestRemoval(usesCardImageModel ? {kind: 'cardImage', key: image._key, index} : index === 0 ? {kind: 'hero'} : {kind: 'gallery', key: image._key, index: 0}, `Kortbild ${index + 1}`)} />
+            if (!image)
+              return <EmptyMedia key={index} text={`Kortbild ${index + 1} saknas i kladden.`} />
+            return (
+              <MediaCard
+                key={image._key || index}
+                title={`Kortbild ${index + 1}`}
+                image={image}
+                asset={previewForCardImage(image, index)}
+                rightsFallback={project.imageRightsConfirmed}
+                disabled={disabled}
+                onReplace={() => onOpenField('cardImages')}
+                onRemove={() =>
+                  onRequestRemoval(
+                    usesCardImageModel
+                      ? {kind: 'cardImage', key: image._key, index}
+                      : index === 0
+                        ? {kind: 'hero'}
+                        : {kind: 'gallery', key: image._key, index: 0},
+                    `Kortbild ${index + 1}`,
+                  )
+                }
+              />
+            )
           })}
         </MediaSection>
 
@@ -628,9 +660,7 @@ function MediaReview({
               )
             })}
           </div>
-          {!slideshowImages.length && (
-            <EmptyMedia text="Inga övriga bildspelsbilder finns ännu." />
-          )}
+          {!slideshowImages.length && <EmptyMedia text="Inga övriga bildspelsbilder finns ännu." />}
         </MediaSection>
 
         <MediaSection
