@@ -118,16 +118,21 @@ export function WorkspaceShell({title, status, sections}: WorkspaceShellProps) {
             </header>
 
             <nav className="esencial-workspace-shell__tabs" aria-label="Arbetsytor">
-              <ol>
+              <ol role="tablist">
                 {orderedSections.map((section) => {
                   const contract = WORKSPACE_SECTION_CONTRACTS[section.id]
                   const active = section.id === activeSection?.id
+                  const tabId = `${workspaceSectionDomId(section.id)}-tab`
                   return (
-                    <li key={section.id}>
+                    <li key={section.id} role="presentation">
                       <Button
-                        aria-current={active ? 'page' : undefined}
+                        aria-controls="esencial-workspace-current"
+                        aria-selected={active}
                         className="esencial-workspace-shell__tab-button"
+                        id={tabId}
                         mode="bleed"
+                        role="tab"
+                        tabIndex={active ? 0 : -1}
                         text={contract.navigationLabel}
                         onClick={() => selectWorkspace(section.id)}
                       />
@@ -149,15 +154,17 @@ function WorkspaceSection({section}: {section: WorkspaceSectionDefinition}) {
   const contract = WORKSPACE_SECTION_CONTRACTS[section.id]
   const domId = workspaceSectionDomId(section.id)
   const headingId = `${domId}-heading`
+  const tabId = `${domId}-tab`
 
   return (
     <section
-      aria-labelledby={headingId}
+      aria-labelledby={tabId}
       className="esencial-workspace-shell__section"
       data-extension-slot={contract.id}
       data-owner-stage={contract.ownerStage}
       id="esencial-workspace-current"
-      tabIndex={-1}
+      role="tabpanel"
+      tabIndex={0}
     >
       <header className="esencial-workspace-shell__section-header">
         <Heading as="h2" id={headingId} size={4}>
