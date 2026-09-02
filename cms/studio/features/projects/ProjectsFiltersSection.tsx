@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react'
-import {Box, Button, Card, Flex, Heading, Stack, Text} from '@sanity/ui'
+import {Button, Card, Flex, Stack, Text} from '@sanity/ui'
 import {useClient} from 'sanity'
 import type {WorkspaceSectionDefinition} from '../../components/workspace-shell/WorkspaceShell'
 import {canonicalDocumentId} from './navigationContract.mjs'
@@ -29,9 +29,6 @@ const settingsQuery = `*[_type == "navigationSettings" && _id in ["navigationSet
   _id, _originalId, enabled, headingSv, headingEn, allLabelSv, allLabelEn,
   "gridEntries": gridProjects[]{_key, "projectRef": project._ref, includeInGrid}
 }`
-
-export const PROJECTS_FILTERS_SECTION_SUMMARY =
-  'Redigera befintliga svenska/engelska projektrubriker, skapa validerade filter och styra explicit inkludering och ordning. Alla ändringar stannar i kladd tills Sanitys dokumentvy publicerar dem.'
 
 type Props = {
   onStatusChange?: (status: FeatureStatus) => void
@@ -87,9 +84,7 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
       setSaveState('saved')
     } catch {
       setSaveState('error')
-      setError(
-        'Projekt- och filterarbetsytan kunde inte läsa kladdarna. Ingen publicerad version ändrades. Ladda om eller öppna Sanitys dokumentvy.',
-      )
+      setError('Kunde inte läsa projekt och filter. Ladda om eller öppna den avancerade dokumentvyn.')
     }
   }, [client])
 
@@ -99,13 +94,12 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
 
   const statusLabel =
     saveState === 'loading'
-      ? 'Laddar projekt och filter…'
+      ? 'Laddar filter…'
       : saveState === 'saving'
-        ? 'Sparar kladd…'
+        ? 'Sparar…'
         : saveState === 'saved'
-          ? 'Senaste läsning eller sparning är klar'
-          : 'Projekt- eller filterkladden kunde inte sparas'
-  const status: FeatureStatus = {state: saveState, label: statusLabel}
+          ? 'Sparat'
+          : 'Kunde inte spara'
   useEffect(() => {
     statusCallback.current?.({state: saveState, label: statusLabel})
   }, [saveState, statusLabel])
@@ -119,9 +113,7 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
       setSaveState('saved')
     } catch {
       setSaveState('error')
-      setError(
-        'Sparningen misslyckades. Ingen publicerad version ändrades. Kontrollera anslutningen och försök igen eller öppna dokumentvyn.',
-      )
+      setError('Sparningen misslyckades. Kontrollera anslutningen och försök igen.')
     }
   }
 
@@ -188,33 +180,14 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
 
   return (
     <Stack space={4} className="esencial-projects-feature">
-      <Flex justify="space-between" align="center" wrap="wrap" gap={3}>
-        <div className="esencial-projects-feature__heading-block">
-          <Heading as="h3" size={2}>
-            S17 · Projekt, filter och rutnätsnavigation
-          </Heading>
-          <Text size={1} muted>
-            Den här modulen använder Sanitys kladdperspektiv utan CDN. Publicering sker endast i den
-            fullständiga dokumentvyn efter native validering.
-          </Text>
-        </div>
+      <Flex justify="flex-end">
         <Button
           mode="ghost"
-          text="Läs om kladdar"
+          text="Ladda om"
           disabled={saveState === 'saving'}
           onClick={() => void load()}
         />
       </Flex>
-
-      <Card padding={3} radius={2} border className="esencial-projects-feature__status">
-        <Text
-          size={1}
-          role={saveState === 'error' ? 'alert' : 'status'}
-          aria-live={saveState === 'error' ? 'assertive' : 'polite'}
-        >
-          {status.label}
-        </Text>
-      </Card>
 
       {error && (
         <Card padding={3} radius={2} border tone="critical" role="alert">
@@ -260,13 +233,6 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
               window.location.hash = '#/intent/edit/id=navigationSettings;type=navigationSettings'
             }}
           />
-          <Card padding={3} radius={2} border>
-            <Text size={1}>
-              Kladdar påverkar inte den publicerade webbplatsen. Öppna respektive dokumentvy och
-              använd Sanitys validerade publiceringsknapp först efter faktagranskning,
-              översättningsgranskning och stagingkontroll.
-            </Text>
-          </Card>
         </>
       )}
     </Stack>
@@ -278,7 +244,6 @@ export function createProjectsFiltersSection(
 ): WorkspaceSectionDefinition {
   return {
     id: 'projects-filters',
-    summary: PROJECTS_FILTERS_SECTION_SUMMARY,
     children: <ProjectsFiltersSection onStatusChange={onStatusChange} />,
   }
 }
