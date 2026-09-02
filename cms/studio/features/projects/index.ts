@@ -1,8 +1,4 @@
-export {
-  createProjectsFiltersSection,
-  PROJECTS_FILTERS_SECTION_SUMMARY,
-  ProjectsFiltersSection,
-} from './ProjectsFiltersSection'
+export {createProjectsFiltersSection, ProjectsFiltersSection} from './ProjectsFiltersSection'
 export {
   FILTER_CATEGORY_SCHEMA_FIELDS,
   NAVIGATION_SETTINGS_SCHEMA_FIELDS,
