@@ -1,10 +1,28 @@
-.esencial-workspace-shell__tabs a[aria-current='page'] {
-  background: var(--esencial-workspace-ink);
-  color: var(--esencial-workspace-canvas);
+.esencial-workspace-shell__tab-button {
+  width: 100%;
+  min-height: 52px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--esencial-workspace-ink) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1.35 !important;
+  text-transform: uppercase;
 }
 
-.esencial-workspace-shell__tabs a[aria-current='page']:hover {
-  background: var(--esencial-workspace-ink);
+.esencial-workspace-shell__tab-button:hover {
+  background: var(--esencial-workspace-wash) !important;
+}
+
+.esencial-workspace-shell__tab-button[aria-current='page'] {
+  background: var(--esencial-workspace-ink) !important;
+  color: var(--esencial-workspace-canvas) !important;
+}
+
+.esencial-workspace-shell__tab-button[aria-current='page']:hover {
+  background: var(--esencial-workspace-ink) !important;
 }
 
 .esencial-workspace-shell__section {
@@ -28,8 +46,8 @@
 }
 
 @media (forced-colors: active) {
-  .esencial-workspace-shell__tabs a[aria-current='page'] {
-    background: Highlight;
-    color: HighlightText;
+  .esencial-workspace-shell__tab-button[aria-current='page'] {
+    background: Highlight !important;
+    color: HighlightText !important;
   }
 }
