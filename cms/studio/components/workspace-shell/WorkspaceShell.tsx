@@ -1,5 +1,5 @@
-import {useEffect, useState, type CSSProperties, type ReactNode} from 'react'
-import {Badge, Box, Container, Flex, Heading, Stack, Text, ThemeProvider} from '@sanity/ui'
+import {useState, type CSSProperties, type ReactNode} from 'react'
+import {Badge, Box, Button, Container, Flex, Heading, Stack, Text, ThemeProvider} from '@sanity/ui'
 import {esencialStudioTheme} from '../../theme/esencialTheme'
 import {esencialVisualTokens} from '../../theme/tokens'
 import {
@@ -7,8 +7,6 @@ import {
   WORKSPACE_SECTION_ORDER,
   type WorkspaceSectionId,
   workspaceSectionDomId,
-  workspaceSectionFromHash,
-  workspaceSectionHash,
 } from './contracts'
 import './workspaceShell.css'
 import './workspaceNavigation.css'
@@ -63,28 +61,28 @@ const badgeTone = {
   error: 'critical',
 } as const
 
+const storageKey = 'esencial-cms-workspace'
+
+function initialWorkspace(): WorkspaceSectionId {
+  if (typeof window === 'undefined') return WORKSPACE_SECTION_ORDER[0]
+  const stored = window.sessionStorage.getItem(storageKey)
+  return WORKSPACE_SECTION_ORDER.includes(stored as WorkspaceSectionId)
+    ? (stored as WorkspaceSectionId)
+    : WORKSPACE_SECTION_ORDER[0]
+}
+
 export function WorkspaceShell({title, status, sections}: WorkspaceShellProps) {
   const sectionsById = new Map(sections.map((section) => [section.id, section]))
   const orderedSections = WORKSPACE_SECTION_ORDER.map((id) => sectionsById.get(id)).filter(
     (section): section is WorkspaceSectionDefinition => Boolean(section),
   )
-  const fallbackSectionId = orderedSections[0]?.id || WORKSPACE_SECTION_ORDER[0]
-  const [activeSectionId, setActiveSectionId] = useState<WorkspaceSectionId>(() => {
-    if (typeof window === 'undefined') return fallbackSectionId
-    return workspaceSectionFromHash(window.location.hash) || fallbackSectionId
-  })
-
-  useEffect(() => {
-    const syncFromHash = () => {
-      const next = workspaceSectionFromHash(window.location.hash)
-      if (next) setActiveSectionId(next)
-    }
-    syncFromHash()
-    window.addEventListener('hashchange', syncFromHash)
-    return () => window.removeEventListener('hashchange', syncFromHash)
-  }, [])
-
+  const [activeSectionId, setActiveSectionId] = useState<WorkspaceSectionId>(initialWorkspace)
   const activeSection = sectionsById.get(activeSectionId) || orderedSections[0]
+
+  const selectWorkspace = (id: WorkspaceSectionId) => {
+    setActiveSectionId(id)
+    if (typeof window !== 'undefined') window.sessionStorage.setItem(storageKey, id)
+  }
 
   return (
     <ThemeProvider scheme="dark" theme={esencialStudioTheme}>
@@ -126,12 +124,13 @@ export function WorkspaceShell({title, status, sections}: WorkspaceShellProps) {
                   const active = section.id === activeSection?.id
                   return (
                     <li key={section.id}>
-                      <a
+                      <Button
                         aria-current={active ? 'page' : undefined}
-                        href={workspaceSectionHash(section.id)}
-                      >
-                        <span>{contract.navigationLabel}</span>
-                      </a>
+                        className="esencial-workspace-shell__tab-button"
+                        mode="bleed"
+                        text={contract.navigationLabel}
+                        onClick={() => selectWorkspace(section.id)}
+                      />
                     </li>
                   )
                 })}
