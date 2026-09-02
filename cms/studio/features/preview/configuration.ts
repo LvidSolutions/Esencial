@@ -3,10 +3,10 @@ export const PREVIEW_RENDER_PATH = '/__preview/render'
 export const PREVIEW_ENABLE_PATH = '/api/draft-mode/enable'
 
 export const PREVIEW_VIEWPORTS = {
-  desktop: {label: 'Dator 1440', width: 1440, height: 900},
-  tablet: {label: 'Platta 768', width: 768, height: 1024},
-  mobile: {label: 'Mobil 390', width: 390, height: 844},
-  'mobile-small': {label: 'Mobil 320', width: 320, height: 568},
+  desktop: {label: 'Dator', width: 1440, height: 900},
+  tablet: {label: 'Platta', width: 768, height: 1024},
+  mobile: {label: 'Mobil', width: 390, height: 844},
+  'mobile-small': {label: 'Liten mobil', width: 320, height: 568},
 } as const
 
 export type PreviewViewportId = keyof typeof PREVIEW_VIEWPORTS
