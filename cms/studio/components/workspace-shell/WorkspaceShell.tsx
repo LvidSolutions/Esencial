@@ -1,5 +1,5 @@
-import type {CSSProperties, ReactNode} from 'react'
-import {Badge, Box, Card, Container, Flex, Heading, Stack, Text, ThemeProvider} from '@sanity/ui'
+import {useEffect, useState, type CSSProperties, type ReactNode} from 'react'
+import {Badge, Box, Container, Flex, Heading, Stack, Text, ThemeProvider} from '@sanity/ui'
 import {esencialStudioTheme} from '../../theme/esencialTheme'
 import {esencialVisualTokens} from '../../theme/tokens'
 import {
@@ -7,6 +7,8 @@ import {
   WORKSPACE_SECTION_ORDER,
   type WorkspaceSectionId,
   workspaceSectionDomId,
+  workspaceSectionFromHash,
+  workspaceSectionHash,
 } from './contracts'
 import './workspaceShell.css'
 
@@ -17,14 +19,12 @@ export type WorkspaceShellStatus = {
 
 export type WorkspaceSectionDefinition = {
   id: WorkspaceSectionId
-  summary: string
+  summary?: string
   children: ReactNode
 }
 
 type WorkspaceShellProps = {
   title: string
-  subtitle: string
-  safetyNotice: string
   status: WorkspaceShellStatus
   sections: readonly WorkspaceSectionDefinition[]
 }
@@ -53,7 +53,6 @@ const workspaceStyle: WorkspaceCustomProperties = {
   '--esencial-workspace-content-line-height': esencialVisualTokens.typography.contentLineHeight,
   '--esencial-workspace-motion-duration': esencialVisualTokens.motion.duration,
   '--esencial-workspace-motion-easing': esencialVisualTokens.motion.easing,
-  '--esencial-workspace-section-space': `${esencialVisualTokens.spacing.section}px`,
 }
 
 const badgeTone = {
@@ -63,22 +62,34 @@ const badgeTone = {
   error: 'critical',
 } as const
 
-export function WorkspaceShell({
-  title,
-  subtitle,
-  safetyNotice,
-  status,
-  sections,
-}: WorkspaceShellProps) {
+export function WorkspaceShell({title, status, sections}: WorkspaceShellProps) {
   const sectionsById = new Map(sections.map((section) => [section.id, section]))
   const orderedSections = WORKSPACE_SECTION_ORDER.map((id) => sectionsById.get(id)).filter(
     (section): section is WorkspaceSectionDefinition => Boolean(section),
   )
+  const fallbackSectionId = orderedSections[0]?.id || WORKSPACE_SECTION_ORDER[0]
+  const [activeSectionId, setActiveSectionId] = useState<WorkspaceSectionId>(() => {
+    if (typeof window === 'undefined') return fallbackSectionId
+    return workspaceSectionFromHash(window.location.hash) || fallbackSectionId
+  })
+
+  useEffect(() => {
+    const syncFromHash = () => {
+      const next = workspaceSectionFromHash(window.location.hash)
+      if (next) setActiveSectionId(next)
+    }
+    syncFromHash()
+    window.addEventListener('hashchange', syncFromHash)
+    return () => window.removeEventListener('hashchange', syncFromHash)
+  }, [])
+
+  const activeSection = sectionsById.get(activeSectionId) || orderedSections[0]
+
   return (
     <ThemeProvider scheme="dark" theme={esencialStudioTheme}>
       <main className="esencial-workspace-shell" style={workspaceStyle}>
-        <a className="esencial-workspace-shell__skip" href="#esencial-workspace-status">
-          Hoppa till arbetsytans innehåll
+        <a className="esencial-workspace-shell__skip" href="#esencial-workspace-current">
+          Hoppa till innehållet
         </a>
         <Container width={6} className="esencial-workspace-shell__container">
           <Stack space={5}>
@@ -96,9 +107,6 @@ export function WorkspaceShell({
                   <Heading as="h1" size={5} className="esencial-workspace-shell__title">
                     {title}
                   </Heading>
-                  <Text as="p" size={2} className="esencial-workspace-shell__subtitle">
-                    {subtitle}
-                  </Text>
                 </Box>
                 <Box
                   aria-live={status.state === 'error' ? 'assertive' : 'polite'}
@@ -108,20 +116,19 @@ export function WorkspaceShell({
                   <Badge tone={badgeTone[status.state]}>{status.label}</Badge>
                 </Box>
               </Flex>
-              <Card className="esencial-workspace-shell__safety" padding={3} radius={2}>
-                <Text as="p" size={1}>
-                  <strong>Publiceringsskydd:</strong> {safetyNotice}
-                </Text>
-              </Card>
             </header>
 
-            <nav className="esencial-workspace-shell__tabs" aria-label="Arbetsytans steg">
+            <nav className="esencial-workspace-shell__tabs" aria-label="Arbetsytor">
               <ol>
                 {orderedSections.map((section) => {
                   const contract = WORKSPACE_SECTION_CONTRACTS[section.id]
+                  const active = section.id === activeSection?.id
                   return (
                     <li key={section.id}>
-                      <a href={`#${workspaceSectionDomId(section.id)}`}>
+                      <a
+                        aria-current={active ? 'page' : undefined}
+                        href={workspaceSectionHash(section.id)}
+                      >
                         <span>{contract.navigationLabel}</span>
                       </a>
                     </li>
@@ -130,11 +137,7 @@ export function WorkspaceShell({
               </ol>
             </nav>
 
-            <div className="esencial-workspace-shell__flow">
-              {orderedSections.map((section, index) => (
-                <WorkspaceSection key={section.id} section={section} index={index} />
-              ))}
-            </div>
+            {activeSection ? <WorkspaceSection section={activeSection} /> : null}
           </Stack>
         </Container>
       </main>
@@ -142,7 +145,7 @@ export function WorkspaceShell({
   )
 }
 
-function WorkspaceSection({section, index}: {section: WorkspaceSectionDefinition; index: number}) {
+function WorkspaceSection({section}: {section: WorkspaceSectionDefinition}) {
   const contract = WORKSPACE_SECTION_CONTRACTS[section.id]
   const domId = workspaceSectionDomId(section.id)
   const headingId = `${domId}-heading`
@@ -153,21 +156,13 @@ function WorkspaceSection({section, index}: {section: WorkspaceSectionDefinition
       className="esencial-workspace-shell__section"
       data-extension-slot={contract.id}
       data-owner-stage={contract.ownerStage}
-      id={domId}
+      id="esencial-workspace-current"
       tabIndex={-1}
     >
       <header className="esencial-workspace-shell__section-header">
-        <Text as="p" className="esencial-workspace-shell__eyebrow">
-          Steg {String(index + 1).padStart(2, '0')}
-        </Text>
-        <div className="esencial-workspace-shell__section-heading-copy">
-          <Heading as="h2" id={headingId} size={4}>
-            {contract.heading}
-          </Heading>
-          <Text as="p" size={2} className="esencial-workspace-shell__section-summary">
-            {section.summary}
-          </Text>
-        </div>
+        <Heading as="h2" id={headingId} size={4}>
+          {contract.heading}
+        </Heading>
       </header>
       <div className="esencial-workspace-shell__section-content">{section.children}</div>
     </section>
