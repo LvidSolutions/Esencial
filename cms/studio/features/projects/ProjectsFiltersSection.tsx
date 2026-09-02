@@ -84,7 +84,9 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
       setSaveState('saved')
     } catch {
       setSaveState('error')
-      setError('Kunde inte läsa projekt och filter. Ladda om eller öppna den avancerade dokumentvyn.')
+      setError(
+        'Kunde inte läsa projekt och filter. Ingen publicerad version ändrades. Ladda om eller öppna den avancerade dokumentvyn.',
+      )
     }
   }, [client])
 
@@ -113,7 +115,9 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
       setSaveState('saved')
     } catch {
       setSaveState('error')
-      setError('Sparningen misslyckades. Kontrollera anslutningen och försök igen.')
+      setError(
+        'Sparningen misslyckades. Ingen publicerad version ändrades. Kontrollera anslutningen och försök igen.',
+      )
     }
   }
 
