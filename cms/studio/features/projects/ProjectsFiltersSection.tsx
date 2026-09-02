@@ -6,7 +6,6 @@ import {canonicalDocumentId} from './navigationContract.mjs'
 import {gridReferences, patchDraft, projectReferences} from './drafts'
 import {FilterCategoryEditor} from './FilterCategoryEditor'
 import {GridNavigationEditor} from './GridNavigationEditor'
-import {ProjectHeadingEditor} from './ProjectHeadingEditor'
 import {
   projectPairs,
   type FeatureStatus,
@@ -43,7 +42,6 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
   const [projects, setProjects] = useState<ProjectSummary[]>([])
   const [categories, setCategories] = useState<FilterCategory[]>([])
   const [settings, setSettings] = useState<NavigationSettings>()
-  const [selectedPairKey, setSelectedPairKey] = useState('')
   const [selectedCategoryId, setSelectedCategoryId] = useState('')
   const [saveState, setSaveState] = useState<SaveState>('loading')
   const [error, setError] = useState('')
@@ -71,10 +69,6 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
       setCategories(normalizedCategories)
       setSettings(
         nextSettings ? {...nextSettings, gridEntries: nextSettings.gridEntries || []} : undefined,
-      )
-      const pairs = projectPairs(nextProjects)
-      setSelectedPairKey((current) =>
-        pairs.some((pair) => pair.key === current) ? current : pairs[0]?.key || '',
       )
       setSelectedCategoryId((current) =>
         normalizedCategories.some((category) => category._id === current)
@@ -120,17 +114,6 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
       )
     }
   }
-
-  const saveProjectTitle = (project: ProjectSummary, title: string) =>
-    runSave(async () => {
-      await patchDraft(client, project._id, 'project', {title})
-      const targetId = canonicalDocumentId(project._id)
-      setProjects((current) =>
-        current.map((candidate) =>
-          canonicalDocumentId(candidate._id) === targetId ? {...candidate, title} : candidate,
-        ),
-      )
-    })
 
   const saveCategory = (
     category: FilterCategory,
@@ -201,19 +184,6 @@ export function ProjectsFiltersSection({onStatusChange}: Props) {
 
       {saveState !== 'loading' && (
         <>
-          <ProjectHeadingEditor
-            pairs={pairs}
-            selectedKey={selectedPairKey}
-            saving={saveState === 'saving'}
-            onSelect={setSelectedPairKey}
-            onSaveTitle={saveProjectTitle}
-            onCreate={(language) => {
-              window.location.hash = `#/intent/create/template=project-${language}`
-            }}
-            onOpen={(project) => {
-              window.location.hash = `#/intent/edit/id=${encodeURIComponent(canonicalDocumentId(project._id))};type=project`
-            }}
-          />
           <FilterCategoryEditor
             categories={categories}
             pairs={pairs}
