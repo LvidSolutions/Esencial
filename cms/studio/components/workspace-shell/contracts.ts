@@ -3,7 +3,6 @@ export const WORKSPACE_SECTION_CONTRACTS = {
     id: 'content-media',
     navigationLabel: 'Projekt',
     heading: 'Projekt',
-    routeKey: 'projekt',
     ownerStage: 'S25',
     featureBoundary: 'cms/studio/features/content/**',
     purpose:
@@ -13,7 +12,6 @@ export const WORKSPACE_SECTION_CONTRACTS = {
     id: 'projects-filters',
     navigationLabel: 'Filter och ordning',
     heading: 'Filter och ordning',
-    routeKey: 'filter',
     ownerStage: 'S17',
     featureBoundary: 'cms/studio/features/projects/**',
     purpose:
@@ -23,7 +21,6 @@ export const WORKSPACE_SECTION_CONTRACTS = {
     id: 'live-preview',
     navigationLabel: 'Förhandsvisning',
     heading: 'Förhandsvisning',
-    routeKey: 'forhandsvisning',
     ownerStage: 'S18',
     featureBoundary: 'cms/studio/features/preview/**',
     purpose:
@@ -33,7 +30,6 @@ export const WORKSPACE_SECTION_CONTRACTS = {
     id: 'analytics-consent',
     navigationLabel: 'Resultat',
     heading: 'Resultat',
-    routeKey: 'resultat',
     ownerStage: 'S19',
     featureBoundary: 'cms/studio/features/analytics/**',
     purpose:
@@ -53,16 +49,4 @@ export const WORKSPACE_SECTION_ORDER = [
 
 export function workspaceSectionDomId(id: WorkspaceSectionId) {
   return `esencial-workspace-${id}`
-}
-
-export function workspaceSectionHash(id: WorkspaceSectionId) {
-  return `#${WORKSPACE_SECTION_CONTRACTS[id].routeKey}`
-}
-
-export function workspaceSectionFromHash(hash: string): WorkspaceSectionId | null {
-  const routeKey = hash.replace(/^#/, '').trim().toLowerCase()
-  const match = WORKSPACE_SECTION_ORDER.find(
-    (id) => WORKSPACE_SECTION_CONTRACTS[id].routeKey === routeKey,
-  )
-  return match || null
 }
