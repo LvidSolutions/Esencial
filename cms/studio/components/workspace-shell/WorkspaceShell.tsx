@@ -11,6 +11,7 @@ import {
   workspaceSectionHash,
 } from './contracts'
 import './workspaceShell.css'
+import './workspaceNavigation.css'
 
 export type WorkspaceShellStatus = {
   label: string
