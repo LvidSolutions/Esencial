@@ -32,7 +32,7 @@ function main() {
   const manifest = `${archive}.manifest.json`
   fs.mkdirSync(directory, {recursive: true})
   const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
-  const result = spawnSync(npm, ['--prefix', 'cms/studio', 'exec', '--', 'sanity', 'datasets', 'export', dataset, archive], {
+  const result = spawnSync(npm, ['--prefix', 'cms/studio', 'exec', '--', 'sanity', 'datasets', 'export', dataset, archive, '--project-id', projectId], {
     cwd: ROOT,
     env: {...process.env, SANITY_PROJECT_ID: projectId},
     encoding: 'utf8',
