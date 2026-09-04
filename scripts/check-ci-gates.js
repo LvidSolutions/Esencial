@@ -25,6 +25,7 @@ const SEO_GATE_STEPS = [
 const ROOT_BUILD_COMMAND = [
   'node scripts/clean-legacy-export.js',
   'node scripts/build-project-pages.js',
+  'node scripts/polish-about-team-columns.js',
   'node scripts/normalize-core-semantics.js',
   'node scripts/lib/schema/generate-structured-data.js',
   'node scripts/inject-vercel-analytics.js',
