@@ -14,6 +14,15 @@ function sha256(file) {
   return hash.digest('hex')
 }
 
+function redactProviderOutput(value) {
+  const token = process.env.SANITY_AUTH_TOKEN
+  return String(value || '')
+    .replaceAll(token, '[REDACTED]')
+    .replace(/(authorization\s*[:=]\s*bearer\s+)[^\s,]+/gi, '$1[REDACTED]')
+    .replace(/(token\s*[:=]\s*)[^\s,]+/gi, '$1[REDACTED]')
+    .trim()
+}
+
 function main() {
   if (!process.argv.includes('--confirm-backup')) throw new Error('Refusing to export without --confirm-backup.')
   if (!process.env.SANITY_AUTH_TOKEN) throw new Error('SANITY_AUTH_TOKEN is required for the provider export. Do not paste it into chat or Git.')
@@ -30,7 +39,9 @@ function main() {
   })
   if (result.status !== 0 || !fs.existsSync(archive)) {
     if (fs.existsSync(archive)) fs.unlinkSync(archive)
-    throw new Error('Sanity dataset export failed. Check the local Studio dependencies and token permissions; provider output was withheld.')
+    const providerOutput = redactProviderOutput(`${result.stdout}\n${result.stderr}`)
+    const detail = providerOutput ? ` Sanity said: ${providerOutput}` : ''
+    throw new Error(`Sanity dataset export failed (exit ${result.status ?? 'unknown'}). Check the token permissions and local Studio dependencies.${detail}`)
   }
   const record = {projectId, dataset, completedAt: new Date().toISOString(), archive: path.basename(archive), bytes: fs.statSync(archive).size, sha256: sha256(archive)}
   fs.writeFileSync(manifest, `${JSON.stringify(record, null, 2)}\n`, 'utf8')
