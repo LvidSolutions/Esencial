@@ -30,7 +30,9 @@ export default defineConfig({
   ],
   document: {
     actions: (previous, context) =>
-      context.schemaType === 'project' ? [ProjectDeleteAction, ...previous] : previous,
+      context.schemaType === 'project'
+        ? [ProjectDeleteAction, ...previous.filter((action) => action.action !== 'delete')]
+        : previous,
   },
   schema: {
     types: schemaTypes,
