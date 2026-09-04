@@ -83,6 +83,43 @@
   ]
 }
 </script>
+<style id="esencial-team-columns">
+/* Keep the team roster as two real aligned columns instead of tab-like inline spacing. */
+@media screen and (min-width: 40em) {
+  .css_about_team_wrapper {
+    display: grid !important;
+    width: auto !important;
+    grid-template-columns: max-content max-content;
+    column-gap: clamp(4rem, 4.5vw, 8rem);
+    align-items: start;
+    padding-left: 4rem;
+  }
+  .css_about_team_wrapper > .css_about_info_label {
+    grid-column: 1 / -1;
+    padding-left: 0 !important;
+  }
+  .css_about_team_wrapper > .css_about_info_item {
+    width: auto !important;
+    min-width: 0;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+@media screen and (max-width: 39.999em) {
+  .css_about_team_wrapper {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 2rem;
+  }
+  .css_about_team_wrapper > .css_about_info_label {
+    grid-column: 1 / -1;
+  }
+  .css_about_team_wrapper > .css_about_info_item {
+    width: auto !important;
+    min-width: 0;
+  }
+}
+</style>
 
 <!-- ESENCIAL_ANALYTICS_START -->
 <!-- Analytics disabled: COOKIEBOT_CBID is not configured. -->
@@ -149,7 +186,7 @@ mariano(a)esencial.se</div>
 <h2 class="css_about_info_label">projektförfrågningar</h2>
 <div class="css_about_info_item css_about_info_item_half"><div class="css_about_info_data">contact(a)esencial.se</div></div>
 </div>
-<div class="css_about_info_wrapper w-50">
+<div class="css_about_info_wrapper css_about_team_wrapper w-50">
 <h2 class="css_about_info_label">MEDARBETARE</h2>
 <div class="css_about_info_item css_about_info_item_half">
 <div class="css_about_info_name_container"><div class="css_about_info_name_item">Alva Hult</div></div>
