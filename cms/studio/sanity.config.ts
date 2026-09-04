@@ -3,6 +3,7 @@ import {structureTool} from 'sanity/structure'
 import {schemaTypes} from './schemaTypes'
 import {deskStructure} from './deskStructure'
 import {VisualWorkspaceTool} from './components/studioTools'
+import {ProjectDeleteAction} from './components/ProjectDeleteAction'
 import {esencialStudioTheme} from './theme/esencialTheme'
 import {createPreviewPresentationPlugins} from './features/preview/presentation'
 
@@ -27,6 +28,10 @@ export default defineConfig({
       title: 'Innehåll & publicering (avancerat)',
     }),
   ],
+  document: {
+    actions: (previous, context) =>
+      context.schemaType === 'project' ? [ProjectDeleteAction, ...previous] : previous,
+  },
   schema: {
     types: schemaTypes,
     templates: (previous) => [
