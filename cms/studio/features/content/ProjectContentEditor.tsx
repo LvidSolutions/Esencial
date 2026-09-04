@@ -30,7 +30,7 @@ export type ProjectEditableSnapshot = {
   translationKey?: string
   translationStatus?: string
   location?: string
-  year?: number
+  year?: string
   typology?: string
   client?: string
   architect?: string
@@ -58,7 +58,7 @@ export type ProjectContentPatch = {
   translationKey?: string
   translationStatus: string
   location?: string
-  year?: number
+  year?: string
   typology?: string
   client?: string
   architect?: string
@@ -195,7 +195,7 @@ function normalizedPatch(draft: EditorDraft): ProjectContentPatch {
     translationKey: optional(draft.translationKey),
     translationStatus: draft.translationStatus,
     location: optional(draft.location),
-    year: draft.year === '' ? undefined : Number(draft.year),
+    year: optional(draft.year),
     typology: optional(draft.typology),
     client: optional(draft.client),
     architect: optional(draft.architect),

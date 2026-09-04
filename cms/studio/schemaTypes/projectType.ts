@@ -8,6 +8,7 @@ type ProjectParent = {
   galleryImages?: unknown[]
   cardImages?: unknown[]
   slideshowImages?: unknown[]
+  presentationViews?: unknown[]
 }
 
 const parentOf = (context: {parent?: unknown}) => (context.parent || {}) as ProjectParent
@@ -19,10 +20,12 @@ const hasModernImages = (document: unknown) => {
     galleryImages?: unknown[]
     cardImages?: unknown[]
     slideshowImages?: unknown[]
+    presentationViews?: unknown[]
   }
   return Boolean(
-    project.cardImages?.length ||
+      project.cardImages?.length ||
       project.slideshowImages?.length ||
+      project.presentationViews?.length ||
       project.heroImage ||
       project.galleryImages?.length,
   )
@@ -124,7 +127,7 @@ export const projectType = defineType({
     }),
     defineField({name: 'translationStatus', title: 'Översättningsstatus', type: 'string', group: 'basics', options: {list: [{title: 'Ej påbörjad', value: 'not-started'}, {title: 'Under arbete', value: 'in-progress'}, {title: 'Klar för granskning', value: 'ready-for-review'}, {title: 'Godkänd', value: 'approved'}]}, initialValue: 'not-started', validation: (Rule) => Rule.custom((value, context) => !isPublished(context) || value === 'approved' ? true : 'Välj Godkänd när båda språkversionerna har kontrollerats före publicering.')}),
     defineField({name: 'location', title: 'Plats', type: 'string', group: 'basics'}),
-    defineField({name: 'year', title: 'Byggnadsår', type: 'number', group: 'basics', validation: (Rule) => Rule.integer().min(1900).max(2100)}),
+    defineField({name: 'year', title: 'Byggnadsår', type: 'string', group: 'basics', description: 'Behåll den publicerade skrivningen, även intervall som “2010–2011” eller pågående årtal.'}),
     defineField({name: 'typology', title: 'Typologi', type: 'string', group: 'basics', description: 'Exempel: bostäder, kultur, landskap eller stadsutveckling. Publicera bara en bekräftad benämning.'}),
     defineField({name: 'client', title: 'Byggherre', type: 'string', group: 'basics', description: 'Valfritt. Publicera först när namn och sekretess är godkända.'}),
     defineField({name: 'architect', title: 'Arkitekt', type: 'string', group: 'basics'}),
@@ -196,6 +199,15 @@ export const projectType = defineType({
       of: [{type: 'projectSlideshowImage'}],
     }),
     defineField({
+      name: 'presentationViews',
+      title: 'Bildspelsvyer – vänster/höger',
+      type: 'array',
+      group: 'images',
+      description: 'Använd för migrerade projekt när den publicerade presentationen visar två parallella medier. Ordningen är exakt; ritningar ligger kvar här när de hör till en sådan vy.',
+      readOnly: ({document}) => document?.language === 'en' && Boolean(document?.translationKey),
+      of: [{type: 'projectPresentationView'}],
+    }),
+    defineField({
       name: 'heroImage',
       title: 'Huvudbild (äldre fält)',
       type: 'projectHeroImage',
@@ -225,6 +237,13 @@ export const projectType = defineType({
     defineField({name: 'reviewOwner', title: 'Tidigare granskningsansvarig', type: 'string', group: 'seo', hidden: true}),
     defineField({name: 'lastReviewedAt', title: 'Tidigare granskningsdatum', type: 'datetime', group: 'seo', hidden: true}),
     defineField({name: 'reviewNotes', title: 'Egna anteckningar', type: 'text', group: 'seo', rows: 4}),
+    defineField({name: 'migration', title: 'Migreringsspårning', type: 'object', hidden: true, readOnly: true, fields: [
+      defineField({name: 'toolVersion', type: 'string'}),
+      defineField({name: 'sourceSha256', type: 'string'}),
+      defineField({name: 'managedBaselineSha256', type: 'string'}),
+      defineField({name: 'runId', type: 'string'}),
+      defineField({name: 'completedAt', type: 'datetime'}),
+    ]}),
     defineField({name: 'publishChecklist', title: 'Egenkontroll före publicering', type: 'object', group: 'seo', description: 'Bocka av själv innan du väljer Publicerad. Ingen separat granskare krävs.', fields: [
       defineField({name: 'factsConfirmed', title: 'Projektfakta ar godkanda', type: 'boolean'}),
       defineField({name: 'languageChecked', title: 'Sprak och oversattning ar kontrollerade', type: 'boolean'}),

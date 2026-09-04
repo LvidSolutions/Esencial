@@ -55,6 +55,8 @@ type FloorPlanValue = {
   image?: ImageValue
 }
 
+type PresentationViewValue = {_key?: string; left?: ImageValue; right?: ImageValue}
+
 type LegacyImageValue = {_key?: string; url?: string; alt?: string; credit?: string}
 
 type PreviewEntry = {_key?: string; asset?: AssetPreview}
@@ -69,6 +71,7 @@ type ProjectContent = ProjectEditableSnapshot & {
   cardImagePreviews?: PreviewEntry[]
   slideshowImages?: ImageValue[]
   slideshowPreviews?: PreviewEntry[]
+  presentationViews?: PresentationViewValue[]
   floorPlans?: FloorPlanValue[]
   floorPlanPreviews?: PreviewEntry[]
   images?: ImageValue[]
@@ -106,6 +109,7 @@ const projectsQuery = `*[_type == "project"] | order(title asc, language asc) {
   "cardImagePreviews": cardImages[]{_key, "asset": asset->{_id, url, originalFilename, metadata{dimensions}}},
   slideshowImages,
   "slideshowPreviews": slideshowImages[]{_key, "asset": asset->{_id, url, originalFilename, metadata{dimensions}}},
+  presentationViews,
   floorPlans,
   "floorPlanPreviews": floorPlans[]{_key, "asset": image.asset->{_id, url, originalFilename, metadata{dimensions}}},
   images,
@@ -661,6 +665,30 @@ function MediaReview({
             })}
           </div>
           {!slideshowImages.length && <EmptyMedia text="Inga övriga bildspelsbilder finns ännu." />}
+        </MediaSection>
+
+        <MediaSection
+          heading="Bildspelsvyer – vänster/höger"
+          actionText="Redigera vyernas vänster- och högermedia"
+          actionLabel="Öppna Sanitys bildspelsvyer för ordning, vänster- och högermedia"
+          disabled={disabled}
+          onOpen={() => onOpenField('presentationViews')}
+        >
+          <Text size={1} muted>
+            Varje rad är en publicerad vy: vänster och höger behåller sin plats och ordning. Ritningar
+            som ingår i samma vy ska ligga här, inte flyttas till Planritningar.
+          </Text>
+          <div className="esencial-content-media__media-grid">
+            {(project.presentationViews || []).map((view, index) => (
+              <Card key={view._key || index} padding={3} radius={2} border>
+                <Text size={1} weight="semibold">Vy {index + 1}</Text>
+                <Text size={1} muted>
+                  Vänster: {view.left?.alt || 'tom'} · Höger: {view.right?.alt || 'tom'}
+                </Text>
+              </Card>
+            ))}
+          </div>
+          {!project.presentationViews?.length && <EmptyMedia text="Inga vänster/höger-vyer finns ännu." />}
         </MediaSection>
 
         <MediaSection

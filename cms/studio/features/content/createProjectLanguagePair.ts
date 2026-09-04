@@ -54,6 +54,7 @@ const sharedFields = [
   'translationKey',
   'cardImages',
   'slideshowImages',
+  'presentationViews',
   'cardBackgroundPreset',
   // Retained only while a pre-reform project is being migrated to Kortbilder.
   'heroImage',

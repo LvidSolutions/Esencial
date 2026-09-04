@@ -81,6 +81,43 @@ export const projectSlideshowImageType = defineType({
   preview: slideshowImagePreview,
 })
 
+// The original feed has separate left and right media streams.  A flat array
+// cannot retain that relationship, so migrated projects use this additive
+// model while legacy fields remain available for unreviewed material.
+export const projectPresentationMediaType = defineType({
+  name: 'projectPresentationMedia',
+  title: 'Media i presentationsvy',
+  type: 'image',
+  options: {hotspot: true},
+  fields: [
+    ...slideshowImageFields,
+    defineField({
+      name: 'mediaKind',
+      title: 'Typ av media',
+      type: 'string',
+      options: {list: [{title: 'Fotografi', value: 'photograph'}, {title: 'Ritning', value: 'drawing'}, {title: 'Annat', value: 'other'}]},
+      initialValue: 'photograph',
+      validation: (Rule) => Rule.required(),
+    }),
+  ],
+  preview: slideshowImagePreview,
+})
+
+export const projectPresentationViewType = defineType({
+  name: 'projectPresentationView',
+  title: 'Vänster/höger-vy',
+  type: 'object',
+  fields: [
+    defineField({name: 'left', title: 'Vänster media', type: 'projectPresentationMedia', description: 'Vänster plats i den publicerade projektpresentationen.'}),
+    defineField({name: 'right', title: 'Höger media', type: 'projectPresentationMedia', description: 'Höger plats i den publicerade projektpresentationen.'}),
+  ],
+  validation: (Rule) => Rule.custom((value) => value?.left || value?.right ? true : 'En presentationsvy behöver minst en vänster- eller högermediareferens.'),
+  preview: {
+    select: {left: 'left.alt', right: 'right.alt'},
+    prepare: ({left, right}) => ({title: left || right || 'Tom presentationsvy', subtitle: left && right ? 'Vänster + höger' : left ? 'Endast vänster' : 'Endast höger'}),
+  },
+})
+
 export const projectGalleryImageType = defineType({
   name: 'projectGalleryImage',
   title: 'Bild i bildspelet (äldre)',

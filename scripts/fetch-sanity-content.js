@@ -15,6 +15,10 @@ const query = `*[_type == "project" && status == "published"] | order(title asc)
   "galleryImages": galleryImages[]{"src": asset->url, alt, credit, rightsConfirmed, caption, hideFromWebsite, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height},
   "cardImages": cardImages[]{"src": asset->url, alt, credit, rightsConfirmed, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height},
   "slideshowImages": slideshowImages[]{"src": asset->url, alt, credit, rightsConfirmed, caption, hideFromWebsite, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height},
+  "presentationViews": presentationViews[]{_key,
+    "left": left{"src": asset->url, alt, credit, rightsConfirmed, caption, hideFromWebsite, mediaKind, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height},
+    "right": right{"src": asset->url, alt, credit, rightsConfirmed, caption, hideFromWebsite, mediaKind, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height}
+  },
   "legacyImages": select(
     defined(heroImage.asset) => [],
     count(coalesce(images, [])) > 0 => images[]{"src": asset->url, alt, credit, "width": asset->metadata.dimensions.width, "height": asset->metadata.dimensions.height},
@@ -67,16 +71,18 @@ function transformProjects(result) {
     const galleryImages = Array.isArray(source.galleryImages) ? source.galleryImages : [];
     const cardImages = Array.isArray(source.cardImages) ? source.cardImages : [];
     const slideshowImages = Array.isArray(source.slideshowImages) ? source.slideshowImages : [];
+    const presentationViews = Array.isArray(source.presentationViews) ? source.presentationViews : [];
     const visibleGallery = galleryImages.filter((image) => !image.hideFromWebsite);
     const visibleSlideshow = slideshowImages.filter((image) => !image.hideFromWebsite);
     const legacyImages = (Array.isArray(source.legacyImages) ? source.legacyImages : []).map((image) => ({...image, rightsConfirmed: source.imageRightsConfirmed === true}));
-    const usesCardImageModel = cardImages.length > 0 || slideshowImages.length > 0;
+    const visiblePresentationMedia = presentationViews.flatMap((view) => [view?.left, view?.right].filter((image) => image?.src && !image.hideFromWebsite));
+    const usesCardImageModel = cardImages.length > 0 || slideshowImages.length > 0 || presentationViews.length > 0;
     // The CMS model makes the two card images the first two public slideshow images.
     // The legacy hero/gallery chain remains intact until a project is explicitly migrated.
     const images = usesCardImageModel
-      ? [...cardImages, ...visibleSlideshow].filter((image) => image?.src)
+      ? (presentationViews.length ? visiblePresentationMedia : [...cardImages, ...visibleSlideshow].filter((image) => image?.src))
       : [source.heroImage, ...visibleGallery].filter((image) => image?.src);
-    projects[source.language].push({...source, galleryImages, cardImages, slideshowImages, legacyImages, images: images.length ? images : legacyImages});
+    projects[source.language].push({...source, galleryImages, cardImages, slideshowImages, presentationViews, legacyImages, images: images.length ? images : legacyImages});
   }
   // Image media and the card surface are intentionally shared by a language
   // pair. Editorial text remains on its own language document and is never
@@ -84,17 +90,19 @@ function transformProjects(result) {
   const swedishByPair = new Map(projects.sv.map((project) => [project.translationKey || project.id, project]));
   projects.en = projects.en.map((english) => {
     const swedish = swedishByPair.get(english.translationKey || english.id);
-    const hasEnglishCardModel = english.cardImages.length > 0 || english.slideshowImages.length > 0;
-    if (!swedish || hasEnglishCardModel || !(swedish.cardImages.length || swedish.slideshowImages.length)) return english;
+    const hasEnglishCardModel = english.cardImages.length > 0 || english.slideshowImages.length > 0 || english.presentationViews.length > 0;
+    if (!swedish || hasEnglishCardModel || !(swedish.cardImages.length || swedish.slideshowImages.length || swedish.presentationViews.length)) return english;
     const cardImages = swedish.cardImages;
     const slideshowImages = swedish.slideshowImages;
+    const presentationViews = swedish.presentationViews;
     const visibleSlideshow = slideshowImages.filter((image) => !image.hideFromWebsite);
     return {
       ...english,
       cardImages,
       slideshowImages,
+      presentationViews,
       cardBackgroundPreset: english.cardBackgroundPreset || swedish.cardBackgroundPreset,
-      images: [...cardImages, ...visibleSlideshow].filter((image) => image?.src),
+      images: presentationViews.length ? presentationViews.flatMap((view) => [view?.left, view?.right].filter((image) => image?.src && !image.hideFromWebsite)) : [...cardImages, ...visibleSlideshow].filter((image) => image?.src),
     };
   });
   const problems = validateProjectSet(projects, { requireCmsFields: true });

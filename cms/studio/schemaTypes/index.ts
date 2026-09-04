@@ -7,6 +7,8 @@ import {
   projectCardImageType,
   projectGalleryImageType,
   projectHeroImageType,
+  projectPresentationMediaType,
+  projectPresentationViewType,
   projectSlideshowImageType,
 } from './imageTypes'
 import {filterCategoryType} from './filterCategoryType'
@@ -21,6 +23,8 @@ export const schemaTypes = [
   navigationSettingsType,
   projectHeroImageType,
   projectCardImageType,
+  projectPresentationMediaType,
+  projectPresentationViewType,
   projectSlideshowImageType,
   projectGalleryImageType,
   floorPlanType,

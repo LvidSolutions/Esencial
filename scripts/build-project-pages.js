@@ -104,6 +104,24 @@ function projectDescription(project, language) {
   return `${project.title} ${language === "sv" ? "är ett arkitekturprojekt av Esencial" : "is an architecture project by Esencial"}${location}.`;
 }
 
+function presentationViewsForProject(project) {
+  return Array.isArray(project.presentationViews)
+    ? project.presentationViews.filter((view) => view && (view.left?.src || view.right?.src))
+    : [];
+}
+
+function presentationViewMarkup(view, index) {
+  const mediaMarkup = (image, side) => {
+    if (!image?.src || image.hideFromWebsite) return `<div class="project-presentation-view__empty" aria-hidden="true"></div>`;
+    const responsive = responsiveImageAttributes(image, index * 2 + (side === "right" ? 1 : 0));
+    return `<figure class="project-presentation-view__item project-presentation-view__item--${side}">
+      <img src="${escapeHtml(image.src)}"${responsive.srcset} alt="${escapeHtml(image.alt || "")}" width="${escapeHtml(String(responsive.width))}" height="${escapeHtml(String(responsive.height))}" loading="${index === 0 ? "eager" : "lazy"}" decoding="async">
+      ${image.caption ? `<figcaption>${escapeHtml(image.caption)}</figcaption>` : ""}
+    </figure>`;
+  };
+  return `<div class="project-presentation-view" data-view-index="${index + 1}">${mediaMarkup(view.left, "left")}${mediaMarkup(view.right, "right")}</div>`;
+}
+
 function textValue(value) {
   if (typeof value === "string") return value.trim();
   if (Array.isArray(value)) return value.map(textValue).filter(Boolean).join(", ");
@@ -190,7 +208,8 @@ function pageHtml(project, language, translations, projectsById) {
     ]
   });
   const visibleDescriptionLanguage = project.descriptionLanguage && project.descriptionLanguage !== language ? ` lang="${escapeHtml(project.descriptionLanguage)}"` : "";
-  const imageMarkup = project.images.map((image, index) => {
+  const presentationViews = presentationViewsForProject(project);
+  const imageMarkup = presentationViews.length ? presentationViews.map(presentationViewMarkup).join("") : project.images.map((image, index) => {
     const responsive = responsiveImageAttributes(image, index);
     return `
         <figure class="project-gallery__item${index === 0 ? " project-gallery__item--primary" : ""}">
@@ -232,7 +251,7 @@ function pageHtml(project, language, translations, projectsById) {
   ${languageLinks(project, language, translations)}
   <link rel="stylesheet" href="/wp-content/themes/esencial/css/tachyons.css">
   <link rel="stylesheet" href="/wp-content/themes/esencial/css/styles.css">
-  <link rel="stylesheet" href="/assets/css/project-pages.css">
+  ${presentationViews.length ? '<style>.project-presentation-view{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0}.project-presentation-view__item{margin:0}.project-presentation-view__item img{display:block;width:100%;height:auto}.project-presentation-view__empty{min-height:12rem;background:var(--esencial-card-background,#f6f2eb)}@media(max-width:700px){.project-presentation-view{grid-template-columns:1fr}}</style>\n  ' : ''}<link rel="stylesheet" href="/assets/css/project-pages.css">
   <script type="application/ld+json">
 ${serializeStructuredData(structuredData)}
   </script>

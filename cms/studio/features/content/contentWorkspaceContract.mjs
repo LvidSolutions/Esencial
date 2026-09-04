@@ -104,7 +104,7 @@ export function validateProjectContentPatch(value) {
   const summary = String(value?.summary || '').trim()
   const seoTitle = String(value?.seoTitle || '').trim()
   const seoDescription = String(value?.seoDescription || '').trim()
-  const year = value?.year === '' || value?.year === undefined ? undefined : Number(value.year)
+  const year = String(value?.year || '').trim()
 
   if (!title) errors.title = 'Ange projektrubrik.'
   if (!slug) errors.slug = 'Ange permanent webbadress.'
@@ -115,8 +115,8 @@ export function validateProjectContentPatch(value) {
   if (translationKey && !/^[a-z0-9]+(?:_[a-z0-9]+)*$/.test(translationKey)) {
     errors.translationKey = 'Använd små bokstäver, siffror och enkla understreck.'
   }
-  if (year !== undefined && (!Number.isInteger(year) || year < 1900 || year > 2100)) {
-    errors.year = 'Ange ett helt år mellan 1900 och 2100.'
+  if (year && !/^(?:1[89]|20)\d{2}(?:\s*(?:–|-|—)\s*(?:(?:1[89]|20)\d{2})?)?$/.test(year)) {
+    errors.year = 'Ange publicerat årtal eller intervall, till exempel 2010–2011 eller 2022–.'
   }
   if (summary.length < 40 || summary.length > 700) {
     errors.summary = 'Projektintroduktionen ska vara 40–700 tecken.'

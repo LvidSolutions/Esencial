@@ -1,0 +1,40 @@
+/* Creates a local, ignored, restorable Sanity export before a migration apply. */
+const crypto = require('crypto')
+const fs = require('fs')
+const path = require('path')
+const {spawnSync} = require('child_process')
+
+const ROOT = path.resolve(__dirname, '..')
+const projectId = 'g6xm8j7l'
+const dataset = 'production'
+
+function sha256(file) {
+  const hash = crypto.createHash('sha256')
+  hash.update(fs.readFileSync(file))
+  return hash.digest('hex')
+}
+
+function main() {
+  if (!process.argv.includes('--confirm-backup')) throw new Error('Refusing to export without --confirm-backup.')
+  if (!process.env.SANITY_AUTH_TOKEN) throw new Error('SANITY_AUTH_TOKEN is required for the provider export. Do not paste it into chat or Git.')
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-')
+  const directory = path.join(ROOT, 'local-backups', 'sanity')
+  const archive = path.join(directory, `esencial-production-${stamp}.tar.gz`)
+  const manifest = `${archive}.manifest.json`
+  fs.mkdirSync(directory, {recursive: true})
+  const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
+  const result = spawnSync(npm, ['--prefix', 'cms/studio', 'exec', '--', 'sanity', 'datasets', 'export', dataset, archive], {
+    cwd: ROOT,
+    env: {...process.env, SANITY_PROJECT_ID: projectId},
+    encoding: 'utf8',
+  })
+  if (result.status !== 0 || !fs.existsSync(archive)) {
+    if (fs.existsSync(archive)) fs.unlinkSync(archive)
+    throw new Error('Sanity dataset export failed. Check the local Studio dependencies and token permissions; provider output was withheld.')
+  }
+  const record = {projectId, dataset, completedAt: new Date().toISOString(), archive: path.basename(archive), bytes: fs.statSync(archive).size, sha256: sha256(archive)}
+  fs.writeFileSync(manifest, `${JSON.stringify(record, null, 2)}\n`, 'utf8')
+  console.log(`Sanity backup complete: ${path.relative(ROOT, manifest)}. The archive and manifest are ignored by Git.`)
+}
+
+if (require.main === module) main()
