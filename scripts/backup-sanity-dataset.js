@@ -31,12 +31,11 @@ function main() {
   const archive = path.join(directory, `esencial-production-${stamp}.tar.gz`)
   const manifest = `${archive}.manifest.json`
   fs.mkdirSync(directory, {recursive: true})
-  const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
-  const result = spawnSync(npm, ['--prefix', 'cms/studio', 'exec', '--', 'sanity', 'datasets', 'export', dataset, archive, '--project-id', projectId], {
+  const sanityCli = path.join(ROOT, 'cms', 'studio', 'node_modules', 'sanity', 'bin', 'sanity')
+  const result = spawnSync(process.execPath, [sanityCli, 'datasets', 'export', dataset, archive, '--project-id', projectId], {
     cwd: ROOT,
     env: {...process.env, SANITY_PROJECT_ID: projectId},
     encoding: 'utf8',
-    shell: process.platform === 'win32',
   })
   if (result.status !== 0 || !fs.existsSync(archive)) {
     if (fs.existsSync(archive)) fs.unlinkSync(archive)
