@@ -293,7 +293,10 @@ async function main() {
   const token = process.env.SANITY_MIGRATION_TOKEN
   if (options.apply && !token) throw new Error('SANITY_MIGRATION_TOKEN is required for --apply. Do not reuse or expose the read-only build token.')
   const source = await fetchLiveSource()
-  const documents = await fetchSanityDocuments(options.apply ? token : undefined)
+  // When a migration token is present, include drafts in dry runs too. This
+  // makes the plan hash comparable with --apply and surfaces manual drafts as
+  // conflicts before any mutation is attempted.
+  const documents = await fetchSanityDocuments(token)
   const entries = planEntries(source, documents)
   const report = reportFor(source, entries)
   writeReport(options.output, report)
