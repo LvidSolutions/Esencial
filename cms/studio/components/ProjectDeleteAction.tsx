@@ -62,7 +62,7 @@ export const ProjectDeleteAction: DocumentActionComponent = (props) => {
       if (!canonicalIds.length) throw new Error('Projektets dokument-ID kunde inte fastställas.')
 
       const blockers = await client.fetch<ReferenceBlocker[]>(
-        `*[references($ids) && !(string::split(_id, ".")[0] == "drafts" && string::split(_id, ".")[1] in $ids) && !(_id in $ids)]{_id, _type, title}`,
+        `*[references($ids)]{_id, _type, title}`,
         {ids: canonicalIds},
       )
       const externalBlockers = blockers.filter((item) => !canonicalIds.includes(canonicalId(item._id)))
@@ -72,7 +72,7 @@ export const ProjectDeleteAction: DocumentActionComponent = (props) => {
           .map((item) => item.title || `${item._type} (${canonicalId(item._id)})`)
           .join(', ')
         throw new Error(
-          `Projektet används fortfarande av ${labels}${externalBlockers.length > 5 ? ' med flera' : ''}. Ta bort de referenserna i Filter och ordning eller startsidan först.`,
+          `Projektet används fortfarande av ${labels}${externalBlockers.length > 5 ? ' med flera' : ''}. Ta bort de referenserna först och försök igen.`,
         )
       }
 
@@ -101,14 +101,14 @@ export const ProjectDeleteAction: DocumentActionComponent = (props) => {
     dialog: confirming
       ? {
           type: 'confirm',
-          tone: 'critical',
+          color: 'danger',
           message: (
             <Stack space={3}>
               <Text weight="semibold">Radera {title}?</Text>
               <Text size={1}>
                 Hela svenska/engelska projektparet raderas när en språkkoppling finns. Bilder i Sanitys assetbibliotek raderas inte. Åtgärden genomförs först efter denna bekräftelse och stoppas om andra dokument fortfarande refererar till projektet.
               </Text>
-              {error ? <Text size={1} style={{color: 'var(--card-critical-fg-color)'}}>{error}</Text> : null}
+              {error ? <Text size={1}>{error}</Text> : null}
             </Stack>
           ),
           onCancel: () => {
