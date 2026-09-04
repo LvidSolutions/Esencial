@@ -36,10 +36,11 @@ function main() {
     cwd: ROOT,
     env: {...process.env, SANITY_PROJECT_ID: projectId},
     encoding: 'utf8',
+    shell: process.platform === 'win32',
   })
   if (result.status !== 0 || !fs.existsSync(archive)) {
     if (fs.existsSync(archive)) fs.unlinkSync(archive)
-    const providerOutput = redactProviderOutput(`${result.stdout}\n${result.stderr}`)
+    const providerOutput = redactProviderOutput([result.error?.message, result.stdout, result.stderr].filter(Boolean).join('\n'))
     const detail = providerOutput ? ` Sanity said: ${providerOutput}` : ''
     throw new Error(`Sanity dataset export failed (exit ${result.status ?? 'unknown'}). Check the token permissions and local Studio dependencies.${detail}`)
   }
