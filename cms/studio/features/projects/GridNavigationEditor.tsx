@@ -123,8 +123,7 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
     !draft.headingEn.trim() && 'engelsk projektrubrik',
     !draft.allLabelSv.trim() && 'svensk etikett för alla projekt',
     !draft.allLabelEn.trim() && 'engelsk etikett för alla projekt',
-    !draft.gridEntries.some((entry) => entry.includeInGrid === true) &&
-      'minst ett uttryckligen inkluderat projektpar',
+    !draft.gridEntries.some((entry) => entry.includeInGrid === true) && 'minst ett projekt',
   ].filter(Boolean)
   const hasUnsavedChanges = Boolean(
     settings
@@ -145,24 +144,9 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
   return (
     <Card padding={[3, 4]} radius={2} border>
       <Stack space={4}>
-        <div className="esencial-projects-feature__heading-block">
-          <Heading as="h3" size={2}>
-            Inkludering och ordning i projektrutnätet
-          </Heading>
-          <Text size={1} muted>
-            Projekt läggs till ett i taget genom ett uttryckligt val. Ordningen ändras med synliga
-            Upp/Ned-knappar; ingen redaktör behöver använda dra och släpp.
-          </Text>
-        </div>
-
-        {!settings && (
-          <Card padding={3} radius={2} border role="status">
-            <Text size={1}>
-              Ingen redaktionell konfiguration finns. Alla nuvarande projekt, deras exakta ordning,
-              befintliga filteretiketter och frontendutseende används därför oförändrade.
-            </Text>
-          </Card>
-        )}
+        <Heading as="h3" size={2}>
+          Projektordning
+        </Heading>
 
         <label htmlFor={enabledId} className="esencial-projects-feature__check-row">
           <Checkbox
@@ -173,32 +157,32 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
             }
           />
           <Text size={1} weight="semibold">
-            Aktivera konfigurationen först efter komplett redaktionell granskning
+            Använd denna ordning
           </Text>
         </label>
 
         <div className="esencial-projects-feature__form-grid">
           <LabelledInput
             id={headingSvId}
-            label="Projektrubrik på svenska"
+            label="Rubrik på svenska"
             value={draft.headingSv}
             onChange={(headingSv) => setDraft((current) => ({...current, headingSv}))}
           />
           <LabelledInput
             id={headingEnId}
-            label="Project heading in English"
+            label="Heading in English"
             value={draft.headingEn}
             onChange={(headingEn) => setDraft((current) => ({...current, headingEn}))}
           />
           <LabelledInput
             id={allSvId}
-            label="Etikett för alla projekt på svenska"
+            label="Alla projekt"
             value={draft.allLabelSv}
             onChange={(allLabelSv) => setDraft((current) => ({...current, allLabelSv}))}
           />
           <LabelledInput
             id={allEnId}
-            label="All-projects label in English"
+            label="All projects"
             value={draft.allLabelEn}
             onChange={(allLabelEn) => setDraft((current) => ({...current, allLabelEn}))}
           />
@@ -208,7 +192,7 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
           <Stack space={3}>
             <label htmlFor={addId}>
               <Text size={1} weight="semibold">
-                Lägg till ett bekräftat projektpar
+                Lägg till projekt
               </Text>
             </label>
             <Flex gap={2} align="flex-end" wrap="wrap">
@@ -218,7 +202,7 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
                   value={pairToAdd}
                   onChange={(event) => setPairToAdd(event.currentTarget.value)}
                 >
-                  <option value="">Välj projektpar…</option>
+                  <option value="">Välj projekt…</option>
                   {availablePairs.map((pair) => (
                     <option key={pair.key} value={pair.key}>
                       {pairLabel(pair)}
@@ -226,7 +210,7 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
                   ))}
                 </Select>
               </Box>
-              <Button text="Lägg till i kladd" disabled={!pairToAdd} onClick={addPair} />
+              <Button text="Lägg till" disabled={!pairToAdd} onClick={addPair} />
             </Flex>
           </Stack>
         </Card>
@@ -246,10 +230,10 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
                 <Flex align="center" gap={3} wrap="wrap">
                   <Box flex={1}>
                     <Text size={1} muted>
-                      Position {index + 1}
+                      {index + 1}
                     </Text>
                     <Text weight="semibold">
-                      {pair ? pairLabel(pair) : 'Projektparet saknas eller kan inte längre läsas'}
+                      {pair ? pairLabel(pair) : 'Projekt saknas'}
                     </Text>
                   </Box>
                   <label htmlFor={includedId} className="esencial-projects-feature__check-row">
@@ -280,7 +264,7 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
                     <Button
                       mode="ghost"
                       tone="critical"
-                      text="Ta bort från kladd"
+                      text="Ta bort"
                       aria-label={`Ta bort ${pair ? pairLabel(pair) : `position ${index + 1}`} från kladd`}
                       onClick={() => removeEntry(index)}
                     />
@@ -289,17 +273,13 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
               </Card>
             )
           })}
-          {!draft.gridEntries.length && (
-            <Text size={1} muted>
-              Inga projektpar har lagts till. Rutnätet förblir i säkert frontendreservläge.
-            </Text>
-          )}
+          {!draft.gridEntries.length && <Text size={1} muted>Inga projekt valda.</Text>}
         </Stack>
 
         {draft.enabled && activationProblems.length > 0 && (
           <Card padding={3} radius={2} border role="alert">
             <Text size={1} className="esencial-projects-feature__error">
-              Publicering blockeras tills följande är klart: {activationProblems.join(', ')}.
+              Saknas: {activationProblems.join(', ')}.
             </Text>
           </Card>
         )}
@@ -308,12 +288,12 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
           <Card padding={3} radius={2} border className="esencial-projects-feature__unsaved">
             <Stack space={2}>
               <Text size={1} role="status">
-                Rutnätet har osparade ändringar. Den publicerade webbplatsen är oförändrad.
+                Osparade ändringar.
               </Text>
               <Box>
                 <Button
                   mode="ghost"
-                  text="Återställ laddat rutnät"
+                  text="Återställ"
                   aria-label="Återställ rutnät och filteretiketter till senast laddade värden"
                   onClick={() => {
                     setDraft(loadedDraft)
@@ -327,7 +307,7 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
 
         <Inline space={2} className="esencial-projects-feature__actions">
           <Button
-            text="Spara rutnät som kladd"
+            text="Spara som kladd"
             disabled={saving}
             onClick={() =>
               void onSave({
@@ -341,7 +321,8 @@ export function GridNavigationEditor({settings, pairs, saving, onSave, onOpen}: 
           />
           <Button
             mode="ghost"
-            text="Öppna validering och publicering"
+            text="Avancerat"
+            aria-label="Öppna validering och publicering"
             disabled={!settings || hasUnsavedChanges || saving}
             onClick={onOpen}
           />

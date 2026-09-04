@@ -2,10 +2,13 @@
   min-width: 0;
 }
 
-.esencial-analytics__measure {
-  max-width: var(--esencial-workspace-measure, 68ch);
-  margin-top: 8px;
-  line-height: 1.55;
+/* The Results workspace is for editorial outcomes. Detailed provider/privacy
+   engineering remains enforced in code and advanced configuration, not in the
+   primary dashboard. */
+.esencial-analytics__measure,
+.esencial-analytics__privacy,
+.esencial-analytics__metric > p:nth-of-type(3) {
+  display: none;
 }
 
 .esencial-analytics__metric {
@@ -198,10 +201,6 @@
 .esencial-analytics__source-list li {
   padding-top: 12px;
   border-top: 1px solid var(--esencial-workspace-border, #d1d1ca);
-}
-
-.esencial-analytics__privacy {
-  background: var(--esencial-workspace-wash, #f5f5f1);
 }
 
 .esencial-analytics__sr-only {

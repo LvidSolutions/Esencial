@@ -1,0 +1,53 @@
+.esencial-workspace-shell__tab-button {
+  width: 100%;
+  min-height: 52px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--esencial-workspace-ink) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1.35 !important;
+  text-transform: uppercase;
+}
+
+.esencial-workspace-shell__tab-button:hover {
+  background: var(--esencial-workspace-wash) !important;
+}
+
+.esencial-workspace-shell__tab-button[aria-selected='true'] {
+  background: var(--esencial-workspace-ink) !important;
+  color: var(--esencial-workspace-canvas) !important;
+}
+
+.esencial-workspace-shell__tab-button[aria-selected='true']:hover {
+  background: var(--esencial-workspace-ink) !important;
+}
+
+.esencial-workspace-shell__section {
+  min-height: min(72vh, 880px);
+  scroll-margin-top: 0;
+}
+
+.esencial-workspace-shell__section-header {
+  display: block;
+  margin-bottom: clamp(20px, 3vw, 32px);
+}
+
+.esencial-workspace-shell__section-header h2 {
+  margin: 0;
+}
+
+@media (max-width: 56rem) {
+  .esencial-workspace-shell__section {
+    min-height: 0;
+  }
+}
+
+@media (forced-colors: active) {
+  .esencial-workspace-shell__tab-button[aria-selected='true'] {
+    background: Highlight !important;
+    color: HighlightText !important;
+  }
+}

@@ -4,9 +4,9 @@ import test from 'node:test'
 import {composeWorkspaceSections} from './workspaceComposition.mjs'
 
 const order = ['content-media', 'projects-filters', 'live-preview', 'analytics-consent']
-const section = (id) => ({id, summary: id, children: null})
+const section = (id) => ({id, children: null})
 
-test('integrated Studio sections always resolve to the stable accessible vertical order', () => {
+test('integrated Studio sections always resolve to the stable workspace navigation order', () => {
   const result = composeWorkspaceSections(
     [
       section('analytics-consent'),

@@ -88,8 +88,8 @@ export function FilterCategoryEditor({
       const next = current.includes(reference)
         ? current.filter((id) => id !== reference)
         : [...current, reference]
-      setProjectOrder((order) => {
-        const retained = order.filter((id) => next.includes(id))
+      setProjectOrder((currentOrder) => {
+        const retained = currentOrder.filter((id) => next.includes(id))
         return next.includes(reference) && !retained.includes(reference)
           ? [...retained, reference]
           : retained
@@ -124,33 +124,27 @@ export function FilterCategoryEditor({
   )
   const hasUnsavedChanges = Boolean(
     category &&
-    (labelSv !== (category.labelSv || '') ||
-      labelEn !== (category.labelEn || '') ||
-      order !== String(category.order ?? 0) ||
-      visible !== (category.visible === true) ||
-      JSON.stringify(projectRefs) !==
-        JSON.stringify((category.projectRefs || []).map(canonicalDocumentId)) ||
-      JSON.stringify(projectOrder) !==
-        JSON.stringify(
-          (category.projectOrder || category.projectRefs || []).map(canonicalDocumentId),
-        )),
+      (labelSv !== (category.labelSv || '') ||
+        labelEn !== (category.labelEn || '') ||
+        order !== String(category.order ?? 0) ||
+        visible !== (category.visible === true) ||
+        JSON.stringify(projectRefs) !==
+          JSON.stringify((category.projectRefs || []).map(canonicalDocumentId)) ||
+        JSON.stringify(projectOrder) !==
+          JSON.stringify(
+            (category.projectOrder || category.projectRefs || []).map(canonicalDocumentId),
+          )),
   )
 
   return (
     <Card padding={[3, 4]} radius={2} border>
       <Stack space={4}>
         <Flex justify="space-between" align="center" wrap="wrap" gap={3}>
-          <div className="esencial-projects-feature__heading-block">
-            <Heading as="h3" size={2}>
-              Filterkategorier och navigation
-            </Heading>
-            <Text size={1} muted>
-              En kategori får endast de projektpar som redaktören markerar. Samma publicerade källa
-              ska senare användas av både filternavigering och rutnät.
-            </Text>
-          </div>
+          <Heading as="h3" size={2}>
+            Filter
+          </Heading>
           <Button
-            text="Skapa tom filterkategori"
+            text="Nytt filter"
             disabled={hasUnsavedChanges || saving}
             onClick={onCreate}
           />
@@ -161,7 +155,7 @@ export function FilterCategoryEditor({
             <Stack space={2}>
               <label htmlFor={categorySelectId}>
                 <Text size={1} weight="semibold">
-                  Kategori att redigera
+                  Kategori
                 </Text>
               </label>
               <Select
@@ -172,8 +166,7 @@ export function FilterCategoryEditor({
               >
                 {categories.map((candidate) => (
                   <option key={candidate._id} value={candidate._id}>
-                    {candidate.labelSv || candidate.labelEn || 'Namnlöst filter'} ·{' '}
-                    {candidate.key || 'nyckel saknas'}
+                    {candidate.labelSv || candidate.labelEn || 'Namnlöst filter'}
                   </option>
                 ))}
               </Select>
@@ -181,13 +174,12 @@ export function FilterCategoryEditor({
                 <Card padding={3} radius={2} border className="esencial-projects-feature__unsaved">
                   <Stack space={2}>
                     <Text size={1} role="status">
-                      Osparade filterändringar finns. Spara eller återställ fälten innan du byter
-                      kategori eller skapar en ny.
+                      Spara eller återställ filtret innan du byter kategori.
                     </Text>
                     <Box>
                       <Button
                         mode="ghost"
-                        text="Återställ laddat filter"
+                        text="Återställ"
                         aria-label="Återställ filterkategorin till senast laddade värden"
                         onClick={() => {
                           setLabelSv(category.labelSv || '')
@@ -208,18 +200,11 @@ export function FilterCategoryEditor({
               )}
             </Stack>
 
-            <Card padding={3} radius={2} border>
-              <Text size={1}>
-                Stabil nyckel: <strong>{category.key || 'saknas'}</strong>. Nyckeln redigeras endast
-                i den fullständiga dokumentvyn och låses av valideringen efter publicering.
-              </Text>
-            </Card>
-
             <div className="esencial-projects-feature__form-grid">
               <Stack space={2}>
                 <label htmlFor={labelSvId}>
                   <Text size={1} weight="semibold">
-                    Etikett på svenska
+                    Svenska
                   </Text>
                 </label>
                 <TextInput
@@ -231,7 +216,7 @@ export function FilterCategoryEditor({
               <Stack space={2}>
                 <label htmlFor={labelEnId}>
                   <Text size={1} weight="semibold">
-                    Label in English
+                    English
                   </Text>
                 </label>
                 <TextInput
@@ -243,7 +228,7 @@ export function FilterCategoryEditor({
               <Stack space={2}>
                 <label htmlFor={orderId}>
                   <Text size={1} weight="semibold">
-                    Unikt ordningsnummer
+                    Ordning
                   </Text>
                 </label>
                 <TextInput
@@ -256,7 +241,7 @@ export function FilterCategoryEditor({
                 />
                 {!validOrder && (
                   <Text size={1} className="esencial-projects-feature__error" role="alert">
-                    Ange ett heltal som är 0 eller högre.
+                    Ange 0 eller högre.
                   </Text>
                 )}
               </Stack>
@@ -266,16 +251,12 @@ export function FilterCategoryEditor({
                   checked={visible}
                   onChange={(event) => setVisible(event.currentTarget.checked)}
                 />
-                <Text size={1}>Visa i filternavigeringen efter granskad publicering</Text>
+                <Text size={1}>Visa filtret</Text>
               </label>
             </div>
 
             <fieldset className="esencial-projects-feature__fieldset">
-              <legend>Explicit projektmedlemskap</legend>
-              <Text size={1} muted>
-                Varje val gäller det namngivna svenska/engelska projektparet. Ofullständiga eller
-                opublicerade par kan inte väljas.
-              </Text>
+              <legend>Projekt i filtret</legend>
               <div className="esencial-projects-feature__membership-grid">
                 {pairs.map((pair) => {
                   const reference = canonicalDocumentId(pair.sv?._id)
@@ -303,19 +284,14 @@ export function FilterCategoryEditor({
               </div>
               {!projectRefs.length && (
                 <Text size={1} className="esencial-projects-feature__error" role="alert">
-                  Välj minst ett bekräftat projektpar. Tomma kategorier kan inte publiceras.
+                  Välj minst ett projekt.
                 </Text>
               )}
             </fieldset>
 
             {projectOrder.length > 0 && (
               <fieldset className="esencial-projects-feature__fieldset">
-                <legend>Ordning i detta filter</legend>
-                <Text size={1} muted>
-                  Projekt 1 visas uppe till vänster, projekt 2 till höger och projekt 3 under
-                  projekt 1. Dra en rad till en annan position. Upp/Ned fungerar alltid med
-                  tangentbord.
-                </Text>
+                <legend>Ordning i filtret</legend>
                 <ol className="esencial-projects-feature__order-list">
                   {projectOrder.map((reference, index) => {
                     const pair = pairs.find(
@@ -376,7 +352,8 @@ export function FilterCategoryEditor({
               />
               <Button
                 mode="ghost"
-                text="Öppna validering och publicering"
+                text="Avancerat"
+                aria-label="Öppna validering och publicering i fullständig dokumentvy"
                 disabled={hasUnsavedChanges || saving}
                 onClick={() => onOpen(category)}
               />
@@ -385,8 +362,7 @@ export function FilterCategoryEditor({
         ) : (
           <Card padding={3} radius={2} border>
             <Text size={1} muted>
-              Ingen filterkategori är skapad. Den befintliga frontendens filter och projektordning
-              förblir därför exakt oförändrade.
+              Inga filter är skapade.
             </Text>
           </Card>
         )}

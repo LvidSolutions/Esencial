@@ -43,15 +43,9 @@ export function ProjectHeadingEditor({
     <Card padding={[3, 4]} radius={2} border>
       <Stack space={4}>
         <Flex justify="space-between" align="center" wrap="wrap" gap={3}>
-          <div className="esencial-projects-feature__heading-block">
-            <Heading as="h3" size={2}>
-              Projektrubriker på svenska och engelska
-            </Heading>
-            <Text size={1} muted>
-              Varje fält sparar endast den befintliga språkversionens kladd. Inga rubriker,
-              översättningar, fakta eller språkpar skapas automatiskt.
-            </Text>
-          </div>
+          <Heading as="h3" size={2}>
+            Projektrubriker
+          </Heading>
           <Inline space={2} className="esencial-projects-feature__actions">
             <Button
               text="Nytt svenskt projekt"
@@ -71,7 +65,7 @@ export function ProjectHeadingEditor({
           <Stack space={3}>
             <label htmlFor={`${swedishId}-pair`}>
               <Text size={1} weight="semibold">
-                Projektpar att redigera
+                Projekt
               </Text>
             </label>
             <Select
@@ -91,13 +85,12 @@ export function ProjectHeadingEditor({
               <Card padding={3} radius={2} border className="esencial-projects-feature__unsaved">
                 <Stack space={2}>
                   <Text size={1} role="status">
-                    Osparade rubrikändringar finns. Spara eller återställ fälten innan du byter
-                    projektpar.
+                    Spara eller återställ rubrikerna innan du byter projekt.
                   </Text>
                   <Box>
                     <Button
                       mode="ghost"
-                      text="Återställ laddade rubriker"
+                      text="Återställ"
                       aria-label="Återställ båda rubrikerna till senast laddade värden"
                       onClick={() => {
                         setTitleSv(pair?.sv?.title || '')
@@ -112,8 +105,7 @@ export function ProjectHeadingEditor({
             {!pair?.complete && (
               <Card padding={3} radius={2} border role="status">
                 <Text size={1}>
-                  Språkparet är ofullständigt. Lägg till och koppla den saknade versionen i den
-                  fullständiga dokumentvyn; arbetsytan gissar aldrig en översättning.
+                  Språkversion saknas. Lägg till den i den fullständiga dokumentvyn.
                 </Text>
               </Card>
             )}
@@ -146,7 +138,7 @@ export function ProjectHeadingEditor({
             </div>
           </Stack>
         ) : (
-          <Text muted>Inga projekt kunde läsas. Skapa projekt i Sanitys dokumentvy.</Text>
+          <Text muted>Inga projekt kunde läsas.</Text>
         )}
       </Stack>
     </Card>
@@ -195,7 +187,7 @@ function LanguageHeadingField({
           />
           {!normalized && (
             <Text size={1} className="esencial-projects-feature__error" role="alert">
-              Rubriken får inte vara tom. Kladden sparas inte från arbetsytan.
+              Rubriken får inte vara tom.
             </Text>
           )}
           <Inline space={2} className="esencial-projects-feature__actions">
